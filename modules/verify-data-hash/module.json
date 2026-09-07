@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "verify-data-hash",
+    "name": "Verify Data Hash",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "verify"
+  },
+  "purpose": "Verifies data integrity by calculating and comparing cryptographic hash checksums.",
+  "capability": "Computes MD5/SHA256/SHA512 checksum of string or bytes and checks against target expected hash.",
+  "input": {
+    "data": "string or bytes",
+    "expected_hash": "string",
+    "algorithm": "string (optional, default 'sha256')"
+  },
+  "output": {
+    "match": "boolean",
+    "calculated_hash": "string"
+  },
+  "interface": "index.py -> verify_data_hash(data: str | bytes, expected_hash: str, algorithm: str = 'sha256') -> dict",
+  "dependencies": [],
+  "boundary": "Cryptographic hash calculation and comparison.",
+  "composition": "Can be composed with read-file-content to verify file download integrity.",
+  "failure_behavior": "Raises ValueError if hash algorithm is unsupported.",
+  "operational_readiness": "Production ready. Uses standard hashlib library."
+}

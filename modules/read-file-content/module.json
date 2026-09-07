@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "read-file-content",
+    "name": "Read File Content",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "read"
+  },
+  "purpose": "Reads text or binary content from a local file path safely.",
+  "capability": "Reads full or partial contents of a file given its path and optional encoding or mode.",
+  "input": {
+    "path": "string (path to the file)",
+    "encoding": "string (optional, default 'utf-8')",
+    "binary": "boolean (optional, default False)"
+  },
+  "output": {
+    "content": "string or bytes (content of the file)",
+    "bytes_read": "integer"
+  },
+  "interface": "index.py -> read_file_content(path: str, encoding: str = 'utf-8', binary: bool = False) -> dict",
+  "dependencies": [],
+  "boundary": "File system access limited to provided path. Does not handle remote URLs or non-file resources.",
+  "composition": "Can be composed with parse-json-structured, extract-regex-pattern, or diff-text-delta.",
+  "failure_behavior": "Raises FileNotFoundError if file does not exist, PermissionError if unreadable, or UnicodeDecodeError if encoding fails.",
+  "operational_readiness": "Production ready. Pure Python standard library implementation."
+}

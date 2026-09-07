@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "diff-text-delta",
+    "name": "Diff Text Delta",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "diff"
+  },
+  "purpose": "Computes unified diff delta between two text sequences or documents.",
+  "capability": "Generates unified diff representation showing additions, deletions, and line changes.",
+  "input": {
+    "text_a": "string",
+    "text_b": "string",
+    "from_name": "string (optional, default 'a')",
+    "to_name": "string (optional, default 'b')"
+  },
+  "output": {
+    "diff": "string (unified diff content)",
+    "has_changes": "boolean"
+  },
+  "interface": "index.py -> diff_text_delta(text_a: str, text_b: str, from_name: str = 'a', to_name: str = 'b') -> dict",
+  "dependencies": [],
+  "boundary": "Text line diff computation.",
+  "composition": "Composes with read-file-content or write-file-content.",
+  "failure_behavior": "Returns empty diff string and has_changes=False if texts are identical.",
+  "operational_readiness": "Production ready. Uses standard difflib."
+}

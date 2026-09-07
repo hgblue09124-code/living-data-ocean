@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "extract-regex-pattern",
+    "name": "Extract Regex Pattern",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "extract"
+  },
+  "purpose": "Extracts matches or named groups from text given a regular expression pattern.",
+  "capability": "Runs regex pattern matching across text input and returns all matches or captured groups.",
+  "input": {
+    "text": "string",
+    "pattern": "string (regex pattern)",
+    "flags": "integer (optional regex flags, default 0)"
+  },
+  "output": {
+    "matches": "list of strings or dicts (if capturing groups)"
+  },
+  "interface": "index.py -> extract_regex_pattern(text: str, pattern: str, flags: int = 0) -> dict",
+  "dependencies": [],
+  "boundary": "Regular expression pattern extraction.",
+  "composition": "Can be composed with read-file-content or search-text-pattern.",
+  "failure_behavior": "Returns empty matches list on no match; raises re.error on invalid regex.",
+  "operational_readiness": "Production ready standard re library."
+}

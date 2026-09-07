@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "retrieve-key-value",
+    "name": "Retrieve Key Value",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "retrieve"
+  },
+  "purpose": "Retrieves a value from a dictionary or state map safely with fallback support.",
+  "capability": "Safely looks up a key in a map or context object.",
+  "input": {
+    "store": "dict",
+    "key": "string",
+    "default": "any (optional, default None)"
+  },
+  "output": {
+    "value": "any",
+    "found": "boolean"
+  },
+  "interface": "index.py -> retrieve_key_value(store: dict, key: str, default: Any = None) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory key retrieval.",
+  "composition": "Composes with query-json-path and check-condition-predicate.",
+  "failure_behavior": "Returns found=False and default value if key is missing.",
+  "operational_readiness": "Production ready. Pure Python."
+}

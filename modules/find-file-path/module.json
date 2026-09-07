@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "find-file-path",
+    "name": "Find File Path",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "find"
+  },
+  "purpose": "Finds files matching a specific pattern or predicate within a root directory.",
+  "capability": "Searches directory tree with glob/fnmatch patterns.",
+  "input": {
+    "root_path": "string (starting directory)",
+    "pattern": "string (fnmatch glob pattern, default '*')",
+    "max_depth": "integer (optional, default -1 for unlimited)"
+  },
+  "output": {
+    "matches": "list of matching file path strings"
+  },
+  "interface": "index.py -> find_file_path(root_path: str, pattern: str = '*', max_depth: int = -1) -> dict",
+  "dependencies": [],
+  "boundary": "Local directory tree search.",
+  "composition": "Can be combined with read-file-content or search-text-pattern.",
+  "failure_behavior": "Returns empty list if no matches or path missing.",
+  "operational_readiness": "Production ready standard library code."
+}

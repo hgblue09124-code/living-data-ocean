@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "search-text-pattern",
+    "name": "Search Text Pattern",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "search"
+  },
+  "purpose": "Searches for occurrences of query text or regex pattern within text body or list of strings.",
+  "capability": "Finds line numbers and snippets of matching pattern across multi-line text.",
+  "input": {
+    "text": "string",
+    "query": "string (substring or regex)",
+    "is_regex": "boolean (optional, default False)",
+    "case_sensitive": "boolean (optional, default True)"
+  },
+  "output": {
+    "matches": "list of dicts with line_number, line_text, start, end"
+  },
+  "interface": "index.py -> search_text_pattern(text: str, query: str, is_regex: bool = False, case_sensitive: bool = True) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory text searching.",
+  "composition": "Composes with read-file-content and find-file-path.",
+  "failure_behavior": "Returns empty matches list when query is empty or not found.",
+  "operational_readiness": "Production ready. Pure Python."
+}

@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "compare-object-equality",
+    "name": "Compare Object Equality",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "compare"
+  },
+  "purpose": "Compares two Python objects/structures for equality or deep structural equivalence.",
+  "capability": "Checks exact or deep equality between two data structures.",
+  "input": {
+    "left": "any",
+    "right": "any",
+    "strict": "boolean (optional, default True)"
+  },
+  "output": {
+    "equal": "boolean",
+    "difference_summary": "string or None"
+  },
+  "interface": "index.py -> compare_object_equality(left: Any, right: Any, strict: bool = True) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory object equivalence comparison.",
+  "composition": "Composes with validate-schema-dict and diff-text-delta.",
+  "failure_behavior": "Returns equal=False with explanation on structural differences.",
+  "operational_readiness": "Production ready. Pure Python."
+}

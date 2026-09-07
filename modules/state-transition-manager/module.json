@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "state-transition-manager",
+    "name": "State Transition Manager",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "state"
+  },
+  "purpose": "Manages finite state machine transitions according to permitted transitions table.",
+  "capability": "Validates state transitions and updates active state or records state history log.",
+  "input": {
+    "current_state": "string",
+    "action": "string",
+    "allowed_transitions": "dict mapping current_state -> {action -> next_state}"
+  },
+  "output": {
+    "next_state": "string",
+    "allowed": "boolean",
+    "reason": "string or None"
+  },
+  "interface": "index.py -> state_transition_manager(current_state: str, action: str, allowed_transitions: dict) -> dict",
+  "dependencies": [],
+  "boundary": "Finite state transition logic.",
+  "composition": "Composes with check-condition-predicate and route-conditional-target.",
+  "failure_behavior": "Returns allowed=False and retains current_state if transition is invalid.",
+  "operational_readiness": "Production ready. Pure Python."
+}

@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "classify-text-label",
+    "name": "Classify Text Label",
+    "version": "1.0.0",
+    "category": "Generic",
+    "verb": "classify"
+  },
+  "purpose": "Classifies input text into candidate category labels based on rule/keyword matching heuristics.",
+  "capability": "Scores text against candidate label keyword sets and returns top label.",
+  "input": {
+    "text": "string",
+    "categories": "dict of label -> list of keywords/phrases",
+    "default_label": "string (optional, default 'unknown')"
+  },
+  "output": {
+    "label": "string",
+    "confidence": "float",
+    "scores": "dict of label -> float score"
+  },
+  "interface": "index.py -> classify_text_label(text: str, categories: dict, default_label: str = 'unknown') -> dict",
+  "dependencies": [],
+  "boundary": "Rule-based text classification.",
+  "composition": "Composes with detect-data-type and route-conditional-target.",
+  "failure_behavior": "Returns default_label if no keywords match.",
+  "operational_readiness": "Production ready. Pure Python."
+}

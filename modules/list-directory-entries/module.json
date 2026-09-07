@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "list-directory-entries",
+    "name": "List Directory Entries",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "list"
+  },
+  "purpose": "Lists entries (files/directories) in a given directory.",
+  "capability": "Lists file and subfolder paths, optionally recursive or filtering hidden entries.",
+  "input": {
+    "path": "string (directory path)",
+    "recursive": "boolean (optional, default False)",
+    "include_hidden": "boolean (optional, default False)"
+  },
+  "output": {
+    "entries": "list of dicts containing name, path, is_dir, size"
+  },
+  "interface": "index.py -> list_directory_entries(path: str, recursive: bool = False, include_hidden: bool = False) -> dict",
+  "dependencies": [],
+  "boundary": "Local directory listing only.",
+  "composition": "Can be composed with find-file-path or inspect-object-schema.",
+  "failure_behavior": "Raises NotADirectoryError or FileNotFoundError if path is invalid.",
+  "operational_readiness": "Production ready standard library code."
+}

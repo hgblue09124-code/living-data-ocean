@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "plan-step-decomposition",
+    "name": "Plan Step Decomposition",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "plan"
+  },
+  "purpose": "Decomposes a goal into an ordered sequence of executable sub-step plans.",
+  "capability": "Decomposes high-level goal description into step-by-step sequential tasks.",
+  "input": {
+    "goal": "string",
+    "subtasks": "list of strings (optional pre-defined steps)"
+  },
+  "output": {
+    "goal": "string",
+    "plan_steps": "list of dicts with step_id, title, status"
+  },
+  "interface": "index.py -> plan_step_decomposition(goal: str, subtasks: list = None) -> dict",
+  "dependencies": [],
+  "boundary": "Sequential plan step representation and decomposition.",
+  "composition": "Composes with state-transition-manager and route-conditional-target.",
+  "failure_behavior": "Returns single default step if subtasks list is empty.",
+  "operational_readiness": "Production ready. Pure Python."
+}

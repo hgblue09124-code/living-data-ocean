@@ -1,0 +1,24 @@
+{
+  "identity": {
+    "id": "transform-data-mapping",
+    "name": "Transform Data Mapping",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "transform"
+  },
+  "purpose": "Transforms input dictionary fields to output dictionary fields using a schema mapping map.",
+  "capability": "Maps keys from source dict to target dict based on a key mapping specification.",
+  "input": {
+    "data": "dict",
+    "mapping": "dict (mapping of target_key -> source_key or transform rule)"
+  },
+  "output": {
+    "transformed": "dict"
+  },
+  "interface": "index.py -> transform_data_mapping(data: dict, mapping: dict) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory dictionary key/value mapping.",
+  "composition": "Can be combined with query-json-path and validate-schema-dict.",
+  "failure_behavior": "Missing source keys map to None.",
+  "operational_readiness": "Production ready. Pure Python."
+}

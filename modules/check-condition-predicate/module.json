@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "check-condition-predicate",
+    "name": "Check Condition Predicate",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "check"
+  },
+  "purpose": "Evaluates logical predicate operators on input values (eq, neq, gt, gte, lt, lte, in, contains, regex).",
+  "capability": "Checks condition evaluation dynamically.",
+  "input": {
+    "value": "any",
+    "operator": "string ('eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'contains', 'regex')",
+    "target": "any"
+  },
+  "output": {
+    "result": "boolean"
+  },
+  "interface": "index.py -> check_condition_predicate(value: Any, operator: str, target: Any) -> dict",
+  "dependencies": [],
+  "boundary": "Logical expression evaluation.",
+  "composition": "Composes with route-conditional-target or state-transition-manager.",
+  "failure_behavior": "Returns False on evaluation type mismatches.",
+  "operational_readiness": "Production ready. Pure Python."
+}

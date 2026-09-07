@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "id": "query-json-path",
+    "name": "Query JSON Path",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "query"
+  },
+  "purpose": "Queries nested dict/list structured data using dot-notation path expressions.",
+  "capability": "Navigates nested dictionaries and lists via dot-notation path (e.g. 'users.0.name').",
+  "input": {
+    "data": "dict or list",
+    "path": "string (dot-separated path, e.g. 'a.b.c' or 'a.0.b')",
+    "default": "any (optional, default None)"
+  },
+  "output": {
+    "value": "any",
+    "found": "boolean"
+  },
+  "interface": "index.py -> query_json_path(data: dict | list, path: str, default: Any = None) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory structured query only.",
+  "composition": "Combines with parse-json-structured and inspect-object-schema.",
+  "failure_behavior": "Returns found=False and default value if path does not exist.",
+  "operational_readiness": "Production ready. Pure Python."
+}

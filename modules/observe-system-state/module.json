@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "observe-system-state",
+    "name": "Observe System State",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "observe"
+  },
+  "purpose": "Observes system runtime state, process metadata, platform info, or memory usage.",
+  "capability": "Gathers platform name, Python runtime version, process ID, and working directory state.",
+  "input": {
+    "include_env": "boolean (optional, default False)"
+  },
+  "output": {
+    "platform": "string",
+    "python_version": "string",
+    "pid": "integer",
+    "cwd": "string",
+    "environment": "dict (optional)"
+  },
+  "interface": "index.py -> observe_system_state(include_env: bool = False) -> dict",
+  "dependencies": [],
+  "boundary": "Local process and environment observation.",
+  "composition": "Can be composed with state-transition-manager or check-condition-predicate.",
+  "failure_behavior": "Returns basic fallback process info.",
+  "operational_readiness": "Production ready. Pure Python standard library."
+}

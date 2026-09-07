@@ -1,0 +1,24 @@
+{
+  "identity": {
+    "id": "detect-data-type",
+    "name": "Detect Data Type",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "detect"
+  },
+  "purpose": "Detects format/type of data string (e.g., json, xml, csv, url, email, integer, float, text).",
+  "capability": "Analyses input string or data structure to infer its data type classification.",
+  "input": {
+    "value": "any"
+  },
+  "output": {
+    "detected_type": "string (e.g. 'json', 'int', 'float', 'email', 'url', 'str', 'dict', 'list')",
+    "confidence": "float"
+  },
+  "interface": "index.py -> detect_data_type(value: Any) -> dict",
+  "dependencies": [],
+  "boundary": "Data format/type heuristic detection.",
+  "composition": "Can precede parse-json-structured or route-conditional-target.",
+  "failure_behavior": "Falls back to 'unknown' or 'str' with confidence 1.0.",
+  "operational_readiness": "Production ready. Pure Python regex/heuristics."
+}

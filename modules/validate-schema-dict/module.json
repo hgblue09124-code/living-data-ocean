@@ -1,0 +1,25 @@
+{
+  "identity": {
+    "id": "validate-schema-dict",
+    "name": "Validate Schema Dict",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "validate"
+  },
+  "purpose": "Validates that a dictionary contains expected required keys and optional type constraints.",
+  "capability": "Checks required field existence and types against schema rules.",
+  "input": {
+    "data": "dict",
+    "schema": "dict (e.g. {'required': ['a', 'b'], 'types': {'a': 'int', 'b': 'str'}})"
+  },
+  "output": {
+    "valid": "boolean",
+    "errors": "list of strings"
+  },
+  "interface": "index.py -> validate_schema_dict(data: dict, schema: dict) -> dict",
+  "dependencies": [],
+  "boundary": "In-memory dictionary validation.",
+  "composition": "Used after parse-json-structured or retrieve-key-value.",
+  "failure_behavior": "Returns valid=False with error details.",
+  "operational_readiness": "Production ready. Pure Python."
+}
