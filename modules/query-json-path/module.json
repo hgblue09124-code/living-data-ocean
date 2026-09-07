@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "query-json-path",
-    "name": "Query JSON Path",
+    "name": "Truy vấn đường dẫn JSON",
     "version": "1.0.0",
     "category": "Core",
     "verb": "query"
   },
-  "purpose": "Queries nested dict/list structured data using dot-notation path expressions.",
-  "capability": "Navigates nested dictionaries and lists via dot-notation path (e.g. 'users.0.name').",
+  "purpose": "Truy vấn dữ liệu cấu trúc dict/list lồng nhau bằng cú pháp đường dẫn dạng dấu chấm (dot-notation).",
+  "capability": "Duyệt qua danh sách và từ điển lồng nhau qua chuỗi đường dẫn (ví dụ: 'users.0.name').",
   "input": {
-    "data": "dict or list",
-    "path": "string (dot-separated path, e.g. 'a.b.c' or 'a.0.b')",
-    "default": "any (optional, default None)"
+    "data": "dict hoặc list",
+    "path": "chuỗi (đường dẫn phân cách bằng dấu chấm, ví dụ 'a.b.c' hoặc 'a.0.b')",
+    "default": "bất kỳ (tùy chọn, mặc định None)"
   },
   "output": {
-    "value": "any",
+    "value": "bất kỳ",
     "found": "boolean"
   },
   "interface": "index.py -> query_json_path(data: dict | list, path: str, default: Any = None) -> dict",
   "dependencies": [],
-  "boundary": "In-memory structured query only.",
-  "composition": "Combines with parse-json-structured and inspect-object-schema.",
-  "failure_behavior": "Returns found=False and default value if path does not exist.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Chỉ truy vấn dữ liệu cấu trúc trong bộ nhớ.",
+  "composition": "Kết hợp với parse-json-structured và inspect-object-schema.",
+  "failure_behavior": "Trả về found=False và giá trị mặc định nếu đường dẫn không tồn tại.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

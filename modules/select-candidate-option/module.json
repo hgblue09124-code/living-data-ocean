@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "select-candidate-option",
+    "name": "Lựa chọn phương án ứng viên",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "select"
+  },
+  "purpose": "Lựa chọn một phương án ứng viên tốt nhất từ danh sách lựa chọn dựa trên quy tắc/tiêu chí.",
+  "capability": "Chọn ứng viên khớp điều kiện hoặc có điểm số cao nhất từ tập phương án.",
+  "input": {
+    "candidates": "danh sách phương án (list các dict hoặc giá trị)",
+    "criterion_key": "chuỗi (tùy chọn, khóa tiêu chí dùng để chọn)",
+    "default": "bất kỳ (tùy chọn, mặc định None)"
+  },
+  "output": {
+    "selected": "bất kỳ",
+    "selected_index": "số nguyên",
+    "found": "boolean"
+  },
+  "interface": "index.py -> select_candidate_option(candidates: list, criterion_key: str = None, default: Any = None) -> dict",
+  "dependencies": [],
+  "boundary": "Lựa chọn nguyên tử từ danh sách phương án trong bộ nhớ.",
+  "composition": "Kết hợp với route-conditional-target và check-condition-predicate.",
+  "failure_behavior": "Trả về giá trị default và found=False nếu danh sách phương án rỗng.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
+}

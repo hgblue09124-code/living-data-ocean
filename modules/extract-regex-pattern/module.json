@@ -1,25 +1,25 @@
 {
   "identity": {
     "id": "extract-regex-pattern",
-    "name": "Extract Regex Pattern",
+    "name": "Bóc tách mẫu Regex",
     "version": "1.0.0",
     "category": "Core",
     "verb": "extract"
   },
-  "purpose": "Extracts matches or named groups from text given a regular expression pattern.",
-  "capability": "Runs regex pattern matching across text input and returns all matches or captured groups.",
+  "purpose": "Bóc tách các chuỗi khớp hoặc nhóm khớp theo tên từ văn bản dựa trên biểu thức chính quy (regex).",
+  "capability": "Chạy khớp mẫu regex trên văn bản đầu vào và trả về toàn bộ kết quả hoặc nhóm đã bắt.",
   "input": {
-    "text": "string",
-    "pattern": "string (regex pattern)",
-    "flags": "integer (optional regex flags, default 0)"
+    "text": "chuỗi",
+    "pattern": "chuỗi (mẫu regex)",
+    "flags": "số nguyên (cờ tùy chọn cho regex, mặc định 0)"
   },
   "output": {
-    "matches": "list of strings or dicts (if capturing groups)"
+    "matches": "danh sách chuỗi hoặc dict (nếu dùng nhóm bắt tên)"
   },
   "interface": "index.py -> extract_regex_pattern(text: str, pattern: str, flags: int = 0) -> dict",
   "dependencies": [],
-  "boundary": "Regular expression pattern extraction.",
-  "composition": "Can be composed with read-file-content or search-text-pattern.",
-  "failure_behavior": "Returns empty matches list on no match; raises re.error on invalid regex.",
-  "operational_readiness": "Production ready standard re library."
+  "boundary": "Chỉ xử lý bóc tách theo biểu thức chính quy.",
+  "composition": "Có thể kết hợp với read-file-content hoặc search-text-pattern.",
+  "failure_behavior": "Trả về danh sách kết quả rỗng nếu không khớp; báo re.error nếu biểu thức regex sai định dạng.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện re chuẩn của Python."
 }

@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "parse-json-structured",
-    "name": "Parse JSON Structured",
+    "name": "Parse cấu trúc JSON",
     "version": "1.0.0",
     "category": "Core",
     "verb": "parse"
   },
-  "purpose": "Parses a JSON string or bytes into structured Python data.",
-  "capability": "Parses JSON safely with error handling and optional default fallback.",
+  "purpose": "Parse chuỗi hoặc byte định dạng JSON thành cấu trúc dữ liệu Python.",
+  "capability": "Parse JSON an toàn với cơ chế xử lý lỗi và giá trị dự phòng fallback.",
   "input": {
-    "data": "string or bytes",
-    "fallback": "any (optional, default None)"
+    "data": "chuỗi hoặc byte",
+    "fallback": "bất kỳ (tùy chọn, mặc định None)"
   },
   "output": {
-    "parsed": "dict | list | primitive",
+    "parsed": "dict | list | kiểu cơ bản",
     "success": "boolean",
-    "error": "string or None"
+    "error": "chuỗi hoặc None"
   },
   "interface": "index.py -> parse_json_structured(data: str | bytes, fallback: Any = None) -> dict",
   "dependencies": [],
-  "boundary": "JSON parsing only.",
-  "composition": "Used after read-file-content or retrieve-key-value.",
-  "failure_behavior": "Returns success=False with error message if invalid JSON (or fallback if provided).",
-  "operational_readiness": "Production ready. Uses standard json library."
+  "boundary": "Chỉ giới hạn xử lý parse JSON.",
+  "composition": "Sử dụng sau các bước read-file-content hoặc retrieve-key-value.",
+  "failure_behavior": "Trả về success=False cùng thông báo lỗi nếu JSON không hợp lệ (hoặc trả về fallback nếu được cung cấp).",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn json của Python."
 }

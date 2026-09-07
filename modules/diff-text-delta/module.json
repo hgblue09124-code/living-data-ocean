@@ -1,27 +1,27 @@
 {
   "identity": {
     "id": "diff-text-delta",
-    "name": "Diff Text Delta",
+    "name": "So sánh chênh lệch văn bản",
     "version": "1.0.0",
     "category": "Core",
     "verb": "diff"
   },
-  "purpose": "Computes unified diff delta between two text sequences or documents.",
-  "capability": "Generates unified diff representation showing additions, deletions, and line changes.",
+  "purpose": "Tính toán chênh lệch unified diff giữa hai chuỗi văn bản hoặc tài liệu.",
+  "capability": "Tạo định dạng unified diff hiển thị các dòng thêm, xóa và thay đổi.",
   "input": {
-    "text_a": "string",
-    "text_b": "string",
-    "from_name": "string (optional, default 'a')",
-    "to_name": "string (optional, default 'b')"
+    "text_a": "chuỗi",
+    "text_b": "chuỗi",
+    "from_name": "chuỗi (tùy chọn, mặc định 'a')",
+    "to_name": "chuỗi (tùy chọn, mặc định 'b')"
   },
   "output": {
-    "diff": "string (unified diff content)",
+    "diff": "chuỗi (nội dung unified diff)",
     "has_changes": "boolean"
   },
   "interface": "index.py -> diff_text_delta(text_a: str, text_b: str, from_name: str = 'a', to_name: str = 'b') -> dict",
   "dependencies": [],
-  "boundary": "Text line diff computation.",
-  "composition": "Composes with read-file-content or write-file-content.",
-  "failure_behavior": "Returns empty diff string and has_changes=False if texts are identical.",
-  "operational_readiness": "Production ready. Uses standard difflib."
+  "boundary": "Tính toán diff theo dòng văn bản.",
+  "composition": "Kết hợp với read-file-content hoặc write-file-content.",
+  "failure_behavior": "Trả về chuỗi diff rỗng và has_changes=False nếu hai văn bản giống hệt nhau.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng difflib chuẩn của Python."
 }

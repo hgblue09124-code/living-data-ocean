@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "route-conditional-target",
-    "name": "Route Conditional Target",
+    "name": "Điều hướng đối tượng theo điều kiện",
     "version": "1.0.0",
     "category": "Core",
     "verb": "route"
   },
-  "purpose": "Routes dynamic input payload to target handler key based on rule conditions.",
-  "capability": "Evaluates list of route condition rules and selects first matching destination.",
+  "purpose": "Điều hướng dữ liệu payload động tới đích xử lý tương ứng dựa trên quy tắc điều kiện.",
+  "capability": "Đánh giá danh sách quy tắc điều kiện và chọn đích xử lý đầu tiên khớp điều kiện.",
   "input": {
     "payload": "dict",
-    "routes": "list of dicts with 'key', 'operator', 'value', 'target'",
-    "default_target": "string (optional, default 'default')"
+    "routes": "danh sách dict chứa 'key', 'operator', 'value', 'target'",
+    "default_target": "chuỗi (tùy chọn, mặc định 'default')"
   },
   "output": {
-    "target": "string",
-    "matched_rule": "dict or None"
+    "target": "chuỗi",
+    "matched_rule": "dict hoặc None"
   },
   "interface": "index.py -> route_conditional_target(payload: dict, routes: list, default_target: str = 'default') -> dict",
   "dependencies": [],
-  "boundary": "In-memory control flow routing.",
-  "composition": "Composes with check-condition-predicate and classify-text-label.",
-  "failure_behavior": "Falls back to default_target if no rule matches.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Điều hướng luồng xử lý trong bộ nhớ.",
+  "composition": "Kết hợp với check-condition-predicate và classify-text-label.",
+  "failure_behavior": "Trở về default_target nếu không có quy tắc nào khớp.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

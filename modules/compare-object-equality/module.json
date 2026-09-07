@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "compare-object-equality",
-    "name": "Compare Object Equality",
+    "name": "So sánh sự tương đồng Object",
     "version": "1.0.0",
     "category": "Core",
     "verb": "compare"
   },
-  "purpose": "Compares two Python objects/structures for equality or deep structural equivalence.",
-  "capability": "Checks exact or deep equality between two data structures.",
+  "purpose": "So sánh hai đối tượng/cấu trúc Python để kiểm tra sự bằng nhau hoặc tương đương cấu trúc sâu.",
+  "capability": "So sánh bằng chính xác hoặc bằng cấu trúc sâu giữa hai cấu trúc dữ liệu.",
   "input": {
-    "left": "any",
-    "right": "any",
-    "strict": "boolean (optional, default True)"
+    "left": "bất kỳ",
+    "right": "bất kỳ",
+    "strict": "boolean (tùy chọn, mặc định True)"
   },
   "output": {
     "equal": "boolean",
-    "difference_summary": "string or None"
+    "difference_summary": "chuỗi hoặc None"
   },
   "interface": "index.py -> compare_object_equality(left: Any, right: Any, strict: bool = True) -> dict",
   "dependencies": [],
-  "boundary": "In-memory object equivalence comparison.",
-  "composition": "Composes with validate-schema-dict and diff-text-delta.",
-  "failure_behavior": "Returns equal=False with explanation on structural differences.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "So sánh tương đương đối tượng trong bộ nhớ.",
+  "composition": "Kết hợp với validate-schema-dict và diff-text-delta.",
+  "failure_behavior": "Trả về equal=False cùng giải thích sai biệt cấu trúc.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

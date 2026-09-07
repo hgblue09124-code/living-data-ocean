@@ -1,25 +1,25 @@
 {
   "identity": {
     "id": "inspect-object-schema",
-    "name": "Inspect Object Schema",
+    "name": "Soi cấu trúc Object",
     "version": "1.0.0",
     "category": "Core",
     "verb": "inspect"
   },
-  "purpose": "Inspects Python object structure, type, keys, or attributes.",
-  "capability": "Generates a schema description including types, nested keys, and length metadata.",
+  "purpose": "Kiểm tra cấu trúc, kiểu dữ liệu, các khóa hoặc thuộc tính của đối tượng Python.",
+  "capability": "Tạo mô tả schema bao gồm kiểu dữ liệu, các khóa lồng nhau và kích thước/độ dài.",
   "input": {
-    "obj": "any (object to inspect)"
+    "obj": "bất kỳ (đối tượng cần soi)"
   },
   "output": {
-    "type": "string",
-    "schema": "dict or string description",
-    "size_or_len": "integer or None"
+    "type": "chuỗi",
+    "schema": "dict hoặc chuỗi mô tả",
+    "size_or_len": "số nguyên hoặc None"
   },
   "interface": "index.py -> inspect_object_schema(obj: Any) -> dict",
   "dependencies": [],
-  "boundary": "In-memory object inspection.",
-  "composition": "Can be composed with validate-schema-dict or detect-data-type.",
-  "failure_behavior": "Handles recursive/complex objects safely.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Soi đối tượng trong bộ nhớ.",
+  "composition": "Có thể kết hợp với validate-schema-dict hoặc detect-data-type.",
+  "failure_behavior": "Xử lý an toàn các đối tượng đệ quy/phức tạp.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

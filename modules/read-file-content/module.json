@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "read-file-content",
-    "name": "Read File Content",
+    "name": "Đọc nội dung tệp tin",
     "version": "1.0.0",
     "category": "Core",
     "verb": "read"
   },
-  "purpose": "Reads text or binary content from a local file path safely.",
-  "capability": "Reads full or partial contents of a file given its path and optional encoding or mode.",
+  "purpose": "Đọc nội dung văn bản hoặc nhị phân từ đường dẫn tệp tin cục bộ một cách an toàn.",
+  "capability": "Đọc toàn bộ hoặc một phần nội dung tệp tin dựa trên đường dẫn và tùy chọn mã hóa/chế độ đọc.",
   "input": {
-    "path": "string (path to the file)",
-    "encoding": "string (optional, default 'utf-8')",
-    "binary": "boolean (optional, default False)"
+    "path": "chuỗi (đường dẫn tới tệp tin)",
+    "encoding": "chuỗi (tùy chọn, mặc định 'utf-8')",
+    "binary": "boolean (tùy chọn, mặc định False)"
   },
   "output": {
-    "content": "string or bytes (content of the file)",
-    "bytes_read": "integer"
+    "content": "chuỗi hoặc byte (nội dung của tệp tin)",
+    "bytes_read": "số nguyên (số byte đã đọc)"
   },
   "interface": "index.py -> read_file_content(path: str, encoding: str = 'utf-8', binary: bool = False) -> dict",
   "dependencies": [],
-  "boundary": "File system access limited to provided path. Does not handle remote URLs or non-file resources.",
-  "composition": "Can be composed with parse-json-structured, extract-regex-pattern, or diff-text-delta.",
-  "failure_behavior": "Raises FileNotFoundError if file does not exist, PermissionError if unreadable, or UnicodeDecodeError if encoding fails.",
-  "operational_readiness": "Production ready. Pure Python standard library implementation."
+  "boundary": "Chỉ giới hạn truy cập hệ thống tệp cục bộ. Không xử lý URL từ xa hoặc tài nguyên phi tệp tin.",
+  "composition": "Có thể kết hợp với parse-json-structured, extract-regex-pattern, hoặc diff-text-delta.",
+  "failure_behavior": "Báo lỗi FileNotFoundError nếu tệp không tồn tại, PermissionError nếu không có quyền đọc, hoặc UnicodeDecodeError nếu lỗi mã hóa.",
+  "operational_readiness": "Sẵn sàng sử dụng. Cài đặt bằng thư viện chuẩn của Python."
 }

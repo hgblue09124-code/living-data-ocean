@@ -1,25 +1,25 @@
 {
   "identity": {
     "id": "check-condition-predicate",
-    "name": "Check Condition Predicate",
+    "name": "Kiểm tra điều kiện mệnh đề",
     "version": "1.0.0",
     "category": "Core",
     "verb": "check"
   },
-  "purpose": "Evaluates logical predicate operators on input values (eq, neq, gt, gte, lt, lte, in, contains, regex).",
-  "capability": "Checks condition evaluation dynamically.",
+  "purpose": "Đánh giá các toán tử mệnh đề logic trên giá trị đầu vào (eq, neq, gt, gte, lt, lte, in, contains, regex).",
+  "capability": "Đánh giá điều kiện logic động.",
   "input": {
-    "value": "any",
-    "operator": "string ('eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'contains', 'regex')",
-    "target": "any"
+    "value": "bất kỳ",
+    "operator": "chuỗi ('eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'in', 'contains', 'regex')",
+    "target": "bất kỳ"
   },
   "output": {
     "result": "boolean"
   },
   "interface": "index.py -> check_condition_predicate(value: Any, operator: str, target: Any) -> dict",
   "dependencies": [],
-  "boundary": "Logical expression evaluation.",
-  "composition": "Composes with route-conditional-target or state-transition-manager.",
-  "failure_behavior": "Returns False on evaluation type mismatches.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Đánh giá biểu thức logic.",
+  "composition": "Kết hợp với route-conditional-target hoặc state-transition-manager.",
+  "failure_behavior": "Trả về False nếu sai biệt kiểu dữ liệu khi đánh giá.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

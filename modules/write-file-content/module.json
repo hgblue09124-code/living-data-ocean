@@ -1,28 +1,28 @@
 {
   "identity": {
     "id": "write-file-content",
-    "name": "Write File Content",
+    "name": "Ghi nội dung tệp tin",
     "version": "1.0.0",
     "category": "Core",
     "verb": "write"
   },
-  "purpose": "Writes or appends text or binary content to a specified file path.",
-  "capability": "Creates directories if missing, writes/appends data to target file safely.",
+  "purpose": "Ghi hoặc nối thêm nội dung văn bản hoặc nhị phân vào đường dẫn tệp tin xác định.",
+  "capability": "Tự động tạo thư mục nếu chưa có, ghi dữ liệu an toàn vào tệp tin đích.",
   "input": {
-    "path": "string (path to the target file)",
-    "content": "string or bytes",
-    "mode": "string (optional: 'w', 'a', default 'w')",
-    "encoding": "string (optional, default 'utf-8')"
+    "path": "chuỗi (đường dẫn tệp tin đích)",
+    "content": "chuỗi hoặc byte",
+    "mode": "chuỗi (tùy chọn: 'w' để ghi mới, 'a' để ghi nối tiếp, mặc định 'w')",
+    "encoding": "chuỗi (tùy chọn, mặc định 'utf-8')"
   },
   "output": {
-    "path": "string",
-    "bytes_written": "integer",
+    "path": "chuỗi",
+    "bytes_written": "số nguyên (số byte đã ghi)",
     "success": "boolean"
   },
   "interface": "index.py -> write_file_content(path: str, content: str | bytes, mode: str = 'w', encoding: str = 'utf-8') -> dict",
   "dependencies": [],
-  "boundary": "Applies strictly to file system writing. Does not handle remote storage.",
-  "composition": "Can be combined with transform-data-mapping or state-transition-manager.",
-  "failure_behavior": "Raises ValueError for invalid mode or type errors, PermissionError if directory is non-writable.",
-  "operational_readiness": "Production ready. Standard library Python."
+  "boundary": "Chỉ áp dụng cho việc ghi tệp tin cục bộ. Không thao tác với bộ nhớ từ xa.",
+  "composition": "Có thể kết hợp với transform-data-mapping hoặc state-transition-manager.",
+  "failure_behavior": "Báo ValueError nếu chế độ ghi không hợp lệ hoặc sai kiểu dữ liệu, PermissionError nếu thư mục không có quyền ghi.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn Python."
 }

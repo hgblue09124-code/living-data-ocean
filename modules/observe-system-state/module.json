@@ -1,27 +1,27 @@
 {
   "identity": {
     "id": "observe-system-state",
-    "name": "Observe System State",
+    "name": "Quan sát trạng thái hệ thống",
     "version": "1.0.0",
     "category": "Core",
     "verb": "observe"
   },
-  "purpose": "Observes system runtime state, process metadata, platform info, or memory usage.",
-  "capability": "Gathers platform name, Python runtime version, process ID, and working directory state.",
+  "purpose": "Quan sát trạng thái runtime của hệ thống, metadata tiến trình, thông tin nền tảng hoặc môi trường.",
+  "capability": "Thu thập tên nền tảng, phiên bản Python runtime, Process ID và thư mục làm việc hiện tại.",
   "input": {
-    "include_env": "boolean (optional, default False)"
+    "include_env": "boolean (tùy chọn, mặc định False)"
   },
   "output": {
-    "platform": "string",
-    "python_version": "string",
-    "pid": "integer",
-    "cwd": "string",
-    "environment": "dict (optional)"
+    "platform": "chuỗi",
+    "python_version": "chuỗi",
+    "pid": "số nguyên",
+    "cwd": "chuỗi",
+    "environment": "dict (tùy chọn)"
   },
   "interface": "index.py -> observe_system_state(include_env: bool = False) -> dict",
   "dependencies": [],
-  "boundary": "Local process and environment observation.",
-  "composition": "Can be composed with state-transition-manager or check-condition-predicate.",
-  "failure_behavior": "Returns basic fallback process info.",
-  "operational_readiness": "Production ready. Pure Python standard library."
+  "boundary": "Quan sát tiến trình và môi trường cục bộ.",
+  "composition": "Có thể kết hợp với state-transition-manager hoặc check-condition-predicate.",
+  "failure_behavior": "Trả về thông tin tiến trình cơ bản làm phương án dự phòng.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần thư viện chuẩn Python."
 }

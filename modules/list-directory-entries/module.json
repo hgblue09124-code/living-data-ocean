@@ -1,25 +1,25 @@
 {
   "identity": {
     "id": "list-directory-entries",
-    "name": "List Directory Entries",
+    "name": "Liệt kê danh mục thư mục",
     "version": "1.0.0",
     "category": "Core",
     "verb": "list"
   },
-  "purpose": "Lists entries (files/directories) in a given directory.",
-  "capability": "Lists file and subfolder paths, optionally recursive or filtering hidden entries.",
+  "purpose": "Liệt kê các mục (tệp tin/thư mục) trong một thư mục cho trước.",
+  "capability": "Liệt kê danh sách đường dẫn tệp tin và thư mục con, hỗ trợ đệ quy và lọc tệp ẩn.",
   "input": {
-    "path": "string (directory path)",
-    "recursive": "boolean (optional, default False)",
-    "include_hidden": "boolean (optional, default False)"
+    "path": "chuỗi (đường dẫn thư mục)",
+    "recursive": "boolean (tùy chọn, mặc định False)",
+    "include_hidden": "boolean (tùy chọn, mặc định False)"
   },
   "output": {
-    "entries": "list of dicts containing name, path, is_dir, size"
+    "entries": "danh sách danh mục chứa name, path, is_dir, size"
   },
   "interface": "index.py -> list_directory_entries(path: str, recursive: bool = False, include_hidden: bool = False) -> dict",
   "dependencies": [],
-  "boundary": "Local directory listing only.",
-  "composition": "Can be composed with find-file-path or inspect-object-schema.",
-  "failure_behavior": "Raises NotADirectoryError or FileNotFoundError if path is invalid.",
-  "operational_readiness": "Production ready standard library code."
+  "boundary": "Chỉ liệt kê thư mục cục bộ.",
+  "composition": "Có thể kết hợp với find-file-path hoặc inspect-object-schema.",
+  "failure_behavior": "Báo NotADirectoryError hoặc FileNotFoundError nếu đường dẫn không hợp lệ.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn Python."
 }

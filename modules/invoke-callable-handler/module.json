@@ -1,0 +1,27 @@
+{
+  "identity": {
+    "id": "invoke-callable-handler",
+    "name": "Kích hoạt thực thi hàm",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "invoke"
+  },
+  "purpose": "Thực thi an toàn một hàm/callable với tham số truyền vào.",
+  "capability": "Gọi hàm, kiểm tra callable và bắt lỗi runtime trong quá trình thực thi hàm.",
+  "input": {
+    "func": "callable (hàm cần gọi)",
+    "args": "danh sách tham số positional (tùy chọn)",
+    "kwargs": "dict tham số keyword (tùy chọn)"
+  },
+  "output": {
+    "result": "bất kỳ (kết quả trả về của hàm)",
+    "success": "boolean",
+    "error": "chuỗi hoặc None"
+  },
+  "interface": "index.py -> invoke_callable_handler(func: Callable, args: tuple = (), kwargs: dict = None) -> dict",
+  "dependencies": [],
+  "boundary": "Chỉ thực thi callable trong bộ nhớ runtime hiện tại.",
+  "composition": "Kết hợp với route-conditional-target hoặc state-transition-manager.",
+  "failure_behavior": "Bắt exception và trả về success=False kèm lỗi nếu hàm ném ngoại lệ.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
+}

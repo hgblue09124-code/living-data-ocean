@@ -1,25 +1,25 @@
 {
   "identity": {
     "id": "find-file-path",
-    "name": "Find File Path",
+    "name": "Tìm đường dẫn tệp tin",
     "version": "1.0.0",
     "category": "Core",
     "verb": "find"
   },
-  "purpose": "Finds files matching a specific pattern or predicate within a root directory.",
-  "capability": "Searches directory tree with glob/fnmatch patterns.",
+  "purpose": "Tìm kiếm các tệp tin khớp với mẫu hoặc điều kiện cho trước trong thư mục gốc.",
+  "capability": "Tìm kiếm cây thư mục sử dụng mẫu fnmatch glob pattern.",
   "input": {
-    "root_path": "string (starting directory)",
-    "pattern": "string (fnmatch glob pattern, default '*')",
-    "max_depth": "integer (optional, default -1 for unlimited)"
+    "root_path": "chuỗi (thư mục bắt đầu tìm kiếm)",
+    "pattern": "chuỗi (mẫu fnmatch glob, mặc định '*')",
+    "max_depth": "số nguyên (tùy chọn, mặc định -1 cho giới hạn vô tận)"
   },
   "output": {
-    "matches": "list of matching file path strings"
+    "matches": "danh sách chuỗi đường dẫn tệp tin khớp"
   },
   "interface": "index.py -> find_file_path(root_path: str, pattern: str = '*', max_depth: int = -1) -> dict",
   "dependencies": [],
-  "boundary": "Local directory tree search.",
-  "composition": "Can be combined with read-file-content or search-text-pattern.",
-  "failure_behavior": "Returns empty list if no matches or path missing.",
-  "operational_readiness": "Production ready standard library code."
+  "boundary": "Chỉ tìm kiếm trong cây thư mục cục bộ.",
+  "composition": "Có thể kết hợp với read-file-content hoặc search-text-pattern.",
+  "failure_behavior": "Trả về danh sách khớp rỗng nếu không tìm thấy hoặc đường dẫn không tồn tại.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn Python."
 }

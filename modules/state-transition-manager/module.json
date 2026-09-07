@@ -1,27 +1,27 @@
 {
   "identity": {
     "id": "state-transition-manager",
-    "name": "State Transition Manager",
+    "name": "Quản lý chuyển trạng thái",
     "version": "1.0.0",
     "category": "Core",
     "verb": "state"
   },
-  "purpose": "Manages finite state machine transitions according to permitted transitions table.",
-  "capability": "Validates state transitions and updates active state or records state history log.",
+  "purpose": "Quản lý chuyển đổi trạng thái FSM (Finite State Machine) theo bảng chuyển đổi cho phép.",
+  "capability": "Xác minh tính hợp lệ của việc chuyển trạng thái và cập nhật/ghi nhận nhật ký trạng thái.",
   "input": {
-    "current_state": "string",
-    "action": "string",
-    "allowed_transitions": "dict mapping current_state -> {action -> next_state}"
+    "current_state": "chuỗi (trạng thái hiện tại)",
+    "action": "chuỗi (hành động kích hoạt)",
+    "allowed_transitions": "dict ánh xạ current_state -> {action -> next_state}"
   },
   "output": {
-    "next_state": "string",
+    "next_state": "chuỗi",
     "allowed": "boolean",
-    "reason": "string or None"
+    "reason": "chuỗi hoặc None"
   },
   "interface": "index.py -> state_transition_manager(current_state: str, action: str, allowed_transitions: dict) -> dict",
   "dependencies": [],
-  "boundary": "Finite state transition logic.",
-  "composition": "Composes with check-condition-predicate and route-conditional-target.",
-  "failure_behavior": "Returns allowed=False and retains current_state if transition is invalid.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Logic chuyển trạng thái hữu hạn FSM.",
+  "composition": "Kết hợp với check-condition-predicate và route-conditional-target.",
+  "failure_behavior": "Trả về allowed=False và giữ nguyên current_state nếu hành động chuyển trạng thái không hợp lệ.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

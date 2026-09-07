@@ -1,24 +1,24 @@
 {
   "identity": {
     "id": "transform-data-mapping",
-    "name": "Transform Data Mapping",
+    "name": "Chuyển đổi ánh xạ dữ liệu",
     "version": "1.0.0",
     "category": "Core",
     "verb": "transform"
   },
-  "purpose": "Transforms input dictionary fields to output dictionary fields using a schema mapping map.",
-  "capability": "Maps keys from source dict to target dict based on a key mapping specification.",
+  "purpose": "Chuyển đổi các trường trong dictionary đầu vào sang dictionary đầu ra dựa trên bản đồ ánh xạ schema.",
+  "capability": "Ánh xạ các khóa từ từ điển nguồn sang từ điển đích dựa trên quy tắc cấu hình.",
   "input": {
     "data": "dict",
-    "mapping": "dict (mapping of target_key -> source_key or transform rule)"
+    "mapping": "dict (bản đồ ánh xạ target_key -> source_key hoặc quy tắc chuyển đổi)"
   },
   "output": {
     "transformed": "dict"
   },
   "interface": "index.py -> transform_data_mapping(data: dict, mapping: dict) -> dict",
   "dependencies": [],
-  "boundary": "In-memory dictionary key/value mapping.",
-  "composition": "Can be combined with query-json-path and validate-schema-dict.",
-  "failure_behavior": "Missing source keys map to None.",
-  "operational_readiness": "Production ready. Pure Python."
+  "boundary": "Chỉ chuyển đổi ánh xạ khóa/giá trị trong bộ nhớ.",
+  "composition": "Có thể kết hợp với query-json-path và validate-schema-dict.",
+  "failure_behavior": "Khóa nguồn thiếu sẽ được ánh xạ thành None.",
+  "operational_readiness": "Sẵn sàng sử dụng. Thuần Python."
 }

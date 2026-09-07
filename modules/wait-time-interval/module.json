@@ -1,0 +1,24 @@
+{
+  "identity": {
+    "id": "wait-time-interval",
+    "name": "Tạm dừng khoảng thời gian",
+    "version": "1.0.0",
+    "category": "Core",
+    "verb": "wait"
+  },
+  "purpose": "Tạm dừng luồng thực thi trong một khoảng thời gian xác định (tính bằng giây).",
+  "capability": "Tạm dừng tiến trình trong khoảng thời gian chỉ định.",
+  "input": {
+    "seconds": "số thực hoặc số nguyên (khoảng thời gian tạm dừng)"
+  },
+  "output": {
+    "elapsed": "số thực (thời gian đã tạm dừng)",
+    "completed": "boolean"
+  },
+  "interface": "index.py -> wait_time_interval(seconds: float) -> dict",
+  "dependencies": [],
+  "boundary": "Tạm dừng tiến trình bộ nhớ cục bộ.",
+  "composition": "Kết hợp với invoke-callable-handler và observe-system-state.",
+  "failure_behavior": "Báo ValueError nếu khoảng thời gian nhỏ hơn 0.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn time của Python."
+}

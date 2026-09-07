@@ -1,26 +1,26 @@
 {
   "identity": {
     "id": "verify-data-hash",
-    "name": "Verify Data Hash",
+    "name": "Xác minh Hash dữ liệu",
     "version": "1.0.0",
     "category": "Core",
     "verb": "verify"
   },
-  "purpose": "Verifies data integrity by calculating and comparing cryptographic hash checksums.",
-  "capability": "Computes MD5/SHA256/SHA512 checksum of string or bytes and checks against target expected hash.",
+  "purpose": "Xác minh tính toàn vẹn của dữ liệu bằng cách tính toán và so sánh checksum hash mã hóa.",
+  "capability": "Tính toán mã hash MD5/SHA256/SHA512 của chuỗi hoặc byte và đối chiếu với hash kỳ vọng.",
   "input": {
-    "data": "string or bytes",
-    "expected_hash": "string",
-    "algorithm": "string (optional, default 'sha256')"
+    "data": "chuỗi hoặc byte",
+    "expected_hash": "chuỗi (mã hash kỳ vọng)",
+    "algorithm": "chuỗi (tùy chọn, mặc định 'sha256')"
   },
   "output": {
     "match": "boolean",
-    "calculated_hash": "string"
+    "calculated_hash": "chuỗi (mã hash đã tính)"
   },
   "interface": "index.py -> verify_data_hash(data: str | bytes, expected_hash: str, algorithm: str = 'sha256') -> dict",
   "dependencies": [],
-  "boundary": "Cryptographic hash calculation and comparison.",
-  "composition": "Can be composed with read-file-content to verify file download integrity.",
-  "failure_behavior": "Raises ValueError if hash algorithm is unsupported.",
-  "operational_readiness": "Production ready. Uses standard hashlib library."
+  "boundary": "Tính toán và so sánh mã hash cryptographic.",
+  "composition": "Có thể kết hợp với read-file-content để kiểm tra tính toàn vẹn tệp tải về.",
+  "failure_behavior": "Báo ValueError nếu thuật toán hash không được hỗ trợ.",
+  "operational_readiness": "Sẵn sàng sử dụng. Dùng thư viện chuẩn hashlib của Python."
 }
