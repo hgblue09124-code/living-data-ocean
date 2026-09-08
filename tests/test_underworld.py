@@ -1,24 +1,23 @@
 """
-Bộ kiểm thử tự động (Unit Tests) cho Underworld v0 - Refactored Boundary.
+Bộ kiểm thử tự động (Unit Tests) cho Underworld v0 - Atomic Semantic Modules & Composition Architecture.
 Đảm bảo kiểm thử toàn bộ tính năng mô phỏng, ranh giới AdministratorCommand,
-World tự vận hành độc lập, snapshot integrity và seed ngẫu nhiên.
+World tự vận hành độc lập, snapshot integrity, seed ngẫu nhiên và cấu trúc module boundaries.
 """
 
 import os
 import tempfile
 import unittest
-from underworld.world.world import World
-from underworld.human.human import Human
-from underworld.engine.event_loop import EventLoop
-from underworld.interface.observation import Observation
-from underworld.interface.action import Action
-from underworld.interface.command import AdministratorCommand
-from underworld.interface.administrator import Administrator
-from underworld.data.dataset import Dataset
+
+from underworld.kernel import SimulationTime, Randomness, EntityIdentity
+from underworld.modules import SpatialSpace, EnvironmentState, EntityNeeds, EventLog
+from underworld.composition import World, Human
+from underworld.runtime import EventLoop
+from underworld.interface import Observation, Action, AdministratorCommand, Administrator
+from underworld.data import Dataset, Trajectory
 
 
-class TestUnderworldBoundary(unittest.TestCase):
-    """Tập hợp các bài kiểm thử cốt lõi cho dự án Underworld v0 - Boundary Refactored."""
+class TestUnderworldArchitecture(unittest.TestCase):
+    """Tập hợp các bài kiểm thử cốt lõi cho dự án Underworld v0 - Architecture Refactored."""
 
     def test_1_world_initialization(self):
         """1. Kiểm tra World khởi tạo thành công."""
@@ -70,12 +69,12 @@ class TestUnderworldBoundary(unittest.TestCase):
         """5. Kiểm tra Human có thể thay đổi state theo thời gian hoặc hành động."""
         human = Human("Human_1", position=(0, 0))
 
-        human.state.needs["năng_lượng"] = 10.0  # Giảm xuống dưới 20
+        human.needs.needs["năng_lượng"] = 10.0  # Giảm xuống dưới 20
         action = human.step()
 
         self.assertEqual(action, "nghỉ_ngơi")
-        self.assertEqual(human.state.status, "nghỉ_ngơi")
-        self.assertGreater(human.state.needs["năng_lượng"], 10.0)
+        self.assertEqual(human.needs.status, "nghỉ_ngơi")
+        self.assertGreater(human.needs.needs["năng_lượng"], 10.0)
 
     def test_6_observation_creation(self):
         """6. Kiểm tra Observation được tạo chính xác từ WorldState."""
@@ -103,8 +102,8 @@ class TestUnderworldBoundary(unittest.TestCase):
         }]
 
         world.tick(external_actions=actions)
-        self.assertEqual(human.state.position, (9, 9))
-        self.assertEqual(human.state.status, "di_chuyển_theo_lệnh")
+        self.assertEqual(human.spatial.position, (9, 9))
+        self.assertEqual(human.needs.status, "di_chuyển_theo_lệnh")
 
     def test_8_trajectory_recording(self):
         """8. Kiểm tra Trajectory được ghi nhận đầy đủ chi tiết."""
@@ -191,7 +190,7 @@ class TestUnderworldBoundary(unittest.TestCase):
         """14. Kiểm tra AdministratorCommand tác động đến Human."""
         world = World()
         human = Human("H_Target", position=(0, 0))
-        human.state.needs["năng_lượng"] = 10.0
+        human.needs.needs["năng_lượng"] = 10.0
         world.add_human(human)
 
         admin = Administrator()
@@ -200,8 +199,8 @@ class TestUnderworldBoundary(unittest.TestCase):
         event_loop = EventLoop(world)
         event_loop.run(steps=1, administrator=admin)
 
-        self.assertIn("tác_động_ngoài_REST", human.state.action_history)
-        self.assertEqual(human.state.needs["năng_lượng"], 38.0)
+        self.assertIn("tác_động_ngoài_REST", human.needs.action_history)
+        self.assertEqual(human.needs.needs["năng_lượng"], 38.0)
 
     def test_15_administrator_stop_command(self):
         """15. Kiểm tra AdministratorCommand REQUEST_STOP làm mô phỏng dừng ngay lập tức."""
@@ -234,11 +233,11 @@ class TestUnderworldBoundary(unittest.TestCase):
         initial_dict = state_before.to_dict()
 
         # Đột biến trực tiếp các thuộc tính sống của human và world
-        human.state.position = (99, 99)
-        human.state.needs["năng_lượng"] = 0.0
-        human.state.memory.append({"fake": "mutation"})
-        world.environment["resources"]["thức_ăn"] = 999
-        world.events.append({"fake": "event"})
+        human.spatial.position = (99, 99)
+        human.needs.needs["năng_lượng"] = 0.0
+        human.needs.memory.append({"fake": "mutation"})
+        world.environment_state.resources["thức_ăn"] = 999
+        world.event_log.events.append({"fake": "event"})
         world.add_human(Human("H_Injected"))
         world.tick()
 
@@ -273,6 +272,35 @@ class TestUnderworldBoundary(unittest.TestCase):
         traj2 = EventLoop(world2).run(steps=10)
 
         self.assertNotEqual(traj1.to_dict(), traj2.to_dict())
+
+    def test_20_atomic_modules_and_composition_boundaries(self):
+        """20. Kiểm tra ranh giới hoạt động độc lập của các Atomic Modules và Delegation trong World."""
+        # Test Atomic Modules độc lập hoàn toàn không cần World hay EventLoop
+        sim_time = SimulationTime()
+        self.assertEqual(sim_time.increment(), 1)
+
+        rng = Randomness(42)
+        self.assertIn(rng.choice([1, 2, 3]), [1, 2, 3])
+
+        ident = EntityIdentity("TEST_ID")
+        self.assertEqual(str(ident), "TEST_ID")
+
+        spatial = SpatialSpace(bounds=(20, 20), position=(5, 5))
+        self.assertEqual(spatial.move_by(1, 2), (6, 7))
+        self.assertEqual(spatial.manhattan_distance((0, 0)), 13)
+
+        env = EnvironmentState()
+        env.set_attribute("weather", "nắng_nóng")
+        self.assertEqual(env.weather, "nắng_nóng")
+
+        needs = EntityNeeds()
+        needs.update_biology()
+        self.assertEqual(needs.needs["năng_lượng"], 98.0)
+
+        event_log = EventLog()
+        event_log.add_event("Sự kiện lẻ")
+        step_events = event_log.prepare_step_events(current_step=1)
+        self.assertEqual(len(step_events), 1)
 
 
 if __name__ == "__main__":

@@ -1,105 +1,92 @@
 # Underworld v0 — Python Simulation Skeleton
 
-**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập và hỗ trợ giao diện điều khiển quản trị từ bên ngoài (External Human Control Interface).
+**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập theo kiến trúc **Atomic Semantic Modules → Composition → World → Runtime**.
 
 ---
 
-## 1. World là gì?
+## 1. Kiến trúc Mô phỏng (Architecture)
 
-**World (Thế giới)** đại diện cho môi trường mô phỏng bên trong (internal world).
-World sở hữu:
-- Trạng thái toàn cảnh của thế giới (`WorldState`).
-- Danh sách các thực thể con người (`Human`).
-- Biến môi trường (`environment`) và chuỗi sự kiện (`events`).
-- Quy luật chuyển đổi trạng thái $t \rightarrow t+1$ thông qua phương thức `tick()`.
+Thế giới được tổ chức theo các lớp mô-đun có ranh giới (boundary) và hướng phụ thuộc một chiều rõ ràng:
 
-World được thiết kế cực kỳ nhẹ, không phụ thuộc vào bất kỳ thư viện hay framework nặng nề nào (không PyTorch, không TensorFlow, không LLM, không Mesa, không SimPy, không GPU, không server, không Docker).
-
----
-
-## 2. Agent là gì?
-
-**Agent (Tác nhân bên ngoài)** đại diện cho đối tượng tham gia tương tác bên trong thế giới.
-- Agent quan sát thế giới qua ranh giới **`Observation`**.
-- Agent tác động vào thế giới qua ranh giới **`Action`**.
-- Agent quyết định hành động dựa trên góc nhìn quan sát được và tuân theo quy luật mô phỏng.
-
----
-
-## 3. Administrator là gì & Tại sao Administrator KHÔNG phải Agent?
-
-**Administrator (Giao diện Quản trị viên)** đại diện cho giao diện điều khiển của con người từ bên ngoài (External Human Control Interface).
-
-### Tại sao Administrator KHÔNG phải là Agent?
-1. **Khác biệt về vị trí:** Agent là một đối tượng tham gia mô phỏng (participant) bên trong thế giới. Administrator đứng hoàn toàn bên ngoài mô phỏng.
-2. **Khác biệt về quyền hạn:** Agent chỉ được nhìn qua `Observation` và tác động qua `Action`. Administrator có quyền hạn tối cao từ bên ngoài (thay đổi thời tiết/môi trường, tạo sự kiện ngoài, can thiệp trạng thái, hoặc dừng mô phỏng).
-3. **Khác biệt về sự phụ thuộc:** World tự vận hành liên tục mà **KHÔNG cần đến Administrator**.
-4. **Không thuộc danh sách mô phỏng:** Administrator không nằm trong danh sách `world.humans` hay các actor của thế giới.
-
----
-
-## 4. AdministratorCommand là gì?
-
-**`AdministratorCommand`** là ranh giới lệnh trung gian (Command Boundary) chứa thông tin lệnh do Administrator tạo ra từ giao diện điều khiển / UI bên ngoài:
-
-- `CHANGE_ENVIRONMENT`: Thay đổi thông số môi trường (thời tiết, tài nguyên...).
-- `CREATE_EVENT`: Phát sinh một sự kiện ngoài thế giới.
-- `AFFECT_HUMAN`: Can thiệp trực tiếp lên một Human cụ thể.
-- `REQUEST_STOP`: Tín hiệu yêu cầu dừng vòng lặp mô phỏng.
-
-Administrator **không sửa trực tiếp** bộ nhớ internal state của World, mà phát `AdministratorCommand` gửi tới Runtime/World để xử lý an toàn.
-
----
-
-## 5. Kiến trúc Ranh giới Giao tiếp (Boundary Architecture)
+$$\text{Kernel} \longleftarrow \text{Modules} \longleftarrow \text{Composition} \longleftarrow \text{Runtime \& Interface} \longleftarrow \text{Data}$$
 
 ```
-       ADMINISTRATOR (External Human Control Interface / UI)
-                               │
-                      AdministratorCommand
-                               │
-                               ▼
-                            RUNTIME (EventLoop)
-                               │
-                               ▼
-                     ┌──────────────────┐
-                     │     THẾ GIỚI     │
-                     │    (Underworld)  │
-                     │                  │
-                     │   WorldState     │
-                     │   Con người      │
-                     │   Môi trường     │
-                     │   Sự kiện        │
-                     └────────┬─────────┘
-                              │
-                         Observation
-                              │
-                              ▼
-                        EXTERNAL AGENT
-                              │
-                            Action
-                              │
-                              └──────► Thế giới
+underworld/
+├── kernel/                 # [Kernel] Các hạt nhân hạ tầng cốt lõi
+│   ├── time.py             # SimulationTime: Quản lý thời gian t
+│   ├── randomness.py       # Randomness: Quản lý RNG và hạt giống seed
+│   └── identity.py         # EntityIdentity: Quản lý mã định danh
+│
+├── modules/                # [Atomic Modules] Các mô-đun chức năng độc lập
+│   ├── spatial.py          # SpatialSpace: Quản lý tọa độ không gian (x, y) & khoảng cách
+│   ├── environment.py      # EnvironmentState: Quản lý thời tiết & tài nguyên
+│   ├── entity.py           # EntityNeeds: Quản lý nhu cầu sinh học, trạng thái & ký ức
+│   └── event.py            # EventLog: Quản lý nhật ký & vòng đời sự kiện
+│
+├── composition/            # [Composition] Tổng hợp cấu trúc mô phỏng
+│   ├── human.py            # Human: Tổng hợp từ EntityIdentity, SpatialSpace & EntityNeeds
+│   └── world.py            # World: Tổng hợp từ Time, Environment, EventLog, Randomness & Humans
+│
+├── runtime/                # [Runtime] Động cơ điều phối vòng lặp mô phỏng
+│   └── event_loop.py       # EventLoop: Điều phối chu trình t -> t+1, commands & agent actions
+│
+├── interface/              # [Interface] Ranh giới giao tiếp bên ngoài
+│   ├── administrator.py    # Administrator: Giao diện điều khiển từ bên ngoài
+│   ├── command.py          # AdministratorCommand: Ranh giới lệnh quản trị
+│   ├── observation.py      # Observation: Góc nhìn thế giới cho Agent
+│   └── action.py           # Action: Tác động từ Agent vào thế giới
+│
+└── data/                   # [Data] Lưu trữ & Xuất tập dữ liệu mô phỏng
+    ├── trajectory.py       # Trajectory & TrajectoryStep
+    └── dataset.py          # Dataset (Xuất file JSONL)
 ```
 
 ---
 
-## 6. Cách Chạy Mô phỏng: Bị chặn (Finite) & Liên tục (Continuous)
+## 2. Các Vai trò và Khái niệm trong Thế giới
 
-### A. Chạy bị chặn số bước (`run(steps=N)` / `chay(so_buoc=N)`):
-Thế giới tiến hành đúng $N$ bước mô phỏng rồi kết thúc:
+1. **World (Thế giới):**
+   - Là điểm gốc Composition của simulation.
+   - Sở hữu trạng thái toàn cảnh (`WorldState`).
+   - Tự vận hành độc lập qua cơ chế ủy quyền (delegation) đến các Atomic Modules mà không ôm toàn bộ logic.
+
+2. **Agent (Tác nhân bên ngoài):**
+   - Đại diện cho đối tượng tham gia tương tác bên trong thế giới.
+   - Nhận **`Observation`** và trả về **`Action`**.
+
+3. **Administrator (Giao diện Quản trị viên):**
+   - Đại diện cho giao diện điều khiển của con người từ bên ngoài (External Human Control Interface).
+   - **KHÔNG phải là Agent hay actor bên trong World**.
+   - **World KHÔNG phụ thuộc vào Administrator để tự vận hành**.
+   - Tạo ra các **`AdministratorCommand`** trung gian gửi tới Runtime/World:
+     - `CHANGE_ENVIRONMENT`: Thay đổi thời tiết/tài nguyên.
+     - `CREATE_EVENT`: Phát sinh sự kiện ngoài thế giới.
+     - `AFFECT_HUMAN`: Can thiệp trực tiếp lên một Human.
+     - `REQUEST_STOP`: Yêu cầu dừng mô phỏng.
+
+---
+
+## 3. Quy trình Mô phỏng (Simulation Flow)
+
+Toàn bộ luồng mô phỏng tuân theo chuẩn:
+
+$$\text{World} \rightarrow \text{WorldState} \rightarrow \text{Observation} \rightarrow \text{Agent} \rightarrow \text{Action} \rightarrow \text{Runtime} \rightarrow \text{World Transition} \rightarrow \text{Trajectory} \rightarrow \text{Dataset}$$
+
+---
+
+## 4. Cách Chạy Mô phỏng: Bị chặn (Finite) & Liên tục (Continuous)
+
+### A. Chạy bị chặn số bước (`run(steps=N)`):
 ```python
 trajectory = event_loop.run(steps=10)
 ```
 
 ### B. Chạy liên tục (`run()` / `run(steps=None)`):
-Thế giới tự động vận hành liên tục qua các bước $t_0 \rightarrow t_1 \rightarrow t_2 \dots$ cho đến khi nhận được lệnh `REQUEST_STOP` từ Administrator:
 ```python
 trajectory = event_loop.run(steps=None, administrator=admin)
 ```
 
 ### C. Cách gửi lệnh can thiệp (Intervention Command):
-Từ giao diện Administrator bên ngoài:
 ```python
 admin = Administrator()
 admin.change_environment("weather", "bão_tuyết")
@@ -110,7 +97,7 @@ admin.request_stop()
 
 ---
 
-## 7. Hướng dẫn Khởi chạy & Kiểm thử
+## 5. Hướng dẫn Khởi chạy & Kiểm thử
 
 Dự án yêu cầu **Python 3.8+** tiêu chuẩn.
 
@@ -134,7 +121,7 @@ PYTHONPATH=. pytest
 
 ---
 
-## 8. Tệp dữ liệu đầu ra (Dataset)
+## 6. Tệp dữ liệu đầu ra (Dataset)
 
 Khi chạy demo `python main.py`, tập dữ liệu quỹ đạo mô phỏng được xuất tại:
 
@@ -142,4 +129,4 @@ Khi chạy demo `python main.py`, tập dữ liệu quỹ đạo mô phỏng đ�
 data_output/dataset.jsonl
 ```
 
-Tệp `dataset.jsonl` được bỏ qua trong theo dõi git (`.gitignore`), chứa các chuỗi `Trajectory` dạng JSON Lines, đảm bảo tính toàn vẹn ảnh chụp trạng thái (Snapshot Integrity) qua từng bước thời gian.
+Tệp `dataset.jsonl` được loại trừ trong `.gitignore`, đảm bảo tính toàn vẹn ảnh chụp trạng thái (Snapshot Integrity) qua từng bước thời gian.
