@@ -1,10 +1,10 @@
 # Underworld v0 — Python Simulation Skeleton
 
-**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập theo kiến trúc **Atomic Semantic Modules → Composition → World → Runtime**.
+**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập theo kiến trúc chuẩn **Atomic Semantic Modules → Composition → World → Runtime**.
 
 ---
 
-## 1. Kiến trúc Mô phỏng (Architecture)
+## 1. Kiến trúc Mô phỏng Canonical (Canonical Architecture)
 
 Thế giới được tổ chức theo các lớp mô-đun có ranh giới (boundary) và hướng phụ thuộc một chiều rõ ràng:
 
@@ -18,20 +18,24 @@ underworld/
 │   └── identity.py         # EntityIdentity: Quản lý mã định danh
 │
 ├── modules/                # [Atomic Modules] Các mô-đun chức năng độc lập
-│   ├── spatial.py          # SpatialSpace: Quản lý tọa độ không gian (x, y) & khoảng cách
-│   ├── environment.py      # EnvironmentState: Quản lý thời tiết & tài nguyên
-│   ├── entity.py           # EntityNeeds: Quản lý nhu cầu sinh học, trạng thái & ký ức
-│   └── event.py            # EventLog: Quản lý nhật ký & vòng đời sự kiện
+│   ├── spatial.py          # SpatialSpace: Tọa độ không gian (x, y) & khoảng cách
+│   ├── environment.py      # EnvironmentState: Thuộc tính thời tiết & tài nguyên
+│   ├── entity.py           # EntityNeeds: Chỉ số nhu cầu sinh học & ký ức
+│   ├── event.py            # EventLog: Vòng đời sự kiện mô phỏng
+│   ├── behavior.py         # EntityBehavior: Thuật toán ra quyết định tự chủ
+│   ├── interaction.py      # InteractionRule: Quy tắc tương tác không gian
+│   └── command_dispatcher.py # CommandDispatcher: Tiếp nhận & phân phối lệnh quản trị
 │
 ├── composition/            # [Composition] Tổng hợp cấu trúc mô phỏng
-│   ├── human.py            # Human: Tổng hợp từ EntityIdentity, SpatialSpace & EntityNeeds
-│   └── world.py            # World: Tổng hợp từ Time, Environment, EventLog, Randomness & Humans
+│   ├── state.py            # HumanState & WorldState
+│   ├── human.py            # Human: Composition từ Identity, SpatialSpace, Needs, Behavior
+│   └── world.py            # World: Composition root điều phối các Atomic Modules qua delegation
 │
 ├── runtime/                # [Runtime] Động cơ điều phối vòng lặp mô phỏng
 │   └── event_loop.py       # EventLoop: Điều phối chu trình t -> t+1, commands & agent actions
 │
 ├── interface/              # [Interface] Ranh giới giao tiếp bên ngoài
-│   ├── administrator.py    # Administrator: Giao diện điều khiển từ bên ngoài
+│   ├── administrator.py    # Administrator: Giao diện điều khiển từ bên ngoài (External UI)
 │   ├── command.py          # AdministratorCommand: Ranh giới lệnh quản trị
 │   ├── observation.py      # Observation: Góc nhìn thế giới cho Agent
 │   └── action.py           # Action: Tác động từ Agent vào thế giới
@@ -48,14 +52,14 @@ underworld/
 1. **World (Thế giới):**
    - Là điểm gốc Composition của simulation.
    - Sở hữu trạng thái toàn cảnh (`WorldState`).
-   - Tự vận hành độc lập qua cơ chế ủy quyền (delegation) đến các Atomic Modules mà không ôm toàn bộ logic.
+   - Tự vận hành độc lập qua cơ chế ủy quyền (delegation) đến các Atomic Modules mà không ôm toàn bộ logic (không God Object).
 
 2. **Agent (Tác nhân bên ngoài):**
-   - Đại diện cho đối tượng tham gia tương tác bên trong thế giới.
+   - Đại diện cho đối tượng tham gia tương tác bên trong thế giới (participant / decision-maker).
    - Nhận **`Observation`** và trả về **`Action`**.
 
 3. **Administrator (Giao diện Quản trị viên):**
-   - Đại diện cho giao diện điều khiển của con người từ bên ngoài (External Human Control Interface).
+   - Đại diện cho giao diện điều khiển của con người từ bên ngoài (External Human Control Interface / UI).
    - **KHÔNG phải là Agent hay actor bên trong World**.
    - **World KHÔNG phụ thuộc vào Administrator để tự vận hành**.
    - Tạo ra các **`AdministratorCommand`** trung gian gửi tới Runtime/World:

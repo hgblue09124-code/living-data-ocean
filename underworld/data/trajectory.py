@@ -4,7 +4,7 @@
 
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
-from underworld.world.state import WorldState
+from underworld.composition.state import WorldState
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
 
@@ -14,13 +14,6 @@ class TrajectoryStep:
     """
     Một bước chuyển đổi trong chuỗi Trajectory:
     state_t -> observation_t -> action_t -> state_t+1
-
-    Attributes:
-        step (int): Chỉ số bước mô phỏng t.
-        state_before (Dict[str, Any]): Trạng thái thế giới WorldState(t) trước khi tick.
-        observation (Dict[str, Any]): Quan sát Observation(t) tương ứng.
-        action (Optional[List[Dict[str, Any]]]): Các tác động bên ngoài Action(t) (nếu có).
-        state_after (Dict[str, Any]): Trạng thái thế giới WorldState(t+1) sau khi tick.
     """
     step: int
     state_before: Dict[str, Any]
@@ -43,10 +36,6 @@ class TrajectoryStep:
 class Trajectory:
     """
     Chuỗi các bước mô phỏng Trajectory đại diện cho một phiên chạy của Underworld.
-
-    Attributes:
-        trajectory_id (str): Mã định danh duy nhất của Trajectory.
-        steps (List[TrajectoryStep]): Danh sách các bước chuyển đổi trạng thái nối tiếp nhau t0 -> t1 -> t2...
     """
     trajectory_id: str
     steps: List[TrajectoryStep] = field(default_factory=list)

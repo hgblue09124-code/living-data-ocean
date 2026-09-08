@@ -1,23 +1,24 @@
 """
-Bộ kiểm thử tự động (Unit Tests) cho Underworld v0 - Atomic Semantic Modules & Composition Architecture.
+Bộ kiểm thử tự động (Unit Tests) cho Underworld v0 - Canonical Architecture & Invariants.
 Đảm bảo kiểm thử toàn bộ tính năng mô phỏng, ranh giới AdministratorCommand,
-World tự vận hành độc lập, snapshot integrity, seed ngẫu nhiên và cấu trúc module boundaries.
+World tự vận hành độc lập, snapshot integrity, seed ngẫu nhiên và các ràng buộc kiến trúc.
 """
 
+import sys
 import os
 import tempfile
 import unittest
 
 from underworld.kernel import SimulationTime, Randomness, EntityIdentity
-from underworld.modules import SpatialSpace, EnvironmentState, EntityNeeds, EventLog
-from underworld.composition import World, Human
+from underworld.modules import SpatialSpace, EnvironmentState, EntityNeeds, EventLog, EntityBehavior, InteractionRule, CommandDispatcher
+from underworld.composition import World, Human, HumanState, WorldState
 from underworld.runtime import EventLoop
 from underworld.interface import Observation, Action, AdministratorCommand, Administrator
 from underworld.data import Dataset, Trajectory
 
 
 class TestUnderworldArchitecture(unittest.TestCase):
-    """Tập hợp các bài kiểm thử cốt lõi cho dự án Underworld v0 - Architecture Refactored."""
+    """Tập hợp các bài kiểm thử cốt lõi và kiểm thử ràng buộc kiến trúc (Architecture Invariants)."""
 
     def test_1_world_initialization(self):
         """1. Kiểm tra World khởi tạo thành công."""
@@ -275,7 +276,6 @@ class TestUnderworldArchitecture(unittest.TestCase):
 
     def test_20_atomic_modules_and_composition_boundaries(self):
         """20. Kiểm tra ranh giới hoạt động độc lập của các Atomic Modules và Delegation trong World."""
-        # Test Atomic Modules độc lập hoàn toàn không cần World hay EventLoop
         sim_time = SimulationTime()
         self.assertEqual(sim_time.increment(), 1)
 
@@ -301,6 +301,25 @@ class TestUnderworldArchitecture(unittest.TestCase):
         event_log.add_event("Sự kiện lẻ")
         step_events = event_log.prepare_step_events(current_step=1)
         self.assertEqual(len(step_events), 1)
+
+    def test_21_architecture_invariants_no_administrator_import_in_world(self):
+        """21. Ràng buộc kiến trúc: Mô-đun World/Composition KHÔNG import Administrator."""
+        import underworld.composition.world as world_module
+        with open(world_module.__file__, encoding="utf-8") as f:
+            module_source = f.read()
+        self.assertNotIn("import Administrator", module_source)
+
+    def test_22_architecture_invariants_no_circular_dependencies(self):
+        """22. Ràng buộc kiến trúc: Hướng phụ thuộc 1 chiều Kernel <- Modules <- Composition <- Runtime."""
+        import underworld.kernel
+        import underworld.modules
+        import underworld.composition
+        import underworld.runtime
+
+        self.assertTrue(hasattr(underworld.kernel, "SimulationTime"))
+        self.assertTrue(hasattr(underworld.modules, "EntityBehavior"))
+        self.assertTrue(hasattr(underworld.composition, "World"))
+        self.assertTrue(hasattr(underworld.runtime, "EventLoop"))
 
 
 if __name__ == "__main__":

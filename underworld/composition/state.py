@@ -1,5 +1,5 @@
 """
-Định nghĩa trạng thái của thực thể Human trong Underworld.
+Lớp lưu trữ trạng thái dữ liệu (State Representation) cho HumanState và WorldState.
 """
 
 from dataclasses import dataclass, field
@@ -9,16 +9,7 @@ from typing import Dict, List, Tuple, Any, Optional
 @dataclass
 class HumanState:
     """
-    Lưu trữ toàn bộ trạng thái nội tại của một Human tại một thời điểm t.
-
-    Attributes:
-        id (str): Mã định danh duy nhất của Human.
-        position (Tuple[int, int]): Vị trí hiện tại trong không gian (x, y).
-        status (str): Trạng thái hiện tại (ví dụ: 'nghỉ_ngơi', 'di_chuyển', 'tìm_kiếm').
-        needs (Dict[str, float]): Các chỉ số nhu cầu cơ bản (năng lượng, đói, xã hội...).
-        goals (List[str]): Danh sách mục tiêu hiện tại.
-        memory (List[Dict[str, Any]]): Ký ức ngắn hạn / lịch sử sự kiện đã ghi nhớ.
-        action_history (List[str]): Lịch sử các hành động đã thực hiện.
+    Lưu trữ trạng thái nội tại của một Human tại một thời điểm t.
     """
     id: str
     position: Tuple[int, int] = (0, 0)
@@ -55,4 +46,40 @@ class HumanState:
             goals=data.get("goals", ["khám_phá"]),
             memory=data.get("memory", []),
             action_history=data.get("action_history", [])
+        )
+
+
+@dataclass
+class WorldState:
+    """
+    Lưu trữ trạng thái toàn cảnh của Underworld tại thời điểm t.
+    """
+    time_step: int = 0
+    human_states: Dict[str, HumanState] = field(default_factory=dict)
+    environment: Dict[str, Any] = field(default_factory=dict)
+    events: List[Dict[str, Any]] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Chuyển đổi trạng thái WorldState thành dict để xuất dữ liệu."""
+        return {
+            "time_step": self.time_step,
+            "human_states": {
+                hid: hstate.to_dict() for hid, hstate in self.human_states.items()
+            },
+            "environment": dict(self.environment),
+            "events": list(self.events)
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "WorldState":
+        """Khôi phục trạng thái WorldState từ dict."""
+        human_states = {
+            hid: HumanState.from_dict(hdata)
+            for hid, hdata in data.get("human_states", {}).items()
+        }
+        return cls(
+            time_step=data.get("time_step", 0),
+            human_states=human_states,
+            environment=data.get("environment", {}),
+            events=data.get("events", [])
         )

@@ -8,15 +8,17 @@ from typing import Dict, Any, Optional, Tuple
 from underworld.kernel.identity import EntityIdentity
 from underworld.modules.spatial import SpatialSpace
 from underworld.modules.entity import EntityNeeds
-from underworld.human.state import HumanState
+from underworld.modules.behavior import EntityBehavior
+from underworld.composition.state import HumanState
 
 
 class Human:
     """
-    Thực thể Human được tạo nên từ việc Composition (tổng hợp) 3 Atomic Modules:
+    Thực thể Human được tạo nên từ việc Composition (tổng hợp) các Atomic Modules:
     - EntityIdentity: Quản lý định danh
     - SpatialSpace: Quản lý vị trí không gian
-    - EntityNeeds: Quản lý các thuộc tính nhu cầu nội tại và ký ức
+    - EntityNeeds: Quản lý thuộc tính nhu cầu sinh học và ký ức
+    - EntityBehavior: Quản lý thuật toán ra quyết định hành động tự chủ
     """
 
     def __init__(
@@ -31,10 +33,11 @@ class Human:
         self.identity = EntityIdentity(human_id)
         self.spatial = SpatialSpace(position=position)
         self.needs = EntityNeeds(status=status, needs=needs, goals=goals)
+        self.behavior = EntityBehavior()
 
     @property
     def state(self) -> HumanState:
-        """Property hỗ trợ truy cập tương thích với phiên bản cũ."""
+        """Property hỗ trợ truy cập tương thích với trạng thái HumanState."""
         return HumanState(
             id=self.identity.id,
             position=self.spatial.position,
@@ -51,36 +54,14 @@ class Human:
 
     def step(self, context: Optional[Dict[str, Any]] = None) -> str:
         """
-        Thực hiện một bước tự vận hành (tick nội tại) của Human.
-
-        Cập nhật nhu cầu cơ bản, tự quyết định hành động tự nhiên dựa trên trạng thái
-        và môi trường xung quanh. Trả về tên hành động đã thực hiện.
+        Ủy quyền ra quyết định hành động cho EntityBehavior atomic module.
         """
-        rng = (context and context.get("random")) or random
-
-        # Ủy quyền cập nhật nhu cầu sinh học cho EntityNeeds
-        self.needs.update_biology()
-
-        action_taken = ""
-
-        if self.needs.needs["năng_lượng"] < 20.0:
-            self.needs.status = "nghỉ_ngơi"
-            self.needs.needs["năng_lượng"] = min(100.0, self.needs.needs["năng_lượng"] + 15.0)
-            action_taken = "nghỉ_ngơi"
-        elif self.needs.needs["đói"] > 70.0:
-            self.needs.status = "tìm_kiếm"
-            self.needs.needs["đói"] = max(0.0, self.needs.needs["đói"] - 20.0)
-            action_taken = "tìm_thức_ăn"
-        else:
-            self.needs.status = "di_chuyển"
-            dx = rng.choice([-1, 0, 1])
-            dy = rng.choice([-1, 0, 1])
-            new_pos = self.spatial.move_by(dx, dy)
-            action_taken = f"di_chuyển_đến_({new_pos[0]},{new_pos[1]})"
-
-        # Ủy quyền ghi nhận lịch sử cho EntityNeeds
-        self.needs.record_action(action_taken, self.spatial.position)
-        return action_taken
+        rng = (context and context.get("random")) or None
+        return self.behavior.decide_and_execute(
+            needs=self.needs,
+            spatial=self.spatial,
+            randomness=rng
+        )
 
     def apply_external_action(self, action_type: str, payload: Optional[Dict[str, Any]] = None) -> str:
         """

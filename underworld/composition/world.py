@@ -8,18 +8,22 @@ from underworld.kernel.time import SimulationTime
 from underworld.kernel.randomness import Randomness
 from underworld.modules.environment import EnvironmentState
 from underworld.modules.event import EventLog
+from underworld.modules.interaction import InteractionRule
+from underworld.modules.command_dispatcher import CommandDispatcher
 from underworld.composition.human import Human
-from underworld.world.state import WorldState
+from underworld.composition.state import WorldState
 
 
 class World:
     """
     World là Composition root của thế giới mô phỏng.
-    World tổng hợp và điều phối các Atomic Modules thông qua cơ chế Delegation:
+    World đóng vai trò điều phối chính và ủy quyền (delegation) hoàn toàn cho các Atomic Modules:
     - SimulationTime: Quản lý thời gian
     - Randomness: Quản lý hạt giống ngẫu nhiên
     - EnvironmentState: Quản lý thuộc tính môi trường
     - EventLog: Quản lý nhật ký và vòng đời sự kiện
+    - InteractionRule: Quản lý tương tác không gian giữa các thực thể
+    - CommandDispatcher: Tiếp nhận và phân phối các lệnh AdministratorCommand
     - Dict[str, Human]: Quản lý danh sách các thực thể con người
     """
 
@@ -29,6 +33,8 @@ class World:
         self.environment_state = EnvironmentState(bounds=bounds)
         self.randomness = Randomness(seed=seed)
         self.event_log = EventLog()
+        self.interaction_rule = InteractionRule()
+        self.command_dispatcher = CommandDispatcher()
         self.humans: Dict[str, Human] = {}
 
     @property
@@ -64,34 +70,14 @@ class World:
 
     def apply_command(self, command: Any) -> None:
         """
-        Ủy quyền xử lý lệnh từ AdministratorCommand đến từng Atomic Module thích hợp.
+        Ủy quyền xử lý lệnh từ AdministratorCommand sang CommandDispatcher.
         """
-        if hasattr(command, "command_type"):
-            cmd_type = command.command_type
-            payload = getattr(command, "payload", {})
-            target_id = getattr(command, "target_id", None)
-        elif isinstance(command, dict):
-            cmd_type = command.get("command_type", command.get("loai_lenh"))
-            payload = command.get("payload", command)
-            target_id = command.get("target_id")
-        else:
-            return
-
-        if cmd_type in ("CHANGE_ENVIRONMENT", "THAY_DOI_MOI_TRUONG"):
-            key = payload.get("key")
-            val = payload.get("val")
-            if key is not None:
-                self.environment_state.set_attribute(key, val)
-        elif cmd_type in ("CREATE_EVENT", "TAO_SU_KIEN"):
-            detail = payload.get("detail", payload.get("chi_tiet", "Sự kiện từ Administrator"))
-            self.event_log.add_event(detail, event_type="SU_KIEN_QUAN_TRI")
-        elif cmd_type in ("AFFECT_HUMAN", "TAC_DONG_CON_NGUOI"):
-            if target_id:
-                human = self.get_human(target_id)
-                if human:
-                    action_type = payload.get("action_type", "REST")
-                    action_payload = payload.get("payload", {})
-                    human.apply_external_action(action_type, action_payload)
+        self.command_dispatcher.dispatch(
+            command=command,
+            environment=self.environment_state,
+            event_log=self.event_log,
+            humans_map=self.humans
+        )
 
     def get_state(self) -> WorldState:
         """Trả về snapshot WorldState độc lập (deep copy) tại thời điểm t hiện tại."""
@@ -106,15 +92,12 @@ class World:
     def tick(self, external_actions: Optional[List[Dict[str, Any]]] = None) -> WorldState:
         """
         Thực hiện chuyển trạng thái thế giới: WorldState(t) -> WorldState(t+1).
-        - Tiến thời gian 1 bước
-        - Chuẩn bị và bảo tồn sự kiện bước hiện tại qua EventLog
-        - Duyệt qua từng Human và ủy quyền thực hiện hành động
-        - Phát hiện tương tác ngẫu nhiên giữa các Human ở gần vị trí nhau
+        - Tăng thời gian 1 bước qua SimulationTime
+        - Chuẩn bị danh sách sự kiện qua EventLog
+        - Cho từng Human tự vận hành hoặc áp dụng tác động bên ngoài
+        - Ủy quyền xử lý tương tác giữa các Human qua InteractionRule
         """
-        # Tăng time_step thêm 1 bước
         current_step = self.time.increment()
-
-        # Chuẩn bị sự kiện cho bước mới qua EventLog
         self.event_log.prepare_step_events(current_step)
 
         # Ánh xạ external actions
@@ -125,7 +108,7 @@ class World:
                 if target_id:
                     action_map[target_id] = act
 
-        # Cho từng Human tự do hành động hoặc nhận lệnh
+        # Duyệt từng Human để thực hiện bước mô phỏng
         for human_id, human in self.humans.items():
             if human_id in action_map:
                 ext_act = action_map[human_id]
@@ -150,23 +133,12 @@ class World:
                     "chi_tiết": f"Human {human_id} tự thực hiện: {action_taken}"
                 })
 
-        # Xử lý tương tác ngẫu nhiên giữa các Human qua SpatialSpace distance
+        # Ủy quyền xử lý tương tác qua InteractionRule
         human_list = list(self.humans.values())
-        for i in range(len(human_list)):
-            for j in range(i + 1, len(human_list)):
-                h1, h2 = human_list[i], human_list[j]
-                dist = h1.spatial.manhattan_distance(h2.spatial.position)
-                if dist <= 1:
-                    self.event_log.record_processed_event({
-                        "time_step": current_step,
-                        "type": "TUONG_TAC_HUMAN",
-                        "human_1": h1.identity.id,
-                        "human_2": h2.identity.id,
-                        "chi_tiết": f"Human {h1.identity.id} và Human {h2.identity.id} gặp gỡ tại {h1.spatial.position}"
-                    })
-                    h1.needs.needs["xã_hội"] = min(100.0, h1.needs.needs["xã_hội"] + 10.0)
-                    h2.needs.needs["xã_hội"] = min(100.0, h2.needs.needs["xã_hội"] + 10.0)
-                    h1.needs.status = "gặp_gỡ"
-                    h2.needs.status = "gặp_gỡ"
+        self.interaction_rule.process_interactions(
+            humans_list=human_list,
+            time_step=current_step,
+            event_log=self.event_log
+        )
 
         return self.get_state()

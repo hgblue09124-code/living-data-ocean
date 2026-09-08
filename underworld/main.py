@@ -1,16 +1,13 @@
 """
-Điểm khởi chạy chương trình mô phỏng Underworld v0 - PR #3 (Refactored Boundary).
+Điểm khởi chạy chương trình mô phỏng Underworld v0 - Canonical Architecture.
 """
 
 import os
 from typing import List, Optional
-from underworld.world.world import World
-from underworld.human.human import Human
-from underworld.engine.event_loop import EventLoop
-from underworld.interface.observation import Observation
-from underworld.interface.action import Action
-from underworld.interface.administrator import Administrator
-from underworld.data.dataset import Dataset
+from underworld.composition import World, Human
+from underworld.runtime import EventLoop
+from underworld.interface import Observation, Action, Administrator
+from underworld.data import Dataset
 
 
 def external_agent_brain(observation: Observation) -> Optional[List[Action]]:
@@ -37,7 +34,7 @@ def run_simulation():
     Administrator UI/Interface -> AdministratorCommand -> Runtime -> World -> WorldState
     """
     print("=" * 75)
-    print("   KHỞI ĐỘNG UNDERWORLD v0 - PYTHON SIMULATION SKELETON (BOUNDARY REFACTORED)")
+    print("   KHỞI ĐỘNG UNDERWORLD v0 - PYTHON SIMULATION SKELETON (CANONICAL ARCHITECTURE)")
     print("=" * 75)
 
     # 1. Khởi tạo World với hạt giống ngẫu nhiên để tái lập
@@ -78,7 +75,7 @@ def run_simulation():
         steps=7,
         administrator=admin,
         agent_callback=external_agent_brain,
-        trajectory_id="traj_demo_refactored"
+        trajectory_id="traj_demo_canonical"
     )
 
     for step in trajectory.steps:
