@@ -1,0 +1,13 @@
+{
+  "id": "extract",
+  "type": "atomic",
+  "inputs": ["source_text", "pattern"],
+  "outputs": ["extracted_items", "groups"],
+  "semantics": [
+    "Bóc tách các phần dữ liệu cụ thể hoặc các nhóm bắt tên từ nguồn văn bản.",
+    "Lọc và rút trích các đoạn thông tin có giá trị theo quy tắc mẫu."
+  ],
+  "compositions": [
+    "extract + regex -> extract-regex"
+  ]
+}

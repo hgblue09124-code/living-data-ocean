@@ -1,0 +1,13 @@
+{
+  "id": "list-directory",
+  "type": "meso",
+  "inputs": ["directory_path", "recursive_flag"],
+  "outputs": ["directory_entries"],
+  "semantics": [
+    "Kết hợp giữa năng lực liệt kê ('list') và đối tượng thư mục tệp tin.",
+    "Liệt kê danh mục các tệp tin và thư mục con trong một thư mục cho trước."
+  ],
+  "compositions": [
+    "list + file + path"
+  ]
+}

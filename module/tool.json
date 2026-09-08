@@ -1,0 +1,13 @@
+{
+  "id": "tool",
+  "type": "atomic",
+  "inputs": ["tool_identifier", "interface_definition"],
+  "outputs": ["tool_metadata"],
+  "semantics": [
+    "Đại diện cho công cụ/kỹ năng mà Agent có thể gọi thực thi.",
+    "Chứa mô tả capability, schema đầu vào và đầu ra của công cụ."
+  ],
+  "compositions": [
+    "tool + registry -> tool-registry"
+  ]
+}

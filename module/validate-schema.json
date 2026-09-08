@@ -1,0 +1,13 @@
+{
+  "id": "validate-schema",
+  "type": "meso",
+  "inputs": ["data_dict", "schema_definition"],
+  "outputs": ["is_valid", "validation_errors"],
+  "semantics": [
+    "Kết hợp giữa năng lực kiểm tra ('validate') và mô tả hình dạng dữ liệu ('inspect').",
+    "Xác minh dictionary có chứa đủ các trường bắt buộc và tuân thủ các ràng buộc kiểu."
+  ],
+  "compositions": [
+    "validate + data + inspect"
+  ]
+}

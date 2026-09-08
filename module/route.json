@@ -1,0 +1,13 @@
+{
+  "id": "route",
+  "type": "atomic",
+  "inputs": ["payload", "routing_table"],
+  "outputs": ["selected_target", "matched_rule"],
+  "semantics": [
+    "Điều hướng dữ liệu payload đến nhánh/đích xử lý phù hợp dựa trên bảng quy tắc.",
+    "Khớp thông tin payload với các mẫu điều kiện định tuyến."
+  ],
+  "compositions": [
+    "route + condition -> route-condition"
+  ]
+}

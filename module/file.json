@@ -1,0 +1,15 @@
+{
+  "id": "file",
+  "type": "atomic",
+  "inputs": ["path", "mode"],
+  "outputs": ["file_handle", "metadata"],
+  "semantics": [
+    "Đại diện ngữ nghĩa cho thực thể tệp tin trong hệ thống lưu trữ cục bộ.",
+    "Chứa thông tin đường dẫn, thuộc tính, kích thước và phân quyền tệp tin."
+  ],
+  "compositions": [
+    "read + file -> read-file",
+    "write + file -> write-file",
+    "find + file -> find-file"
+  ]
+}

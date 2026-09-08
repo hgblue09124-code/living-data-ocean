@@ -1,0 +1,13 @@
+{
+  "id": "hash",
+  "type": "atomic",
+  "inputs": ["raw_bytes", "algorithm"],
+  "outputs": ["digest_string"],
+  "semantics": [
+    "Đại diện cho hàm băm cryptographic và chuỗi digest kết quả băm.",
+    "Dùng làm đại diện duy nhất bảo đảm tính toàn vẹn cho dữ liệu."
+  ],
+  "compositions": [
+    "verify + hash -> verify-hash"
+  ]
+}

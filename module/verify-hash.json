@@ -1,0 +1,13 @@
+{
+  "id": "verify-hash",
+  "type": "meso",
+  "inputs": ["input_data", "expected_hash_string", "hash_algorithm"],
+  "outputs": ["is_matched", "calculated_hash"],
+  "semantics": [
+    "Kết hợp giữa năng lực xác minh ('verify') và hàm băm ('hash').",
+    "Xác minh tính toàn vẹn của dữ liệu bằng cách tính toán và so sánh checksum hash."
+  ],
+  "compositions": [
+    "verify + hash + data"
+  ]
+}

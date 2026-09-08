@@ -1,0 +1,13 @@
+{
+  "id": "verify",
+  "type": "atomic",
+  "inputs": ["subject", "proof_spec"],
+  "outputs": ["verified", "proof_result"],
+  "semantics": [
+    "Xác minh tính toàn vẹn hoặc tính đúng đắn của dữ liệu dựa trên bằng chứng hoặc chữ ký.",
+    "Đảm bảo dữ liệu không bị sửa đổi hay biến dạng."
+  ],
+  "compositions": [
+    "verify + hash -> verify-hash"
+  ]
+}

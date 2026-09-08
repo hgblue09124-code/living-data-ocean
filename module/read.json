@@ -1,0 +1,15 @@
+{
+  "id": "read",
+  "type": "atomic",
+  "inputs": ["source", "options"],
+  "outputs": ["content", "metadata"],
+  "semantics": [
+    "Đọc dữ liệu từ một nguồn lưu trữ (file, stream, memory buffer, channel).",
+    "Trích xuất nội dung văn bản hoặc nhị phân từ tài nguyên chỉ định."
+  ],
+  "compositions": [
+    "file -> read-file",
+    "stream -> read-stream",
+    "memory -> read-memory"
+  ]
+}

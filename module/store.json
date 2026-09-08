@@ -1,0 +1,13 @@
+{
+  "id": "store",
+  "type": "atomic",
+  "inputs": ["storage_context", "key", "value"],
+  "outputs": ["updated_context", "success"],
+  "semantics": [
+    "Lưu trữ hoặc cập nhật thông tin cặp khóa-giá trị vào bộ nhớ lưu trữ.",
+    "Ghi lại dữ liệu ngữ cảnh để sử dụng về sau."
+  ],
+  "compositions": [
+    "store + key -> store-key"
+  ]
+}

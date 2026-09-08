@@ -1,0 +1,13 @@
+{
+  "id": "diff",
+  "type": "atomic",
+  "inputs": ["version_a", "version_b"],
+  "outputs": ["delta_stream", "has_changes"],
+  "semantics": [
+    "Tính toán chênh lệch từng dòng hoặc từng trường giữa hai phiên bản nội dung.",
+    "Tạo ra bản mô tả sự thay đổi (delta/unified diff)."
+  ],
+  "compositions": [
+    "diff + text -> diff-text"
+  ]
+}

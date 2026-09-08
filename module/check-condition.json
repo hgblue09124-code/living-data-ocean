@@ -1,0 +1,13 @@
+{
+  "id": "check-condition",
+  "type": "meso",
+  "inputs": ["input_value", "predicate_operator", "target_value"],
+  "outputs": ["result_boolean"],
+  "semantics": [
+    "Kết hợp giữa năng lực đánh giá ('check') và đối tượng so sánh logic.",
+    "Đánh giá các mệnh đề so sánh logic trên dữ liệu (bằng, lớn hơn, chứa, khớp regex)."
+  ],
+  "compositions": [
+    "check + data"
+  ]
+}

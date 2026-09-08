@@ -1,0 +1,14 @@
+{
+  "id": "text",
+  "type": "atomic",
+  "inputs": ["raw_string", "encoding"],
+  "outputs": ["text_stream", "length"],
+  "semantics": [
+    "Đại diện cho văn bản chuỗi ký tự tự nhiên hoặc mã nguồn.",
+    "Làm ngữ cảnh đầu vào cho các thao tác tìm kiếm, bóc tách và phân tích ngữ pháp."
+  ],
+  "compositions": [
+    "extract + text -> extract-regex",
+    "diff + text -> diff-text"
+  ]
+}

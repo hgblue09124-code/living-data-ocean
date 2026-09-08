@@ -1,0 +1,13 @@
+{
+  "id": "extract-regex",
+  "type": "meso",
+  "inputs": ["source_text", "regex_pattern"],
+  "outputs": ["extracted_matches"],
+  "semantics": [
+    "Kết hợp giữa năng lực bóc tách ('extract') và ngữ cảnh văn bản ('text').",
+    "Bóc tách các chuỗi hoặc nhóm bắt tên khớp với biểu thức chính quy từ văn bản."
+  ],
+  "compositions": [
+    "extract + text + pattern"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "detect",
+  "type": "atomic",
+  "inputs": ["input_value"],
+  "outputs": ["detected_format", "confidence"],
+  "semantics": [
+    "Phán đoán và phân loại định dạng ngữ nghĩa của dữ liệu dựa trên quy tắc nhận diện.",
+    "Trả về kiểu nhận diện và độ tin cậy tương ứng."
+  ],
+  "compositions": [
+    "detect + type -> detect-data-type"
+  ]
+}

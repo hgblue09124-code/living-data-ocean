@@ -1,0 +1,13 @@
+{
+  "id": "compare",
+  "type": "atomic",
+  "inputs": ["left_operand", "right_operand"],
+  "outputs": ["is_equal", "diff_summary"],
+  "semantics": [
+    "So sánh sự bằng nhau hoặc mức độ tương đồng giữa hai đối tượng dữ liệu.",
+    "Chỉ ra điểm sai biệt về mặt giá trị hoặc cấu trúc."
+  ],
+  "compositions": [
+    "compare + object -> compare-object"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "registry",
+  "type": "atomic",
+  "inputs": ["action_type", "entity_schema"],
+  "outputs": ["registry_catalog", "matches"],
+  "semantics": [
+    "Đại diện cho bảng đăng ký và tra cứu tập hợp các công cụ/nguồn tài nguyên.",
+    "Cho phép tra cứu và đăng ký công cụ động."
+  ],
+  "compositions": [
+    "tool + registry -> tool-registry"
+  ]
+}

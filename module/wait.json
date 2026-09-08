@@ -1,0 +1,13 @@
+{
+  "id": "wait",
+  "type": "atomic",
+  "inputs": ["duration_seconds"],
+  "outputs": ["time_elapsed", "completed"],
+  "semantics": [
+    "Tạm dừng luồng thực thi trong một khoảng thời gian xác định.",
+    "Kiểm soát nhịp độ và tần suất gọi tiến trình."
+  ],
+  "compositions": [
+    "wait + interval -> wait-interval"
+  ]
+}

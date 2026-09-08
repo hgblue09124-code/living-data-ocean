@@ -1,0 +1,13 @@
+{
+  "id": "parse",
+  "type": "atomic",
+  "inputs": ["raw_input", "grammar_spec"],
+  "outputs": ["structured_output", "success"],
+  "semantics": [
+    "Phân tích cú pháp chuỗi hoặc byte đầu vào để chuyển đổi thành đối tượng dữ liệu cấu trúc.",
+    "Giải mã biểu diễn chuỗi theo quy tắc định dạng ngữ pháp."
+  ],
+  "compositions": [
+    "parse + json -> parse-json"
+  ]
+}

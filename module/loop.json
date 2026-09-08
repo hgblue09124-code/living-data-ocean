@@ -1,0 +1,13 @@
+{
+  "id": "loop",
+  "type": "atomic",
+  "inputs": ["max_iterations", "stop_condition"],
+  "outputs": ["current_iteration", "is_done"],
+  "semantics": [
+    "Đại diện cho cơ chế lặp tuần tự (loop iteration) cho đến khi đạt điều kiện dừng.",
+    "Điều phối nhịp đập thực thi chính."
+  ],
+  "compositions": [
+    "agent + loop -> agent-loop"
+  ]
+}

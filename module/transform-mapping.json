@@ -1,0 +1,13 @@
+{
+  "id": "transform-mapping",
+  "type": "meso",
+  "inputs": ["source_dict", "field_mapping_rules"],
+  "outputs": ["transformed_dict"],
+  "semantics": [
+    "Kết hợp giữa năng lực biến đổi ('transform') và dữ liệu cấu trúc ('data').",
+    "Ánh xạ và chuyển đổi các trường dữ liệu giữa các dictionary dựa trên bản đồ cấu hình."
+  ],
+  "compositions": [
+    "transform + data"
+  ]
+}

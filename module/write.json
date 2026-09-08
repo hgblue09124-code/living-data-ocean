@@ -1,0 +1,15 @@
+{
+  "id": "write",
+  "type": "atomic",
+  "inputs": ["target", "content", "options"],
+  "outputs": ["status", "bytes_written"],
+  "semantics": [
+    "Ghi hoặc ghi nối dữ liệu vào một đối tượng đích (file, stream, buffer).",
+    "Đảm bảo dữ liệu được cập nhật thành công vào đối tượng lưu trữ."
+  ],
+  "compositions": [
+    "file -> write-file",
+    "stream -> write-stream",
+    "memory -> write-memory"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "list",
+  "type": "atomic",
+  "inputs": ["container", "options"],
+  "outputs": ["entries", "total"],
+  "semantics": [
+    "Liệt kê các phần tử danh mục nằm trong một container (directory, list, array, store).",
+    "Duyệt bề mặt danh mục và thu thập tập thuộc tính cơ bản của từng phần tử."
+  ],
+  "compositions": [
+    "directory -> list-directory",
+    "registry -> list-tools"
+  ]
+}

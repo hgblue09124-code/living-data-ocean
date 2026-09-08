@@ -1,0 +1,13 @@
+{
+  "id": "compare-object",
+  "type": "meso",
+  "inputs": ["left_object", "right_object", "strict_flag"],
+  "outputs": ["is_equal", "diff_summary"],
+  "semantics": [
+    "Kết hợp giữa năng lực so sánh ('compare') và cấu trúc đối tượng ('data').",
+    "So sánh hai đối tượng/cấu trúc dữ liệu để xác định sự bằng nhau hoặc tương đương."
+  ],
+  "compositions": [
+    "compare + data + inspect"
+  ]
+}

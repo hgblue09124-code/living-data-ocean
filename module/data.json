@@ -1,0 +1,14 @@
+{
+  "id": "data",
+  "type": "atomic",
+  "inputs": ["payload", "schema"],
+  "outputs": ["data_object", "type_info"],
+  "semantics": [
+    "Đại diện ngữ nghĩa cho thông tin/dữ liệu dạng cấu trúc hoặc phi cấu trúc.",
+    "Mang thông tin kiểu dữ liệu, nội dung và các thuộc tính liên quan."
+  ],
+  "compositions": [
+    "transform + data -> transform-mapping",
+    "inspect + data -> inspect-schema"
+  ]
+}

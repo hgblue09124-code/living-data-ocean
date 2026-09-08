@@ -1,0 +1,13 @@
+{
+  "id": "invoke",
+  "type": "atomic",
+  "inputs": ["target_function", "arguments"],
+  "outputs": ["execution_result", "success_flag"],
+  "semantics": [
+    "Kích hoạt và thực thi một đối tượng hàm/callable với các tham số truyền vào.",
+    "Bắt các lỗi ngoại lệ phát sinh trong quá trình gọi thực thi."
+  ],
+  "compositions": [
+    "invoke + handler -> invoke-handler"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "parse-json",
+  "type": "meso",
+  "inputs": ["json_string", "fallback_value"],
+  "outputs": ["parsed_object", "success"],
+  "semantics": [
+    "Kết hợp giữa năng lực phân tích cú pháp ('parse') và định dạng dữ liệu ('json').",
+    "Parse chuỗi/byte JSON thành đối tượng dữ liệu cấu trúc Python."
+  ],
+  "compositions": [
+    "parse + json + data"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "check",
+  "type": "atomic",
+  "inputs": ["value", "predicate_operator", "target"],
+  "outputs": ["result_boolean"],
+  "semantics": [
+    "Đánh giá một biểu thức logic so sánh giữa giá trị đầu vào và mục tiêu.",
+    "Trả về kết quả boolean đúng/sai."
+  ],
+  "compositions": [
+    "check + condition -> check-condition"
+  ]
+}

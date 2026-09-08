@@ -1,0 +1,13 @@
+{
+  "id": "context",
+  "type": "atomic",
+  "inputs": ["session_id", "attributes"],
+  "outputs": ["context_object"],
+  "semantics": [
+    "Đại diện cho ngữ cảnh thực thi, môi trường và chuỗi lịch sử hội thoại/thao tác.",
+    "Mang thông tin cần thiết để Agent duy trì sự hiểu biết liên tục."
+  ],
+  "compositions": [
+    "context + memory -> context-memory"
+  ]
+}

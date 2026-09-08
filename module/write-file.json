@@ -1,0 +1,13 @@
+{
+  "id": "write-file",
+  "type": "meso",
+  "inputs": ["file_path", "content", "write_mode"],
+  "outputs": ["success_status", "bytes_written"],
+  "semantics": [
+    "Kết hợp giữa năng lực ghi ('write') và đối tượng tệp tin ('file').",
+    "Ghi hoặc ghi nối dữ liệu văn bản/nhị phân vào đường dẫn tệp tin xác định."
+  ],
+  "compositions": [
+    "write + file"
+  ]
+}

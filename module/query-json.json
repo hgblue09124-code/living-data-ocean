@@ -1,0 +1,13 @@
+{
+  "id": "query-json",
+  "type": "meso",
+  "inputs": ["json_data", "dot_path_expression"],
+  "outputs": ["target_value", "found_flag"],
+  "semantics": [
+    "Kết hợp giữa năng lực truy vấn ('query') và định dạng dữ liệu ('json').",
+    "Truy vấn dữ liệu cấu trúc lồng nhau qua chuỗi đường dẫn phân cách bằng dấu chấm."
+  ],
+  "compositions": [
+    "query + json + path"
+  ]
+}

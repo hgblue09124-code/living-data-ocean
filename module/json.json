@@ -1,0 +1,14 @@
+{
+  "id": "json",
+  "type": "atomic",
+  "inputs": ["json_payload"],
+  "outputs": ["json_structure"],
+  "semantics": [
+    "Đại diện cho định dạng ngữ nghĩa trao đổi dữ liệu JSON (JavaScript Object Notation).",
+    "Chứa cấu trúc cây khóa-giá trị, danh sách và các kiểu dữ liệu tương ứng."
+  ],
+  "compositions": [
+    "parse + json -> parse-json",
+    "query + json -> query-json"
+  ]
+}

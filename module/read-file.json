@@ -1,0 +1,13 @@
+{
+  "id": "read-file",
+  "type": "meso",
+  "inputs": ["file_path", "encoding", "binary_mode"],
+  "outputs": ["file_content", "bytes_read"],
+  "semantics": [
+    "Kết hợp giữa năng lực đọc ('read') và đối tượng tệp tin ('file').",
+    "Thực hiện đọc nội dung tệp tin văn bản hoặc nhị phân từ đường dẫn tệp tin cục bộ."
+  ],
+  "compositions": [
+    "read + file"
+  ]
+}

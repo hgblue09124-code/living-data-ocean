@@ -1,0 +1,13 @@
+{
+  "id": "context-memory",
+  "type": "meso",
+  "inputs": ["session_id", "new_message", "max_tokens_limit"],
+  "outputs": ["active_history", "is_trimmed"],
+  "semantics": [
+    "Kết hợp giữa ngữ cảnh thực thi ('context') và bộ nhớ làm việc ('memory').",
+    "Quản lý phiên ngữ cảnh bộ nhớ cho Agent, tích lũy lịch sử hội thoại và cắt tỉa theo window."
+  ],
+  "compositions": [
+    "context + memory + store + retrieve"
+  ]
+}

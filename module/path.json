@@ -1,0 +1,13 @@
+{
+  "id": "path",
+  "type": "atomic",
+  "inputs": ["location_string"],
+  "outputs": ["normalized_path", "parts"],
+  "semantics": [
+    "Đại diện cho đường dẫn định vị tài nguyên trong hệ thống tệp tin hoặc không gian tên.",
+    "Cung cấp khả năng chuẩn hóa, phân tách và ghép đường dẫn."
+  ],
+  "compositions": [
+    "file + path -> file-path-resolver"
+  ]
+}

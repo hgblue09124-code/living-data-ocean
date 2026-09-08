@@ -1,0 +1,13 @@
+{
+  "id": "diff-text",
+  "type": "meso",
+  "inputs": ["text_version_a", "text_version_b"],
+  "outputs": ["unified_diff_string", "has_changes"],
+  "semantics": [
+    "Kết hợp giữa năng lực tính diff ('diff') và dữ liệu văn bản ('text').",
+    "Tính toán sự chênh lệch dòng văn bản (unified diff) giữa hai tài liệu văn bản."
+  ],
+  "compositions": [
+    "diff + text"
+  ]
+}
