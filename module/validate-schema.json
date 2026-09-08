@@ -4,11 +4,10 @@
   "reference_inputs": ["data_dict", "schema_definition"],
   "reference_outputs": ["is_valid", "validation_errors"],
   "semantics": [
-    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: kiểm tra tính hợp lệ của dữ liệu theo schema.",
-    "Biểu diễn thao tác 'validate' kết hợp soi cấu trúc 'inspect' trên 'data'."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác xác minh 'validate' và cấu trúc quy định 'schema'.",
+    "Biểu diễn thao tác 'validate' kiểm tra sự tuân thủ quy tắc schema."
   ],
   "compositions": [
-    ["validate", "data"],
-    ["inspect", "validate"]
+    ["validate", "schema"]
   ]
 }

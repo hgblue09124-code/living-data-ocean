@@ -4,10 +4,10 @@
   "reference_inputs": ["current_state", "trigger_action", "transitions_table"],
   "reference_outputs": ["next_state", "is_allowed", "reason"],
   "semantics": [
-    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: kiểm tra tính hợp lệ của việc chuyển trạng thái.",
-    "Biểu diễn kiểm tra 'check' đối với quy tắc biến đổi 'state'."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa trạng thái 'state' và sự chuyển đổi 'transition'.",
+    "Biểu diễn kiểm tra quy tắc biến đổi trạng thái trong vòng đời."
   ],
   "compositions": [
-    ["state", "check"]
+    ["state", "transition"]
   ]
 }
