@@ -1,0 +1,14 @@
+{
+  "id": "context-memory",
+  "type": "meso",
+  "reference_inputs": ["session_id", "new_message", "max_tokens_limit"],
+  "reference_outputs": ["active_history", "is_trimmed"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: tích lũy ngữ cảnh và quản lý bộ nhớ làm việc.",
+    "Biểu diễn sự kết hợp giữa đối tượng ngữ cảnh 'context' và bộ nhớ 'memory'."
+  ],
+  "compositions": [
+    ["context", "memory"],
+    ["store", "retrieve"]
+  ]
+}

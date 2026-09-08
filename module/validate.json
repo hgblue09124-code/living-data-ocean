@@ -1,0 +1,14 @@
+{
+  "id": "validate",
+  "type": "atomic",
+  "reference_inputs": ["subject", "schema_rules"],
+  "reference_outputs": ["is_valid", "validation_errors"],
+  "semantics": [
+    "Thao tác xác minh sự tuân thủ quy tắc, ràng buộc hoặc tiêu chí.",
+    "Bao quát xác minh schema, kiểm tra kiểu dữ liệu, xác minh quy tắc nghiệp vụ."
+  ],
+  "compositions": [
+    ["validate", "schema"],
+    ["read", "validate"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "check-condition",
+  "type": "meso",
+  "reference_inputs": ["input_value", "predicate_operator", "target_value"],
+  "reference_outputs": ["result_boolean"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác đánh giá 'check' và điều kiện so sánh.",
+    "Biểu diễn thao tác 'check' áp dụng lên mệnh đề điều kiện."
+  ],
+  "compositions": [
+    ["check", "condition"]
+  ]
+}

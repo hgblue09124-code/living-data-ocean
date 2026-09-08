@@ -1,0 +1,13 @@
+{
+  "id": "wait",
+  "type": "atomic",
+  "reference_inputs": ["duration_seconds"],
+  "reference_outputs": ["time_elapsed", "completed"],
+  "semantics": [
+    "Thao tác tạm dừng hoặc điều tiết nhịp đập tiến trình trong khoảng thời gian.",
+    "Bao quát chờ thời gian, chờ sự kiện, điều tiết rate-limit."
+  ],
+  "compositions": [
+    ["wait", "interval"]
+  ]
+}

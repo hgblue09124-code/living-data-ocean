@@ -1,0 +1,13 @@
+{
+  "id": "select",
+  "type": "atomic",
+  "reference_inputs": ["candidates_list", "selection_criteria"],
+  "reference_outputs": ["selected_option", "index"],
+  "semantics": [
+    "Thao tác trích chọn một phương án ứng viên từ danh sách lựa chọn.",
+    "Bao quát chọn option tối ưu, chọn phương án khớp tiêu chí, trích mẫu."
+  ],
+  "compositions": [
+    ["select", "candidate"]
+  ]
+}

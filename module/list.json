@@ -1,0 +1,15 @@
+{
+  "id": "list",
+  "type": "atomic",
+  "reference_inputs": ["container", "options"],
+  "reference_outputs": ["entries", "total"],
+  "semantics": [
+    "Liệt kê, duyệt bề mặt hoặc thu thập tập hợp phần tử thuộc một tập chứa.",
+    "Bao quát các biểu hiện: duyệt thư mục, duyệt danh sách biến, duyệt tập công cụ, duyệt bảng ghi.",
+    "Không bị bó hẹp bởi cấu trúc danh mục cụ thể."
+  ],
+  "compositions": [
+    ["list", "directory"],
+    ["list", "filter"]
+  ]
+}

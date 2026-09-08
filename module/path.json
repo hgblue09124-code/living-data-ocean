@@ -1,0 +1,15 @@
+{
+  "id": "path",
+  "type": "atomic",
+  "reference_inputs": ["location_string"],
+  "reference_outputs": ["normalized_path", "parts"],
+  "semantics": [
+    "Chuỗi địa chỉ định vị không gian hoặc tuyến đường dẫn tới tài nguyên.",
+    "Đại diện ngữ nghĩa cho tọa độ tài nguyên trong hệ thống tệp, URL hoặc không gian tên.",
+    "Hỗ trợ phân tách, chuẩn hóa và hợp nhất tuyến vị trí."
+  ],
+  "compositions": [
+    ["find", "path"],
+    ["file", "path"]
+  ]
+}

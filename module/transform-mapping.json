@@ -1,0 +1,13 @@
+{
+  "id": "transform-mapping",
+  "type": "meso",
+  "reference_inputs": ["source_dict", "field_mapping_rules"],
+  "reference_outputs": ["transformed_dict"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác biến đổi 'transform' và bản đồ quy tắc 'mapping'.",
+    "Biểu diễn thao tác 'transform' áp dụng quy tắc ánh xạ cấu trúc."
+  ],
+  "compositions": [
+    ["transform", "mapping"]
+  ]
+}

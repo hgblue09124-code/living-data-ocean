@@ -1,0 +1,16 @@
+{
+  "id": "file",
+  "type": "atomic",
+  "reference_inputs": ["path", "mode"],
+  "reference_outputs": ["file_handle", "metadata"],
+  "semantics": [
+    "Đối tượng thực thể tệp tin trong không gian lưu trữ.",
+    "Chứa các thuộc tính ngữ nghĩa về vị trí, kích thước, định dạng và phân quyền.",
+    "Làm ngữ cảnh đối tượng cho các thao tác tác động như đọc, ghi, tìm kiếm."
+  ],
+  "compositions": [
+    ["read", "file"],
+    ["write", "file"],
+    ["find", "file"]
+  ]
+}

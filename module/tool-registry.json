@@ -1,0 +1,14 @@
+{
+  "id": "tool-registry",
+  "type": "meso",
+  "reference_inputs": ["registry_action", "tool_schema", "query_keyword"],
+  "reference_outputs": ["matched_tools_list"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: quản lý danh mục và tra cứu công cụ.",
+    "Biểu diễn sự kết hợp giữa đối tượng công cụ 'tool' và bảng đăng ký 'registry'."
+  ],
+  "compositions": [
+    ["tool", "registry"],
+    ["search", "registry"]
+  ]
+}

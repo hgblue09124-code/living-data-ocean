@@ -1,0 +1,13 @@
+{
+  "id": "compare-object",
+  "type": "meso",
+  "reference_inputs": ["left_object", "right_object", "strict_flag"],
+  "reference_outputs": ["is_equal", "diff_summary"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác so sánh 'compare' và đối tượng 'object'.",
+    "Biểu diễn thao tác 'compare' áp dụng lên đối tượng cấu trúc dữ liệu."
+  ],
+  "compositions": [
+    ["compare", "object"]
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "find-file",
+  "type": "meso",
+  "reference_inputs": ["root_directory", "glob_pattern", "max_depth"],
+  "reference_outputs": ["matching_paths", "matches_count"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: tìm kiếm các tệp tin trong thư mục.",
+    "Biểu diễn thao tác 'find' tác động lên chuỗi định vị 'path' của đối tượng 'file'."
+  ],
+  "compositions": [
+    ["find", "file"],
+    ["find", "path"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "invoke",
+  "type": "atomic",
+  "reference_inputs": ["target_function", "arguments"],
+  "reference_outputs": ["execution_result", "success_flag"],
+  "semantics": [
+    "Thao tác kích hoạt và gọi thực thi một đối tượng tiến trình hoặc hàm.",
+    "Bao quát gọi hàm, gọi API, kích hoạt tiến trình, thực thi lệnh."
+  ],
+  "compositions": [
+    ["invoke", "handler"]
+  ]
+}

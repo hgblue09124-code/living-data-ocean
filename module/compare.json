@@ -1,0 +1,13 @@
+{
+  "id": "compare",
+  "type": "atomic",
+  "reference_inputs": ["left_operand", "right_operand"],
+  "reference_outputs": ["is_equal", "diff_summary"],
+  "semantics": [
+    "Thao tác đối chiếu sự tương đồng, bằng nhau hoặc điểm khác biệt giữa hai đối tượng.",
+    "Bao quát so sánh bằng sâu, so sánh thuộc tính, đánh giá khoảng cách."
+  ],
+  "compositions": [
+    ["compare", "object"]
+  ]
+}

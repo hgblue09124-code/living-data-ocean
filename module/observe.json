@@ -1,0 +1,13 @@
+{
+  "id": "observe",
+  "type": "atomic",
+  "reference_inputs": ["target_scope"],
+  "reference_outputs": ["telemetry_data", "metrics"],
+  "semantics": [
+    "Thao tác quan sát và ghi nhận chỉ số/thông tin môi trường hiện tại.",
+    "Bao quát thu thập telemetry, quan sát tiến trình, ghi nhận trạng thái OS."
+  ],
+  "compositions": [
+    ["observe", "system"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "retrieve",
+  "type": "atomic",
+  "reference_inputs": ["storage_context", "key", "default_value"],
+  "reference_outputs": ["retrieved_value", "found_flag"],
+  "semantics": [
+    "Thao tác trích lấy lại thông tin đã lưu trữ theo khóa chỉ định.",
+    "Bao quát đọc biến trạng thái, tra cứu key trong store, trích nhớ."
+  ],
+  "compositions": [
+    ["retrieve", "key"]
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "query-json",
+  "type": "meso",
+  "reference_inputs": ["json_data", "dot_path_expression"],
+  "reference_outputs": ["target_value", "found_flag"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: truy vấn dữ liệu theo đường dẫn trong đối tượng JSON.",
+    "Biểu diễn thao tác 'query' kết hợp định dạng 'json' và vị trí 'path'."
+  ],
+  "compositions": [
+    ["query", "json"],
+    ["query", "path"]
+  ]
+}

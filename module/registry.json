@@ -1,0 +1,13 @@
+{
+  "id": "registry",
+  "type": "atomic",
+  "reference_inputs": ["action_type", "entity_schema"],
+  "reference_outputs": ["registry_catalog", "matches"],
+  "semantics": [
+    "Khái niệm bảng đăng ký danh mục và tra cứu tài nguyên/công cụ.",
+    "Bao quát đăng ký công cụ, tra cứu theo từ khóa, quản lý danh mục."
+  ],
+  "compositions": [
+    ["tool", "registry"]
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "write",
+  "type": "atomic",
+  "reference_inputs": ["target", "content", "options"],
+  "reference_outputs": ["status", "bytes_written"],
+  "semantics": [
+    "Khắc ghi, lưu giữ hoặc truyền phát nội dung dữ liệu tới một đối tượng đích.",
+    "Bao quát các biểu hiện: ghi tệp tin, nối văn bản, phát luồng dữ liệu, cập nhật bộ nhớ, xuất tín hiệu.",
+    "Không bị giới hạn bởi phương thức lưu trữ hay kiểu đối tượng đích."
+  ],
+  "compositions": [
+    ["write", "file"],
+    ["transform", "write"]
+  ]
+}

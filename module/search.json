@@ -1,0 +1,13 @@
+{
+  "id": "search",
+  "type": "atomic",
+  "reference_inputs": ["search_space", "query_pattern"],
+  "reference_outputs": ["search_results", "occurrences"],
+  "semantics": [
+    "Thao tác tìm kiếm văn bản hoặc thông tin trong không gian nguồn.",
+    "Bao quát tìm kiếm từ khóa, tra cứu chuỗi, quét vị trí khớp."
+  ],
+  "compositions": [
+    ["search", "pattern"]
+  ]
+}

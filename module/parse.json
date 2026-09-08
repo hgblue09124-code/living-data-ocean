@@ -1,0 +1,14 @@
+{
+  "id": "parse",
+  "type": "atomic",
+  "reference_inputs": ["raw_input", "grammar_spec"],
+  "reference_outputs": ["structured_output", "success"],
+  "semantics": [
+    "Thao tác phân tích cú pháp chuỗi/nhị phân để giải mã thành cấu trúc ý nghĩa.",
+    "Bao quát giải mã JSON, XML, CSV, AST mã nguồn, ngữ pháp câu lệnh."
+  ],
+  "compositions": [
+    ["parse", "json"],
+    ["read", "parse"]
+  ]
+}

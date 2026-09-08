@@ -1,0 +1,13 @@
+{
+  "id": "validate-schema",
+  "type": "meso",
+  "reference_inputs": ["data_dict", "schema_definition"],
+  "reference_outputs": ["is_valid", "validation_errors"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác xác minh 'validate' và cấu trúc quy định 'schema'.",
+    "Biểu diễn thao tác 'validate' kiểm tra sự tuân thủ quy tắc schema."
+  ],
+  "compositions": [
+    ["validate", "schema"]
+  ]
+}

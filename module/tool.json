@@ -1,0 +1,13 @@
+{
+  "id": "tool",
+  "type": "atomic",
+  "reference_inputs": ["tool_identifier", "interface_definition"],
+  "reference_outputs": ["tool_metadata"],
+  "semantics": [
+    "Khái niệm công cụ/năng lực thực thi có schema mô tả giao diện.",
+    "Đại diện cho đối tượng kỹ năng có thể đăng ký và gọi thực thi."
+  ],
+  "compositions": [
+    ["tool", "registry"]
+  ]
+}

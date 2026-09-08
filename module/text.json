@@ -1,0 +1,14 @@
+{
+  "id": "text",
+  "type": "atomic",
+  "reference_inputs": ["raw_string", "encoding"],
+  "reference_outputs": ["text_stream", "length"],
+  "semantics": [
+    "Chuỗi biểu diễn văn bản ngôn ngữ tự nhiên, mã nguồn hoặc ký tự.",
+    "Làm ngữ cảnh đối tượng cho các thao tác bóc tách, tìm kiếm, so sánh dòng văn bản."
+  ],
+  "compositions": [
+    ["extract", "text"],
+    ["diff", "text"]
+  ]
+}

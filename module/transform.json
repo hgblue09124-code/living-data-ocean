@@ -1,0 +1,14 @@
+{
+  "id": "transform",
+  "type": "atomic",
+  "reference_inputs": ["source_data", "mapping_rules"],
+  "reference_outputs": ["transformed_data"],
+  "semantics": [
+    "Thao tác tái cấu trúc, chuyển đổi hoặc ánh xạ hình thái dữ liệu từ dạng này sang dạng khác.",
+    "Bao quát ánh xạ trường, đổi kiểu dữ liệu, chuẩn hóa cấu trúc."
+  ],
+  "compositions": [
+    ["transform", "mapping"],
+    ["read", "transform", "write"]
+  ]
+}

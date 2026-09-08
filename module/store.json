@@ -1,0 +1,13 @@
+{
+  "id": "store",
+  "type": "atomic",
+  "reference_inputs": ["storage_context", "key", "value"],
+  "reference_outputs": ["updated_context", "success"],
+  "semantics": [
+    "Thao tác lưu giữ thông tin/giá trị vào môi trường lưu trữ ngữ cảnh.",
+    "Bao quát lưu key-value, ghi nhớ biến tạm, lưu vào bộ nhớ đệm."
+  ],
+  "compositions": [
+    ["store", "key"]
+  ]
+}

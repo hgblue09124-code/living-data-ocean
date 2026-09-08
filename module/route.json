@@ -1,0 +1,13 @@
+{
+  "id": "route",
+  "type": "atomic",
+  "reference_inputs": ["payload", "routing_table"],
+  "reference_outputs": ["selected_target", "matched_rule"],
+  "semantics": [
+    "Thao tác phân luồng và điều hướng tín hiệu/dữ liệu tới mục tiêu xử lý thích hợp.",
+    "Bao quát điều hướng theo quy tắc, định tuyến tin nhắn, rẽ nhánh luồng."
+  ],
+  "compositions": [
+    ["route", "condition"]
+  ]
+}

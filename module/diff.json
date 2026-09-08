@@ -1,0 +1,13 @@
+{
+  "id": "diff",
+  "type": "atomic",
+  "reference_inputs": ["version_a", "version_b"],
+  "reference_outputs": ["delta_stream", "has_changes"],
+  "semantics": [
+    "Thao tác tính toán bản mô tả chênh lệch từng dòng hoặc từng phần giữa hai phiên bản.",
+    "Bao quát unified diff văn bản, tree diff, delta patch."
+  ],
+  "compositions": [
+    ["diff", "text"]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "parse-json",
+  "type": "meso",
+  "reference_inputs": ["json_string", "fallback_value"],
+  "reference_outputs": ["parsed_object", "success"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: phân tích cú pháp chuỗi JSON.",
+    "Biểu diễn thao tác 'parse' tác động lên đối tượng định dạng 'json'."
+  ],
+  "compositions": [
+    ["parse", "json"]
+  ]
+}

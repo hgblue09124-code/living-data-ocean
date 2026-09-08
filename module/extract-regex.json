@@ -1,0 +1,13 @@
+{
+  "id": "extract-regex",
+  "type": "meso",
+  "reference_inputs": ["source_text", "regex_pattern"],
+  "reference_outputs": ["extracted_matches"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác bóc tách 'extract' và biểu thức chính quy 'regex'.",
+    "Biểu diễn thao tác 'extract' áp dụng quy tắc khớp mẫu 'regex'."
+  ],
+  "compositions": [
+    ["extract", "regex"]
+  ]
+}

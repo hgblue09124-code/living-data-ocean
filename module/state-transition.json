@@ -1,0 +1,13 @@
+{
+  "id": "state-transition",
+  "type": "meso",
+  "reference_inputs": ["current_state", "trigger_action", "transitions_table"],
+  "reference_outputs": ["next_state", "is_allowed", "reason"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa trạng thái 'state' và sự chuyển đổi 'transition'.",
+    "Biểu diễn kiểm tra quy tắc biến đổi trạng thái trong vòng đời."
+  ],
+  "compositions": [
+    ["state", "transition"]
+  ]
+}

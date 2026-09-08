@@ -1,0 +1,13 @@
+{
+  "id": "route-condition",
+  "type": "meso",
+  "reference_inputs": ["payload_data", "routing_rules_list"],
+  "reference_outputs": ["target_handler", "matched_rule"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác điều hướng 'route' và điều kiện rẽ nhánh 'condition'.",
+    "Biểu diễn thao tác 'route' dựa trên việc kiểm tra điều kiện."
+  ],
+  "compositions": [
+    ["route", "condition"]
+  ]
+}

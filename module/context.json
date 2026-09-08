@@ -1,0 +1,13 @@
+{
+  "id": "context",
+  "type": "atomic",
+  "reference_inputs": ["session_id", "attributes"],
+  "reference_outputs": ["context_object"],
+  "semantics": [
+    "Khái niệm ngữ cảnh môi trường và lịch sử thực thi.",
+    "Làm ngữ cảnh nền cho các hoạt động tích lũy và duy trì sự hiểu biết."
+  ],
+  "compositions": [
+    ["context", "memory"]
+  ]
+}

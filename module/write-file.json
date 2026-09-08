@@ -1,0 +1,13 @@
+{
+  "id": "write-file",
+  "type": "meso",
+  "reference_inputs": ["file_path", "content", "write_mode"],
+  "reference_outputs": ["success_status", "bytes_written"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: ghi vào một tệp tin.",
+    "Biểu diễn ngữ nghĩa thao tác 'write' tác động lên đối tượng 'file'."
+  ],
+  "compositions": [
+    ["write", "file"]
+  ]
+}

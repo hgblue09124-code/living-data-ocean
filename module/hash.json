@@ -1,0 +1,13 @@
+{
+  "id": "hash",
+  "type": "atomic",
+  "reference_inputs": ["raw_bytes", "algorithm"],
+  "reference_outputs": ["digest_string"],
+  "semantics": [
+    "Khái niệm băm cryptographic tạo ra đại diện thu gọn duy nhất của dữ liệu.",
+    "Bao quát mã băm SHA256, MD5, MurmurHash, đại diện vân tay dữ liệu."
+  ],
+  "compositions": [
+    ["verify", "hash"]
+  ]
+}

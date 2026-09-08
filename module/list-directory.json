@@ -1,0 +1,13 @@
+{
+  "id": "list-directory",
+  "type": "meso",
+  "reference_inputs": ["directory_path", "recursive_flag"],
+  "reference_outputs": ["directory_entries"],
+  "semantics": [
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự giữa thao tác liệt kê 'list' và tập chứa 'directory'.",
+    "Biểu diễn thao tác 'list' tác động lên đường dẫn tập chứa thư mục."
+  ],
+  "compositions": [
+    ["list", "directory"]
+  ]
+}

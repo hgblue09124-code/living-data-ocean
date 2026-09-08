@@ -1,0 +1,13 @@
+{
+  "id": "memory",
+  "type": "atomic",
+  "reference_inputs": ["memory_stream", "window_size"],
+  "reference_outputs": ["active_memory", "pruned_flag"],
+  "semantics": [
+    "Khái niệm bộ nhớ làm việc duy trì và quản lý cửa sổ thông tin.",
+    "Bao quát lưu trữ lịch sử, cắt tỉa thông điệp, duy trì bộ nhớ đệm."
+  ],
+  "compositions": [
+    ["context", "memory"]
+  ]
+}

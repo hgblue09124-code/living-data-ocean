@@ -1,0 +1,14 @@
+{
+  "id": "json",
+  "type": "atomic",
+  "reference_inputs": ["json_payload"],
+  "reference_outputs": ["json_structure"],
+  "semantics": [
+    "Định dạng ngữ nghĩa biểu diễn dữ liệu đối tượng/mảng khóa-giá trị theo chuẩn JSON.",
+    "Cung cấp khả năng biểu diễn cây dữ liệu phân cấp."
+  ],
+  "compositions": [
+    ["parse", "json"],
+    ["query", "json"]
+  ]
+}

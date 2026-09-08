@@ -1,0 +1,16 @@
+{
+  "id": "read",
+  "type": "atomic",
+  "reference_inputs": ["source", "options"],
+  "reference_outputs": ["content", "metadata"],
+  "semantics": [
+    "Tiếp nhận, truy cập hoặc giải mã nội dung từ một đối tượng nguồn bất kỳ.",
+    "Bao quát các biểu hiện: đọc tệp tin, đọc luồng dữ liệu, đọc bộ nhớ, đọc thông điệp, đọc thị giác/cảm biến.",
+    "Không bị giới hạn bởi một giao thức hay cấu trúc nguồn cố định."
+  ],
+  "compositions": [
+    ["read", "file"],
+    ["read", "find"],
+    ["read", "find", "validate"]
+  ]
+}
