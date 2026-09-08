@@ -22,8 +22,8 @@ class EventLoop:
 
     Thứ tự xác định ở MỖI bước thời gian:
     1. Lấy trạng thái hiện tại state_before.
-    2. Tiếp nhận và áp dụng các AdministratorCommand từ bên ngoài (nếu có).
-    3. Kiểm tra xem có lệnh REQUEST_STOP từ Administrator hay không.
+    2. Thu thập các AdministratorCommand từ bên ngoài (từ `administrator`, `command_queue`, hoặc `commands`).
+    3. Áp dụng các AdministratorCommand vào thế giới và kiểm tra lệnh REQUEST_STOP.
     4. Tạo Observation từ state_before cho External Agent.
     5. Tiếp nhận Action từ External Agent và tiến hành `world.tick(actions)`.
     6. Ghi nhận bước mô phỏng vào Trajectory.
@@ -39,6 +39,7 @@ class EventLoop:
         steps: Optional[int] = None,
         administrator: Optional[Administrator] = None,
         commands: Optional[List[AdministratorCommand]] = None,
+        command_queue: Optional[Any] = None,
         agent_callback: Optional[Callable[[Observation], Optional[List[Action]]]] = None,
         trajectory_id: str = "traj_001"
     ) -> Trajectory:
@@ -48,8 +49,9 @@ class EventLoop:
         Args:
             steps (Optional[int]): Số bước mô phỏng tối đa. Nếu là None, thế giới
                 sẽ chạy liên tục cho đến khi nhận được lệnh REQUEST_STOP từ bên ngoài.
-            administrator (Optional[Administrator]): Giao diện điều khiển từ bên ngoài (nếu có).
+            administrator (Optional[Administrator]): Giao diện điều khiển từ bên ngoài.
             commands (Optional[List[AdministratorCommand]]): Danh sách lệnh trực tiếp từ bên ngoài.
+            command_queue (Optional[Any]): Hàng chờ lệnh hoặc callback trả về lệnh động trong lúc continuous runtime.
             agent_callback (Optional[Callable]): Callback đại diện cho External Agent.
             trajectory_id (str): Mã định danh cho Trajectory.
 
@@ -67,14 +69,26 @@ class EventLoop:
             # 1. Lấy trạng thái hiện tại trước tick
             state_before = self.world.get_state()
 
-            # 2. Thu thập lệnh từ Administrator hoặc danh sách commands truyền vào
+            # 2. Thu thập lệnh từ Administrator, command_queue, hoặc danh sách commands truyền vào
             active_commands: List[AdministratorCommand] = []
             if commands:
                 active_commands.extend(commands)
-                commands = None  # Xóa danh sách lệnh truyền vào sau khi đã nhận cho lượt đầu
+                commands = None  # Xóa danh sách lệnh tĩnh sau khi nhận ở lượt đầu
 
             if administrator is not None:
                 active_commands.extend(administrator.get_pending_commands())
+
+            if command_queue is not None:
+                if callable(command_queue):
+                    q_cmds = command_queue(state_before)
+                    if q_cmds:
+                        active_commands.extend(q_cmds)
+                elif hasattr(command_queue, "get_pending_commands"):
+                    active_commands.extend(command_queue.get_pending_commands())
+                elif hasattr(command_queue, "pop") or hasattr(command_queue, "get"):
+                    # Hàng chờ dạng list hoặc queue
+                    while hasattr(command_queue, "__len__") and len(command_queue) > 0:
+                        active_commands.append(command_queue.pop(0))
 
             # 3. Áp dụng các lệnh từ bên ngoài và kiểm tra lệnh REQUEST_STOP
             stop_requested = False

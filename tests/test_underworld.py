@@ -148,7 +148,6 @@ class TestUnderworldBoundary(unittest.TestCase):
         world.add_human(Human("Auto_2", position=(10, 10)))
 
         event_loop = EventLoop(world)
-        # Chạy mà KHÔNG truyền administrator hay commands
         trajectory = event_loop.run(steps=5, administrator=None)
 
         self.assertEqual(len(trajectory.steps), 5)
@@ -225,45 +224,43 @@ class TestUnderworldBoundary(unittest.TestCase):
         self.assertEqual(len(trajectory.steps), 10)
         self.assertEqual(world.time_step, 10)
 
-    def test_17_snapshot_integrity_nested_structures(self):
-        """17. Kiểm tra trạng thái snapshot độc lập hoàn toàn ở các cấu trúc dữ liệu lồng nhau."""
+    def test_17_snapshot_integrity_mutation_isolation(self):
+        """17. Kiểm tra mutation trực tiếp lên World/Human không ảnh hưởng đến state_before đã chụp."""
         world = World()
         human = Human("H_Snapshot", position=(0, 0))
         world.add_human(human)
 
         state_before = world.get_state()
-        initial_needs = dict(state_before.human_states["H_Snapshot"].needs)
-        initial_resources = dict(state_before.environment["resources"])
+        initial_dict = state_before.to_dict()
 
-        # Tiến hành 3 bước tick làm biến đổi năng lượng/nhu cầu/môi trường
-        world.tick()
-        world.tick()
+        # Đột biến trực tiếp các thuộc tính sống của human và world
+        human.state.position = (99, 99)
+        human.state.needs["năng_lượng"] = 0.0
+        human.state.memory.append({"fake": "mutation"})
+        world.environment["resources"]["thức_ăn"] = 999
+        world.events.append({"fake": "event"})
+        world.add_human(Human("H_Injected"))
         world.tick()
 
-        # Kiểm tra dữ liệu lồng nhau trong snapshot ban đầu hoàn toàn không bị ảnh hưởng
-        self.assertEqual(state_before.human_states["H_Snapshot"].needs, initial_needs)
-        self.assertEqual(state_before.environment["resources"], initial_resources)
+        # Khẳng định state_before hoàn toàn giữ nguyên trạng thái chụp ban đầu
+        self.assertEqual(state_before.to_dict(), initial_dict)
+        self.assertEqual(state_before.human_states["H_Snapshot"].position, (0, 0))
+        self.assertNotIn("H_Injected", state_before.human_states)
 
     def test_18_random_seed_reproducibility(self):
-        """18. Kiểm tra hai thế giới cùng hạt giống tái lập 100% toàn bộ Trajectory."""
+        """18. Kiểm tra hai thế giới cùng hạt giống tái lập 100% toàn bộ Trajectory dict."""
         world1 = World(seed=12345)
         world1.add_human(Human("H_Seed", position=(0, 0)))
         loop1 = EventLoop(world1)
-        traj1 = loop1.run(steps=5)
+        traj1 = loop1.run(steps=5, trajectory_id="traj_same")
 
         world2 = World(seed=12345)
         world2.add_human(Human("H_Seed", position=(0, 0)))
         loop2 = EventLoop(world2)
-        traj2 = loop2.run(steps=5)
+        traj2 = loop2.run(steps=5, trajectory_id="traj_same")
 
-        for s1, s2 in zip(traj1.steps, traj2.steps):
-            self.assertEqual(s1.step, s2.step)
-            self.assertEqual(s1.state_after["human_states"]["H_Seed"]["position"],
-                             s2.state_after["human_states"]["H_Seed"]["position"])
-            self.assertEqual(s1.state_after["human_states"]["H_Seed"]["needs"],
-                             s2.state_after["human_states"]["H_Seed"]["needs"])
-            self.assertEqual(s1.state_after["human_states"]["H_Seed"]["action_history"],
-                             s2.state_after["human_states"]["H_Seed"]["action_history"])
+        # So sánh 100% bản xuất dictionary của cả 2 Trajectory
+        self.assertEqual(traj1.to_dict(), traj2.to_dict())
 
     def test_19_different_seeds_produce_different_trajectories(self):
         """19. Kiểm tra hai thế giới với hạt giống khác nhau tạo ra quỹ đạo khác nhau."""
@@ -275,10 +272,7 @@ class TestUnderworldBoundary(unittest.TestCase):
         world2.add_human(Human("H_Diff", position=(0, 0)))
         traj2 = EventLoop(world2).run(steps=10)
 
-        positions_1 = [s.state_after["human_states"]["H_Diff"]["position"] for s in traj1.steps]
-        positions_2 = [s.state_after["human_states"]["H_Diff"]["position"] for s in traj2.steps]
-
-        self.assertNotEqual(positions_1, positions_2)
+        self.assertNotEqual(traj1.to_dict(), traj2.to_dict())
 
 
 if __name__ == "__main__":
