@@ -1,0 +1,23 @@
+{
+  "name": "state-transition-manager",
+  "purpose": "Quản lý việc chuyển đổi trạng thái FSM (Finite State Machine) dựa trên hành động và bảng chuyển đổi cho phép.",
+  "semantic_boundary": "Chỉ kiểm tra và trả về trạng thái hợp lệ tiếp theo. Không tự kích hoạt các side-effect của trạng thái.",
+  "scale": "micro",
+  "inputs": [
+    "current_state (chuỗi: trạng thái hiện tại)",
+    "action (chuỗi: hành động kích hoạt)",
+    "allowed_transitions (dict bảng chuyển đổi trạng thái)"
+  ],
+  "outputs": [
+    "next_state (chuỗi)",
+    "allowed (boolean)",
+    "reason (chuỗi lỗi hoặc None)"
+  ],
+  "composition": [
+    "Dùng trong agent-execution-loop để quản lý vòng đời chạy của Agent (idle -> running -> paused -> completed)",
+    "Kết hợp với store-key-value để lưu trạng thái mới"
+  ],
+  "source": "Finite State Automata State Management",
+  "evidence": "Giúp kiểm soát luồng thực thi phức tạp của Agent không bị nhảy trạng thái bất hợp lệ.",
+  "assessment": "Rất hữu ích."
+}

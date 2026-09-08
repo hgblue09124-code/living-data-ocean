@@ -1,0 +1,22 @@
+{
+  "name": "route-conditional-target",
+  "purpose": "Điều hướng dữ liệu payload tới tập lệnh/đích xử lý tương ứng dựa trên bảng quy tắc điều kiện.",
+  "semantic_boundary": "Chỉ khớp các điều kiện đối với payload và trả về tên đích xử lý. Không trực tiếp gọi thực thi đích xử lý.",
+  "scale": "micro",
+  "inputs": [
+    "payload (dict dữ liệu)",
+    "routes (danh sách quy tắc route)",
+    "default_target (chuỗi: đích mặc định)"
+  ],
+  "outputs": [
+    "target (chuỗi: tên đích khớp)",
+    "matched_rule (dict quy tắc khớp)"
+  ],
+  "composition": [
+    "Kết hợp với invoke-callable-handler để gọi handler sau khi đã xác định được target",
+    "Kết hợp với detect-data-type để điều hướng theo kiểu dữ liệu"
+  ],
+  "source": "Conditional Dispatch Router Patterns",
+  "evidence": "Nền tảng cho việc phân luồng xử lý thông minh trong Agent OS.",
+  "assessment": "Rất hữu ích."
+}

@@ -1,0 +1,22 @@
+{
+  "name": "verify-data-hash",
+  "purpose": "Xác minh tính toàn vẹn của dữ liệu bằng cách tính toán và so sánh checksum hash (SHA256, MD5, v.v.).",
+  "semantic_boundary": "Chỉ thực hiện tính toán và so sánh chuỗi cryptographic hash của dữ liệu đầu vào.",
+  "scale": "micro",
+  "inputs": [
+    "data (chuỗi hoặc byte)",
+    "expected_hash (chuỗi hash kỳ vọng)",
+    "algorithm (chuỗi thuật toán, mặc định 'sha256')"
+  ],
+  "outputs": [
+    "match (boolean)",
+    "calculated_hash (chuỗi hash đã tính)"
+  ],
+  "composition": [
+    "Dùng sau read-file-content để đảm bảo file tải về/đọc vào không bị hư hỏng",
+    "Kiểm tra xem dữ liệu hoặc code nguồn có bị thay đổi (tampered) hay không"
+  ],
+  "source": "Cryptographic Hash Integrity Verification",
+  "evidence": "Cần thiết cho khâu an toàn và bảo mật của Agent OS khi làm việc với tài nguyên nhạy cảm.",
+  "assessment": "Hữu ích."
+}

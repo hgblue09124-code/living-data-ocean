@@ -1,0 +1,22 @@
+{
+  "name": "retrieve-key-value",
+  "purpose": "Truy xuất giá trị từ một từ điển/map theo khóa một cách an toàn.",
+  "semantic_boundary": "Chỉ thực hiện đọc dữ liệu từ một đối tượng dữ liệu cấu trúc dạng key-value trong bộ nhớ.",
+  "scale": "micro",
+  "inputs": [
+    "store (dict: từ điển nguồn)",
+    "key (chuỗi: khóa tra cứu)",
+    "default (bất kỳ: giá trị mặc định nếu không tìm thấy)"
+  ],
+  "outputs": [
+    "value (bất kỳ)",
+    "found (boolean)"
+  ],
+  "composition": [
+    "Truyền giá trị đọc được sang check-condition-predicate để kiểm tra",
+    "Truyền giá trị đọc được sang route-conditional-target để điều hướng"
+  ],
+  "source": "In-Memory Dictionary Inspection Patterns",
+  "evidence": "Cho phép Agent lấy các thông tin cấu hình, biến trạng thái hoặc dữ liệu đã lưu từ các bước trước.",
+  "assessment": "Hữu ích và nguyên tử."
+}

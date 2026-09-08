@@ -1,0 +1,20 @@
+{
+  "name": "transform-data-mapping",
+  "purpose": "Ánh xạ và chuyển đổi các trường dữ liệu giữa các dictionary dựa trên bản đồ cấu hình.",
+  "semantic_boundary": "Chỉ tái cấu trúc tên khóa và biến đổi kiểu dữ liệu giữa hai cấu trúc dictionary trong bộ nhớ.",
+  "scale": "micro",
+  "inputs": [
+    "data (dict nguồn)",
+    "mapping (dict: bản đồ ánh xạ target_key -> source_key hoặc hàm biến đổi)"
+  ],
+  "outputs": [
+    "transformed (dict đích)"
+  ],
+  "composition": [
+    "Biến đổi dữ liệu đầu ra của một tool trước khi chuyền làm đầu vào cho tool khác",
+    "Chuẩn hóa dữ liệu từ nguồn ngoài về cấu trúc nội bộ của Agent OS"
+  ],
+  "source": "Data Mapper Architecture Pattern",
+  "evidence": "Các tool và dịch vụ khác nhau dùng tên trường khác nhau, Agent OS cần bước chuyển đổi để kết nối dữ liệu.",
+  "assessment": "Hữu ích và chuẩn micro primitive."
+}

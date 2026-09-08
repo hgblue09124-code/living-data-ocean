@@ -1,0 +1,22 @@
+{
+  "name": "query-json-path",
+  "purpose": "Truy vấn dữ liệu cấu trúc lồng nhau qua chuỗi đường dẫn phân cách bằng dấu chấm (dot-notation).",
+  "semantic_boundary": "Chỉ duyêt qua cấu trúc dict/list trong bộ nhớ theo cú pháp đường dẫn. Không thực hiện tính toán biến đổi dữ liệu.",
+  "scale": "micro",
+  "inputs": [
+    "data (dict hoặc list)",
+    "path (chuỗi: đường dẫn, ví dụ 'a.b.0.c')",
+    "default (bất kỳ: giá trị mặc định)"
+  ],
+  "outputs": [
+    "value (bất kỳ)",
+    "found (boolean)"
+  ],
+  "composition": [
+    "Dùng sau parse-json-structured để trích xuất trường dữ liệu cụ thể từ phản hồi JSON",
+    "Chuyển giá trị lấy được cho check-condition-predicate"
+  ],
+  "source": "Nested Object Path Query Abstractions",
+  "evidence": "Agent cần cách đơn giản để lấy thông tin sâu trong các đối tượng phản hồi phức tạp mà không bị lỗi KeyError.",
+  "assessment": "Thực sự hữu ích."
+}

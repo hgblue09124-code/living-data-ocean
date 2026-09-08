@@ -1,0 +1,20 @@
+{
+  "name": "wait-time-interval",
+  "purpose": "Tạm dừng tiến trình thực thi trong một khoảng thời gian chỉ định.",
+  "semantic_boundary": "Chỉ tạm dừng thời gian thực thi của luồng hiện tại.",
+  "scale": "micro",
+  "inputs": [
+    "seconds (số thực hoặc số nguyên)"
+  ],
+  "outputs": [
+    "elapsed (số thực: thời gian thực tế đã chờ)",
+    "completed (boolean)"
+  ],
+  "composition": [
+    "Dùng trong vòng lặp chờ kết quả từ API hoặc tác vụ bất đồng bộ",
+    "Dùng kiểm soát tần suất gọi API (rate limiting)"
+  ],
+  "source": "Process Thread Sleep Standard Operations",
+  "evidence": "Thiết yếu cho quản lý nhịp độ thực thi và chờ đợi tác vụ trong Agent OS.",
+  "assessment": "Hữu ích."
+}

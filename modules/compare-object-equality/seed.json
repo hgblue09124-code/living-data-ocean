@@ -1,0 +1,22 @@
+{
+  "name": "compare-object-equality",
+  "purpose": "So sánh hai đối tượng/cấu trúc dữ liệu để xác định sự bằng nhau tuyệt đối hoặc tương đương cấu trúc sâu.",
+  "semantic_boundary": "Chỉ so sánh sự tương đồng giữa hai đối tượng trong bộ nhớ. Không thực hiện đo lường khoảng cách văn bản.",
+  "scale": "micro",
+  "inputs": [
+    "left (bất kỳ)",
+    "right (bất kỳ)",
+    "strict (boolean: tùy chọn, mặc định True)"
+  ],
+  "outputs": [
+    "equal (boolean)",
+    "difference_summary (chuỗi mô tả sai biệt hoặc None)"
+  ],
+  "composition": [
+    "Dùng kiểm tra xem trạng thái Agent sau khi thực thi có thay đổi so với trạng thái trước không",
+    "Kết hợp với verify-data-hash để đảm bảo tính đồng nhất"
+  ],
+  "source": "Structural Object Comparison Mechanics",
+  "evidence": "Agent cần biết liệu hai kết quả nhận được có giống nhau hay không.",
+  "assessment": "Hữu ích."
+}

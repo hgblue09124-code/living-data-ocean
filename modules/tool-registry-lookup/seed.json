@@ -1,0 +1,22 @@
+{
+  "name": "tool-registry-lookup",
+  "purpose": "Đăng ký, quản lý danh mục và tra cứu công cụ (tool/skill) khả dụng cho Agent theo tên hoặc nhãn năng lực.",
+  "semantic_boundary": "Chỉ duy trì bảng chỉ mục đăng ký công cụ và trả về danh sách schema công cụ phù hợp. Không trực tiếp gọi thực thi công cụ.",
+  "scale": "meso",
+  "inputs": [
+    "action (chuỗi: 'register', 'lookup', 'list')",
+    "tool_schema (dict: mô tả tool khi đăng ký)",
+    "query (chuỗi: từ khóa tra cứu khi lookup)"
+  ],
+  "outputs": [
+    "tools (danh sách schema công cụ khớp)",
+    "registered (boolean)"
+  ],
+  "composition": [
+    "Kết hợp các micro seed: store-key-value, retrieve-key-value, search-text-pattern, select-candidate-option",
+    "Cung cấp danh sách công cụ định dạng chuẩn cho LLM trong agent-execution-loop"
+  ],
+  "source": "Agent Tool Call Registry Specifications (OpenAI Function Calling / Anthropic Tools)",
+  "evidence": "Agent OS cần một nơi trung tâm để biết mình có những công cụ nào và gửi định dạng công cụ đó cho LLM chọn.",
+  "assessment": "Hạt seed quy mô Meso rất hữu ích và cần thiết."
+}

@@ -1,0 +1,22 @@
+{
+  "name": "store-key-value",
+  "purpose": "Lưu trữ hoặc cập nhật một cặp khóa-giá trị vào đối tượng từ điển bộ nhớ trạng thái.",
+  "semantic_boundary": "Chỉ duy trì việc ghi nhớ cặp khóa-giá trị trong cấu trúc từ điển in-memory.",
+  "scale": "micro",
+  "inputs": [
+    "store (dict: từ điển lưu trữ gốc)",
+    "key (chuỗi: khóa lưu)",
+    "value (bất kỳ: giá trị lưu)"
+  ],
+  "outputs": [
+    "store (dict: từ điển đã cập nhật)",
+    "stored (boolean)"
+  ],
+  "composition": [
+    "Kết hợp với retrieve-key-value để làm bộ nhớ tạm cho Agent",
+    "Dùng trong state-transition-manager để ghi nhận trạng thái hiện tại"
+  ],
+  "source": "In-Memory Key-Value Store Abstraction",
+  "evidence": "Mọi Agent OS đều cần cơ chế ghi lại thông tin ngữ cảnh hoặc biến tạm trong quá trình suy luận.",
+  "assessment": "Hữu ích, đúng chuẩn micro primitive."
+}

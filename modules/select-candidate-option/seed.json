@@ -1,0 +1,23 @@
+{
+  "name": "select-candidate-option",
+  "purpose": "Lựa chọn phương án tốt nhất từ danh sách các ứng viên dựa trên tiêu chí cho trước.",
+  "semantic_boundary": "Chỉ thực hiện chọn phương án theo quy tắc từ danh sách có sẵn. Không sinh ra phương án mới.",
+  "scale": "micro",
+  "inputs": [
+    "candidates (danh sách các ứng viên)",
+    "criterion_key (chuỗi: khóa tiêu chí so sánh)",
+    "default (bất kỳ: giá trị mặc định)"
+  ],
+  "outputs": [
+    "selected (bất kỳ: ứng viên được chọn)",
+    "selected_index (số nguyên)",
+    "found (boolean)"
+  ],
+  "composition": [
+    "Chọn công cụ tốt nhất từ danh sách công cụ gợi ý",
+    "Chọn kế hoạch hành động có điểm tin cậy cao nhất"
+  ],
+  "source": "Decision Candidate Selection Mechanics",
+  "evidence": "Cần thiết cho khâu ra quyết định lựa chọn trong Agent OS.",
+  "assessment": "Hữu ích."
+}

@@ -1,0 +1,21 @@
+{
+  "name": "check-condition-predicate",
+  "purpose": "Đánh giá các mệnh đề so sánh logic trên dữ liệu (bằng, lớn hơn, chứa, khớp regex).",
+  "semantic_boundary": "Chỉ thực hiện đánh giá biểu thức logic giữa hai giá trị. Không chứa logic rẽ nhánh luồng.",
+  "scale": "micro",
+  "inputs": [
+    "value (bất kỳ)",
+    "operator (chuỗi: 'eq', 'neq', 'gt', 'contains', 'regex', v.v.)",
+    "target (bất kỳ)"
+  ],
+  "outputs": [
+    "result (boolean)"
+  ],
+  "composition": [
+    "Cung cấp kết quả boolean cho route-conditional-target",
+    "Dùng trong state-transition-manager để kiểm tra điều kiện chuyển trạng thái"
+  ],
+  "source": "First-Order Logic Predicate Evaluation",
+  "evidence": "Nền tảng cho mọi khả năng ra quyết định rẽ nhánh logic của Agent OS.",
+  "assessment": "Rất hữu ích."
+}

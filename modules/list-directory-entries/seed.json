@@ -1,0 +1,21 @@
+{
+  "name": "list-directory-entries",
+  "purpose": "Liệt kê các mục (tệp tin và thư mục con) trong một thư mục chỉ định.",
+  "semantic_boundary": "Chỉ liệt kê và truy vấn thuộc tính cơ bản của các danh mục trong thư mục cục bộ.",
+  "scale": "micro",
+  "inputs": [
+    "path (chuỗi: đường dẫn thư mục gốc)",
+    "recursive (boolean: tùy chọn, mặc định False)",
+    "include_hidden (boolean: tùy chọn, mặc định False)"
+  ],
+  "outputs": [
+    "entries (danh sách danh mục chứa name, path, is_dir, size)"
+  ],
+  "composition": [
+    "Truyền danh sách tệp tin cho find-file-path để lọc mẫu",
+    "Kết hợp với read-file-content để đọc toàn bộ các tệp trong thư mục"
+  ],
+  "source": "Standard Directory Traversal Utilities",
+  "evidence": "Agent cần khả năng khám phá cấu trúc thư mục làm việc để xác định ngữ cảnh dự án.",
+  "assessment": "Thực sự hữu ích cho Agent OS."
+}

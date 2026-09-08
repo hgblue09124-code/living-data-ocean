@@ -1,0 +1,23 @@
+{
+  "name": "invoke-callable-handler",
+  "purpose": "Kích hoạt thực thi an toàn một hàm/callable với danh sách tham số truyền vào.",
+  "semantic_boundary": "Chỉ đảm nhận việc kích hoạt hàm và bắt lỗi runtime trong quá trình gọi. Không quản lý vòng đời của hàm.",
+  "scale": "micro",
+  "inputs": [
+    "func (callable: hàm cần gọi)",
+    "args (tuple tham số vị trí)",
+    "kwargs (dict tham số từ khóa)"
+  ],
+  "outputs": [
+    "result (bất kỳ)",
+    "success (boolean)",
+    "error (chuỗi lỗi hoặc None)"
+  ],
+  "composition": [
+    "Gọi tool sau khi route-conditional-target đã tìm ra hàm xử lý",
+    "Thực thi các hành động động trong vòng lặp Agent OS"
+  ],
+  "source": "Dynamic Method Invocation Abstractions",
+  "evidence": "Cần thiết để Agent OS thực thi động các công cụ (tool invocation).",
+  "assessment": "Thực sự hữu ích."
+}

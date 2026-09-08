@@ -1,0 +1,22 @@
+{
+  "name": "context-memory-session",
+  "purpose": "Quản lý phiên ngữ cảnh bộ nhớ cho Agent, tích lũy lịch sử hội thoại/thao tác và cắt tỉa theo giới hạn cửa sổ ngữ cảnh (context window).",
+  "semantic_boundary": "Quản lý việc lưu trữ, truy xuất và duy trì kích thước an toàn của chuỗi ngữ cảnh hội thoại/lịch sử Agent.",
+  "scale": "meso",
+  "inputs": [
+    "session_id (chuỗi)",
+    "message (dict: thông điệp mới gồm role, content)",
+    "max_history_tokens (số nguyên: giới hạn token/tin nhắn)"
+  ],
+  "outputs": [
+    "history (danh sách tin nhắn trong cửa sổ ngữ cảnh)",
+    "trimmed (boolean: có bị cắt bớt không)"
+  ],
+  "composition": [
+    "Kết hợp các micro seed: store-key-value, retrieve-key-value, select-candidate-option",
+    "Cung cấp ngữ cảnh đầu vào cho agent-execution-loop"
+  ],
+  "source": "Agent Conversation State & Memory Window Management Architecture",
+  "evidence": "Mọi Agent OS đều cần cơ chế quản lý bộ nhớ làm việc (working memory) để tương tác nhiều lượt mà không vượt quá giới hạn token của LLM.",
+  "assessment": "Hạt seed quy mô Meso thực sự quan trọng và hữu ích cho Agent OS."
+}
