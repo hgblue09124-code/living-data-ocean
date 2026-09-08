@@ -1,13 +1,14 @@
 {
   "id": "context-memory",
   "type": "meso",
-  "inputs": ["session_id", "new_message", "max_tokens_limit"],
-  "outputs": ["active_history", "is_trimmed"],
+  "reference_inputs": ["session_id", "new_message", "max_tokens_limit"],
+  "reference_outputs": ["active_history", "is_trimmed"],
   "semantics": [
-    "Kết hợp giữa ngữ cảnh thực thi ('context') và bộ nhớ làm việc ('memory').",
-    "Quản lý phiên ngữ cảnh bộ nhớ cho Agent, tích lũy lịch sử hội thoại và cắt tỉa theo window."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: tích lũy ngữ cảnh và quản lý bộ nhớ làm việc.",
+    "Biểu diễn sự kết hợp giữa đối tượng ngữ cảnh 'context' và bộ nhớ 'memory'."
   ],
   "compositions": [
-    "context + memory + store + retrieve"
+    ["context", "memory"],
+    ["store", "retrieve"]
   ]
 }

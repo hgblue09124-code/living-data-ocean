@@ -1,13 +1,13 @@
 {
   "id": "state-transition",
   "type": "meso",
-  "inputs": ["current_state", "trigger_action", "transitions_table"],
-  "outputs": ["next_state", "is_allowed", "reason"],
+  "reference_inputs": ["current_state", "trigger_action", "transitions_table"],
+  "reference_outputs": ["next_state", "is_allowed", "reason"],
   "semantics": [
-    "Kết hợp giữa năng lực duy trì trạng thái ('state') và logic kiểm tra chuyển đổi.",
-    "Quản lý việc chuyển đổi trạng thái FSM dựa trên hành động và bảng chuyển đổi."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: kiểm tra tính hợp lệ của việc chuyển trạng thái.",
+    "Biểu diễn kiểm tra 'check' đối với quy tắc biến đổi 'state'."
   ],
   "compositions": [
-    "state + check + validate"
+    ["state", "check"]
   ]
 }

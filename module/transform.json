@@ -1,13 +1,14 @@
 {
   "id": "transform",
   "type": "atomic",
-  "inputs": ["source_data", "mapping_rules"],
-  "outputs": ["transformed_data"],
+  "reference_inputs": ["source_data", "mapping_rules"],
+  "reference_outputs": ["transformed_data"],
   "semantics": [
-    "Chuyển đổi hình dạng, cấu trúc hoặc kiểu dữ liệu từ cấu hình nguồn sang cấu hình đích.",
-    "Ánh xạ các khóa và áp dụng quy tắc biến đổi dữ liệu."
+    "Thao tác tái cấu trúc, chuyển đổi hoặc ánh xạ hình thái dữ liệu từ dạng này sang dạng khác.",
+    "Bao quát ánh xạ trường, đổi kiểu dữ liệu, chuẩn hóa cấu trúc."
   ],
   "compositions": [
-    "transform + mapping -> transform-mapping"
+    ["transform", "mapping"],
+    ["read", "transform", "write"]
   ]
 }

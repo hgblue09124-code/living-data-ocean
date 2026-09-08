@@ -1,13 +1,14 @@
 {
   "id": "list-directory",
   "type": "meso",
-  "inputs": ["directory_path", "recursive_flag"],
-  "outputs": ["directory_entries"],
+  "reference_inputs": ["directory_path", "recursive_flag"],
+  "reference_outputs": ["directory_entries"],
   "semantics": [
-    "Kết hợp giữa năng lực liệt kê ('list') và đối tượng thư mục tệp tin.",
-    "Liệt kê danh mục các tệp tin và thư mục con trong một thư mục cho trước."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: liệt kê danh mục tệp tin trong thư mục.",
+    "Biểu diễn thao tác 'list' tác động lên đối tượng tập chứa thư mục."
   ],
   "compositions": [
-    "list + file + path"
+    ["list", "file"],
+    ["list", "path"]
   ]
 }

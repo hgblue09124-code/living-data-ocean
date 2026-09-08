@@ -1,14 +1,15 @@
 {
   "id": "list",
   "type": "atomic",
-  "inputs": ["container", "options"],
-  "outputs": ["entries", "total"],
+  "reference_inputs": ["container", "options"],
+  "reference_outputs": ["entries", "total"],
   "semantics": [
-    "Liệt kê các phần tử danh mục nằm trong một container (directory, list, array, store).",
-    "Duyệt bề mặt danh mục và thu thập tập thuộc tính cơ bản của từng phần tử."
+    "Liệt kê, duyệt bề mặt hoặc thu thập tập hợp phần tử thuộc một tập chứa.",
+    "Bao quát các biểu hiện: duyệt thư mục, duyệt danh sách biến, duyệt tập công cụ, duyệt bảng ghi.",
+    "Không bị bó hẹp bởi cấu trúc danh mục cụ thể."
   ],
   "compositions": [
-    "directory -> list-directory",
-    "registry -> list-tools"
+    ["list", "directory"],
+    ["list", "filter"]
   ]
 }

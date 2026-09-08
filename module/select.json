@@ -1,13 +1,13 @@
 {
   "id": "select",
   "type": "atomic",
-  "inputs": ["candidates_list", "selection_criteria"],
-  "outputs": ["selected_option", "index"],
+  "reference_inputs": ["candidates_list", "selection_criteria"],
+  "reference_outputs": ["selected_option", "index"],
   "semantics": [
-    "Lựa chọn phương án tối ưu nhất từ tập ứng viên cho trước.",
-    "Đánh giá và trích chọn phương án khớp tiêu chí nhất."
+    "Thao tác trích chọn một phương án ứng viên từ danh sách lựa chọn.",
+    "Bao quát chọn option tối ưu, chọn phương án khớp tiêu chí, trích mẫu."
   ],
   "compositions": [
-    "select + option -> select-candidate"
+    ["select", "candidate"]
   ]
 }

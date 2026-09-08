@@ -1,15 +1,16 @@
 {
   "id": "read",
   "type": "atomic",
-  "inputs": ["source", "options"],
-  "outputs": ["content", "metadata"],
+  "reference_inputs": ["source", "options"],
+  "reference_outputs": ["content", "metadata"],
   "semantics": [
-    "Đọc dữ liệu từ một nguồn lưu trữ (file, stream, memory buffer, channel).",
-    "Trích xuất nội dung văn bản hoặc nhị phân từ tài nguyên chỉ định."
+    "Tiếp nhận, truy cập hoặc giải mã nội dung từ một đối tượng nguồn bất kỳ.",
+    "Bao quát các biểu hiện: đọc tệp tin, đọc luồng dữ liệu, đọc bộ nhớ, đọc thông điệp, đọc thị giác/cảm biến.",
+    "Không bị giới hạn bởi một giao thức hay cấu trúc nguồn cố định."
   ],
   "compositions": [
-    "file -> read-file",
-    "stream -> read-stream",
-    "memory -> read-memory"
+    ["read", "file"],
+    ["read", "find"],
+    ["read", "find", "validate"]
   ]
 }

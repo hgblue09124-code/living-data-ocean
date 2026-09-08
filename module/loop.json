@@ -1,13 +1,13 @@
 {
   "id": "loop",
   "type": "atomic",
-  "inputs": ["max_iterations", "stop_condition"],
-  "outputs": ["current_iteration", "is_done"],
+  "reference_inputs": ["max_iterations", "stop_condition"],
+  "reference_outputs": ["current_iteration", "is_done"],
   "semantics": [
-    "Đại diện cho cơ chế lặp tuần tự (loop iteration) cho đến khi đạt điều kiện dừng.",
-    "Điều phối nhịp đập thực thi chính."
+    "Khái niệm chu kỳ lặp tuần tự điều phối tiến trình.",
+    "Bao quát lặp lại đến khi đạt điều kiện dừng, lặp tuần tự."
   ],
   "compositions": [
-    "agent + loop -> agent-loop"
+    ["loop", "context"]
   ]
 }

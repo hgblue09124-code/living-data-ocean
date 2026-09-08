@@ -1,13 +1,14 @@
 {
   "id": "query",
   "type": "atomic",
-  "inputs": ["data_structure", "path_expression"],
-  "outputs": ["target_value", "found"],
+  "reference_inputs": ["data_structure", "path_expression"],
+  "reference_outputs": ["target_value", "found"],
   "semantics": [
-    "Truy vấn và điều hướng dữ liệu lồng nhau theo đường dẫn định vị.",
-    "Trích xuất giá trị tại vị trí sâu trong cấu trúc mà không làm thay đổi dữ liệu gốc."
+    "Thao tác điều hướng và truy vấn giá trị nằm sâu trong cấu trúc dữ liệu.",
+    "Bao quát truy vấn JSONPath, XPath, SQL query, Dictionary key lookup."
   ],
   "compositions": [
-    "query + json -> query-json"
+    ["query", "json"],
+    ["parse", "query"]
   ]
 }

@@ -1,14 +1,16 @@
 {
   "id": "find",
   "type": "atomic",
-  "inputs": ["scope", "pattern", "criteria"],
-  "outputs": ["matches", "count"],
+  "reference_inputs": ["scope", "pattern", "criteria"],
+  "reference_outputs": ["matches", "count"],
   "semantics": [
-    "Định vị và tìm kiếm các đối tượng hoặc vị trí khớp với tiêu chí/mẫu cho trước.",
-    "Duyệt qua không gian tìm kiếm để thu thập danh sách kết quả khớp."
+    "Định vị, dò tìm hoặc phát hiện các phần tử/vị trí tương thích với mẫu tiêu chí.",
+    "Bao quát các biểu hiện: tìm đường dẫn tệp, tìm mẫu từ khóa, định vị ô dữ liệu, phát hiện đối tượng.",
+    "Không bị khóa bởi không gian tìm kiếm cụ thể."
   ],
   "compositions": [
-    "file -> find-file",
-    "pattern -> search-text"
+    ["find", "file"],
+    ["find", "read"],
+    ["read", "find"]
   ]
 }

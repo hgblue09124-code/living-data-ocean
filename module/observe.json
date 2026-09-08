@@ -1,13 +1,13 @@
 {
   "id": "observe",
   "type": "atomic",
-  "inputs": ["target_scope"],
-  "outputs": ["telemetry_data", "metrics"],
+  "reference_inputs": ["target_scope"],
+  "reference_outputs": ["telemetry_data", "metrics"],
   "semantics": [
-    "Quan sát và thu thập thông tin trạng thái môi trường, tiến trình hoặc tài nguyên.",
-    "Cung cấp thông tin thị giác/đo lường cho Agent OS."
+    "Thao tác quan sát và ghi nhận chỉ số/thông tin môi trường hiện tại.",
+    "Bao quát thu thập telemetry, quan sát tiến trình, ghi nhận trạng thái OS."
   ],
   "compositions": [
-    "observe + system -> observe-system"
+    ["observe", "system"]
   ]
 }

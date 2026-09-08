@@ -1,13 +1,14 @@
 {
   "id": "find-file",
   "type": "meso",
-  "inputs": ["root_directory", "glob_pattern", "max_depth"],
-  "outputs": ["matching_paths", "matches_count"],
+  "reference_inputs": ["root_directory", "glob_pattern", "max_depth"],
+  "reference_outputs": ["matching_paths", "matches_count"],
   "semantics": [
-    "Kết hợp giữa năng lực tìm kiếm ('find') và đối tượng tệp tin ('file').",
-    "Tìm kiếm danh sách đường dẫn tệp tin khớp với mẫu glob trong thư mục."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: tìm kiếm các tệp tin trong thư mục.",
+    "Biểu diễn thao tác 'find' tác động lên chuỗi định vị 'path' của đối tượng 'file'."
   ],
   "compositions": [
-    "find + file + path"
+    ["find", "file"],
+    ["find", "path"]
   ]
 }

@@ -1,13 +1,13 @@
 {
   "id": "memory",
   "type": "atomic",
-  "inputs": ["memory_stream", "window_size"],
-  "outputs": ["active_memory", "pruned_flag"],
+  "reference_inputs": ["memory_stream", "window_size"],
+  "reference_outputs": ["active_memory", "pruned_flag"],
   "semantics": [
-    "Đại diện cho bộ nhớ làm việc (working memory) tích lũy và quản lý dung lượng hội thoại.",
-    "Cắt tỉa và duy trì các thông tin quan trọng nhất."
+    "Khái niệm bộ nhớ làm việc duy trì và quản lý cửa sổ thông tin.",
+    "Bao quát lưu trữ lịch sử, cắt tỉa thông điệp, duy trì bộ nhớ đệm."
   ],
   "compositions": [
-    "context + memory -> context-memory"
+    ["context", "memory"]
   ]
 }

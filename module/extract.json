@@ -1,13 +1,14 @@
 {
   "id": "extract",
   "type": "atomic",
-  "inputs": ["source_text", "pattern"],
-  "outputs": ["extracted_items", "groups"],
+  "reference_inputs": ["source_text", "pattern"],
+  "reference_outputs": ["extracted_items", "groups"],
   "semantics": [
-    "Bóc tách các phần dữ liệu cụ thể hoặc các nhóm bắt tên từ nguồn văn bản.",
-    "Lọc và rút trích các đoạn thông tin có giá trị theo quy tắc mẫu."
+    "Thao tác rút trích, bóc tách các đoạn thông tin hoặc thuộc tính giá trị từ nguồn.",
+    "Bao quát bóc tách regex, bóc tách thực thể tên, rút trích từ khóa."
   ],
   "compositions": [
-    "extract + regex -> extract-regex"
+    ["extract", "regex"],
+    ["read", "extract"]
   ]
 }

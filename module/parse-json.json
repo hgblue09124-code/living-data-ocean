@@ -1,13 +1,13 @@
 {
   "id": "parse-json",
   "type": "meso",
-  "inputs": ["json_string", "fallback_value"],
-  "outputs": ["parsed_object", "success"],
+  "reference_inputs": ["json_string", "fallback_value"],
+  "reference_outputs": ["parsed_object", "success"],
   "semantics": [
-    "Kết hợp giữa năng lực phân tích cú pháp ('parse') và định dạng dữ liệu ('json').",
-    "Parse chuỗi/byte JSON thành đối tượng dữ liệu cấu trúc Python."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: phân tích cú pháp chuỗi JSON.",
+    "Biểu diễn thao tác 'parse' tác động lên đối tượng định dạng 'json'."
   ],
   "compositions": [
-    "parse + json + data"
+    ["parse", "json"]
   ]
 }

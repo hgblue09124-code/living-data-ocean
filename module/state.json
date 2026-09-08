@@ -1,13 +1,13 @@
 {
   "id": "state",
   "type": "atomic",
-  "inputs": ["current_state", "transition_trigger"],
-  "outputs": ["next_state", "is_allowed"],
+  "reference_inputs": ["current_state", "transition_trigger"],
+  "reference_outputs": ["next_state", "is_allowed"],
   "semantics": [
-    "Đại diện ngữ nghĩa cho trạng thái hiện tại và các quy tắc chuyển trạng thái.",
-    "Duy trì tính nhất quán của trạng thái vòng đời."
+    "Khái niệm trạng thái hiện tại và quy tắc biến đổi trạng thái trong vòng đời.",
+    "Bao quát trạng thái FSM, biến trạng thái tiến trình, điểm khôi phục."
   ],
   "compositions": [
-    "state + transition -> state-transition"
+    ["state", "transition"]
   ]
 }

@@ -1,15 +1,15 @@
 {
   "id": "write",
   "type": "atomic",
-  "inputs": ["target", "content", "options"],
-  "outputs": ["status", "bytes_written"],
+  "reference_inputs": ["target", "content", "options"],
+  "reference_outputs": ["status", "bytes_written"],
   "semantics": [
-    "Ghi hoặc ghi nối dữ liệu vào một đối tượng đích (file, stream, buffer).",
-    "Đảm bảo dữ liệu được cập nhật thành công vào đối tượng lưu trữ."
+    "Khắc ghi, lưu giữ hoặc truyền phát nội dung dữ liệu tới một đối tượng đích.",
+    "Bao quát các biểu hiện: ghi tệp tin, nối văn bản, phát luồng dữ liệu, cập nhật bộ nhớ, xuất tín hiệu.",
+    "Không bị giới hạn bởi phương thức lưu trữ hay kiểu đối tượng đích."
   ],
   "compositions": [
-    "file -> write-file",
-    "stream -> write-stream",
-    "memory -> write-memory"
+    ["write", "file"],
+    ["transform", "write"]
   ]
 }

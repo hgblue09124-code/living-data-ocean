@@ -1,13 +1,13 @@
 {
   "id": "read-file",
   "type": "meso",
-  "inputs": ["file_path", "encoding", "binary_mode"],
-  "outputs": ["file_content", "bytes_read"],
+  "reference_inputs": ["file_path", "encoding", "binary_mode"],
+  "reference_outputs": ["file_content", "bytes_read"],
   "semantics": [
-    "Kết hợp giữa năng lực đọc ('read') và đối tượng tệp tin ('file').",
-    "Thực hiện đọc nội dung tệp tin văn bản hoặc nhị phân từ đường dẫn tệp tin cục bộ."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: đọc từ một tệp tin.",
+    "Biểu diễn ngữ nghĩa thao tác 'read' áp dụng lên đối tượng ngữ cảnh 'file'."
   ],
   "compositions": [
-    "read + file"
+    ["read", "file"]
   ]
 }

@@ -1,14 +1,15 @@
 {
   "id": "data",
   "type": "atomic",
-  "inputs": ["payload", "schema"],
-  "outputs": ["data_object", "type_info"],
+  "reference_inputs": ["payload", "schema"],
+  "reference_outputs": ["data_object", "type_info"],
   "semantics": [
-    "Đại diện ngữ nghĩa cho thông tin/dữ liệu dạng cấu trúc hoặc phi cấu trúc.",
-    "Mang thông tin kiểu dữ liệu, nội dung và các thuộc tính liên quan."
+    "Khái niệm ngữ nghĩa thông tin dữ liệu dưới mọi hình thái (cấu trúc, bán cấu trúc, phi cấu trúc).",
+    "Mang thuộc tính hình dạng, kiểu dữ liệu, dung lượng và nội dung.",
+    "Làm đối tượng ngữ nghĩa cho các thao tác phân tích, biến đổi, kiểm tra."
   ],
   "compositions": [
-    "transform + data -> transform-mapping",
-    "inspect + data -> inspect-schema"
+    ["transform", "data"],
+    ["inspect", "data"]
   ]
 }

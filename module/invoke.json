@@ -1,13 +1,13 @@
 {
   "id": "invoke",
   "type": "atomic",
-  "inputs": ["target_function", "arguments"],
-  "outputs": ["execution_result", "success_flag"],
+  "reference_inputs": ["target_function", "arguments"],
+  "reference_outputs": ["execution_result", "success_flag"],
   "semantics": [
-    "Kích hoạt và thực thi một đối tượng hàm/callable với các tham số truyền vào.",
-    "Bắt các lỗi ngoại lệ phát sinh trong quá trình gọi thực thi."
+    "Thao tác kích hoạt và gọi thực thi một đối tượng tiến trình hoặc hàm.",
+    "Bao quát gọi hàm, gọi API, kích hoạt tiến trình, thực thi lệnh."
   ],
   "compositions": [
-    "invoke + handler -> invoke-handler"
+    ["invoke", "handler"]
   ]
 }

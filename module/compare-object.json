@@ -1,13 +1,13 @@
 {
   "id": "compare-object",
   "type": "meso",
-  "inputs": ["left_object", "right_object", "strict_flag"],
-  "outputs": ["is_equal", "diff_summary"],
+  "reference_inputs": ["left_object", "right_object", "strict_flag"],
+  "reference_outputs": ["is_equal", "diff_summary"],
   "semantics": [
-    "Kết hợp giữa năng lực so sánh ('compare') và cấu trúc đối tượng ('data').",
-    "So sánh hai đối tượng/cấu trúc dữ liệu để xác định sự bằng nhau hoặc tương đương."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: so sánh hai đối tượng dữ liệu.",
+    "Biểu diễn thao tác 'compare' áp dụng lên đối tượng cấu trúc 'data'."
   ],
   "compositions": [
-    "compare + data + inspect"
+    ["compare", "data"]
   ]
 }

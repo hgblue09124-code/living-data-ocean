@@ -1,13 +1,13 @@
 {
   "id": "diff",
   "type": "atomic",
-  "inputs": ["version_a", "version_b"],
-  "outputs": ["delta_stream", "has_changes"],
+  "reference_inputs": ["version_a", "version_b"],
+  "reference_outputs": ["delta_stream", "has_changes"],
   "semantics": [
-    "Tính toán chênh lệch từng dòng hoặc từng trường giữa hai phiên bản nội dung.",
-    "Tạo ra bản mô tả sự thay đổi (delta/unified diff)."
+    "Thao tác tính toán bản mô tả chênh lệch từng dòng hoặc từng phần giữa hai phiên bản.",
+    "Bao quát unified diff văn bản, tree diff, delta patch."
   ],
   "compositions": [
-    "diff + text -> diff-text"
+    ["diff", "text"]
   ]
 }

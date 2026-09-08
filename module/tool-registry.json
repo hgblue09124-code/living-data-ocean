@@ -1,13 +1,14 @@
 {
   "id": "tool-registry",
   "type": "meso",
-  "inputs": ["registry_action", "tool_schema", "query_keyword"],
-  "outputs": ["matched_tools_list"],
+  "reference_inputs": ["registry_action", "tool_schema", "query_keyword"],
+  "reference_outputs": ["matched_tools_list"],
   "semantics": [
-    "Kết hợp giữa công cụ năng lực ('tool') và danh mục tra cứu ('registry').",
-    "Đăng ký, quản lý danh mục và tra cứu công cụ (tool/skill) khả dụng cho Agent."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: quản lý danh mục và tra cứu công cụ.",
+    "Biểu diễn sự kết hợp giữa đối tượng công cụ 'tool' và bảng đăng ký 'registry'."
   ],
   "compositions": [
-    "tool + registry + search + list"
+    ["tool", "registry"],
+    ["search", "registry"]
   ]
 }

@@ -1,13 +1,14 @@
 {
   "id": "inspect",
   "type": "atomic",
-  "inputs": ["target_object"],
-  "outputs": ["schema_info", "type_metadata"],
+  "reference_inputs": ["target_object"],
+  "reference_outputs": ["schema_info", "type_metadata"],
   "semantics": [
-    "Kiểm tra và phản chiếu thuộc tính bề ngoài, kiểu dữ liệu và hình dạng của đối tượng.",
-    "Thu thập metadata về cấu trúc mà không làm biến đổi đối tượng được soi."
+    "Thao tác phản chiếu, soi cấu trúc và thuộc tính bề ngoài của một đối tượng.",
+    "Bao quát soi schema, soi kiểu dữ liệu, soi phương thức, soi metadata."
   ],
   "compositions": [
-    "inspect + schema -> inspect-object-schema"
+    ["inspect", "schema"],
+    ["inspect", "validate"]
   ]
 }

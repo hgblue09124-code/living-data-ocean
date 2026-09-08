@@ -1,13 +1,13 @@
 {
   "id": "route-condition",
   "type": "meso",
-  "inputs": ["payload_data", "routing_rules_list"],
-  "outputs": ["target_handler", "matched_rule"],
+  "reference_inputs": ["payload_data", "routing_rules_list"],
+  "reference_outputs": ["target_handler", "matched_rule"],
   "semantics": [
-    "Kết hợp giữa năng lực điều hướng ('route') và đánh giá điều kiện ('check').",
-    "Điều hướng dữ liệu payload tới tập lệnh/đích xử lý tương ứng dựa trên bảng quy tắc."
+    "Cấu trúc kết hợp thể hiện mối quan hệ có thứ tự: định tuyến dựa trên đánh giá điều kiện.",
+    "Biểu diễn thao tác 'route' kết hợp đánh giá 'check' trên 'data'."
   ],
   "compositions": [
-    "route + check + condition"
+    ["route", "check"]
   ]
 }

@@ -1,13 +1,13 @@
 {
   "id": "verify",
   "type": "atomic",
-  "inputs": ["subject", "proof_spec"],
-  "outputs": ["verified", "proof_result"],
+  "reference_inputs": ["subject", "proof_spec"],
+  "reference_outputs": ["verified", "proof_result"],
   "semantics": [
-    "Xác minh tính toàn vẹn hoặc tính đúng đắn của dữ liệu dựa trên bằng chứng hoặc chữ ký.",
-    "Đảm bảo dữ liệu không bị sửa đổi hay biến dạng."
+    "Thao tác đối chứng bằng chứng bảo đảm tính toàn vẹn hoặc tính xác thực.",
+    "Bao quát xác minh chữ ký, đối chứng checksum, kiểm tra bằng chứng."
   ],
   "compositions": [
-    "verify + hash -> verify-hash"
+    ["verify", "hash"]
   ]
 }

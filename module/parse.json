@@ -1,13 +1,14 @@
 {
   "id": "parse",
   "type": "atomic",
-  "inputs": ["raw_input", "grammar_spec"],
-  "outputs": ["structured_output", "success"],
+  "reference_inputs": ["raw_input", "grammar_spec"],
+  "reference_outputs": ["structured_output", "success"],
   "semantics": [
-    "Phân tích cú pháp chuỗi hoặc byte đầu vào để chuyển đổi thành đối tượng dữ liệu cấu trúc.",
-    "Giải mã biểu diễn chuỗi theo quy tắc định dạng ngữ pháp."
+    "Thao tác phân tích cú pháp chuỗi/nhị phân để giải mã thành cấu trúc ý nghĩa.",
+    "Bao quát giải mã JSON, XML, CSV, AST mã nguồn, ngữ pháp câu lệnh."
   ],
   "compositions": [
-    "parse + json -> parse-json"
+    ["parse", "json"],
+    ["read", "parse"]
   ]
 }

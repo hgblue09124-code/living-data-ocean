@@ -1,13 +1,14 @@
 {
   "id": "detect",
   "type": "atomic",
-  "inputs": ["input_value"],
-  "outputs": ["detected_format", "confidence"],
+  "reference_inputs": ["input_value"],
+  "reference_outputs": ["detected_format", "confidence"],
   "semantics": [
-    "Phán đoán và phân loại định dạng ngữ nghĩa của dữ liệu dựa trên quy tắc nhận diện.",
-    "Trả về kiểu nhận diện và độ tin cậy tương ứng."
+    "Thao tác phát hiện, phán đoán định dạng hoặc bản chất ngữ nghĩa của dữ liệu.",
+    "Bao quát phát hiện ngôn ngữ, nhận diện định dạng tệp, phát hiện mã hóa."
   ],
   "compositions": [
-    "detect + type -> detect-data-type"
+    ["detect", "type"],
+    ["detect", "route"]
   ]
 }
