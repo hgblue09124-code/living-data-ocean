@@ -1,62 +1,26 @@
 """
-Điểm khởi chạy chương trình mô phỏng Underworld v0 - PR #3.
+Điểm khởi chạy chương trình mô phỏng Underworld v0 - PR #3 (Refactored Boundary).
 """
 
 import os
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from underworld.world.world import World
-from underworld.world.state import WorldState
 from underworld.human.human import Human
 from underworld.engine.event_loop import EventLoop
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
-from underworld.interface.quan_tri_vien import QuanTriVien
+from underworld.interface.administrator import Administrator
 from underworld.data.dataset import Dataset
-
-
-class DemoQuanTriVien(QuanTriVien):
-    """
-    Quản trị viên minh họa: quan sát ở MỖI bước thời gian và đưa ra các quyết định
-    can thiệp quản trị hoặc yêu cầu dừng thế giới.
-    """
-
-    def __init__(self, name: str = "Quản_Trị_Viên_Tối_Cao"):
-        super().__init__(name=name)
-        self.so_lan_goi = 0
-
-    def tai_moi_buoc(self, trang_thai_the_gioi: WorldState) -> List[Dict[str, Any]]:
-        self.so_lan_goi += 1
-        t = trang_thai_the_gioi.time_step
-        print(f"  [QUẢN TRỊ VIÊN] Bước t={t}: Gọi lần thứ {self.so_lan_goi} để kiểm tra trạng thái thế giới.")
-
-        # Ví dụ can thiệp ở bước t = 3: Thay đổi thời tiết môi trường
-        if t == 3:
-            print("  [QUẢN TRỊ VIÊN] Can thiệp: Thay đổi thời tiết thành 'mưa_bão'.")
-            return [{
-                "loai_lenh": "THAY_DOI_MOI_TRUONG",
-                "key": "weather",
-                "val": "mưa_bão"
-            }]
-
-        # Ví dụ can thiệp ở bước t = 7: Yêu cầu dừng mô phỏng thế giới
-        if t == 7:
-            print("  [QUẢN TRỊ VIÊN] Quyết định: Yêu cầu DỪNG mô phỏng thế giới.")
-            self.yeu_cau_dung()
-            return [{
-                "loai_lenh": "YEU_CAU_DUNG"
-            }]
-
-        return []
 
 
 def external_agent_brain(observation: Observation) -> Optional[List[Action]]:
     """
-    Agent bên ngoài minh họa ranh giới giao tiếp (Observation -> Action).
+    External Agent minh họa ranh giới giao tiếp (Observation -> Action).
 
-    Ở bước time_step == 5, Agent gửi một hành động can thiệp ép Human_001 nghỉ ngơi.
+    Ở bước time_step == 5, Agent gửi một Action ép Human_001 nghỉ ngơi.
     """
     if observation.time_step == 5:
-        print(f"  [EXTERNAL AGENT] Quan sát thấy time_step={observation.time_step}. Gửi lệnh REST cho Human_001!")
+        print(f"  [EXTERNAL AGENT] Quan sát thấy time_step={observation.time_step}. Gửi lệnh Action 'REST' cho Human_001!")
         return [
             Action(
                 action_type="REST",
@@ -69,12 +33,12 @@ def external_agent_brain(observation: Observation) -> Optional[List[Action]]:
 
 def run_simulation():
     """
-    Chạy minh họa toàn bộ pipeline mô phỏng Underworld v0 với Quản trị viên:
-    World -> WorldState -> N x Human -> Event Loop -> Observation / Action / QuanTriVien -> Trajectory -> Dataset
+    Chạy minh họa toàn bộ pipeline mô phỏng Underworld v0:
+    Administrator UI/Interface -> AdministratorCommand -> Runtime -> World -> WorldState
     """
-    print("=" * 70)
-    print("      KHỞI ĐỘNG UNDERWORLD v0 - PYTHON SIMULATION SKELETON (PR #3)")
-    print("=" * 70)
+    print("=" * 75)
+    print("   KHỞI ĐỘNG UNDERWORLD v0 - PYTHON SIMULATION SKELETON (BOUNDARY REFACTORED)")
+    print("=" * 75)
 
     # 1. Khởi tạo World với hạt giống ngẫu nhiên để tái lập
     world = World(bounds=(50, 50), seed=42)
@@ -88,26 +52,33 @@ def run_simulation():
     world.add_human(human_2)
     world.add_human(human_3)
 
-    print(f"\n[1] Đã khởi tạo World (Hạt giống seed=42) với {len(world.humans)} Human:")
+    print(f"\n[1] Đã khởi tạo World (Seed=42) với {len(world.humans)} Human:")
     for hid, h in world.humans.items():
         st = h.get_state()
         print(f"    - {hid}: vị trí={st.position}, trạng thái={st.status}")
 
-    # 3. Khởi tạo Quản trị viên và Event Loop
-    quan_tri_vien = DemoQuanTriVien()
+    # 3. Khởi tạo Administrator (Đứng ngoài thế giới) và Event Loop (Runtime)
+    admin = Administrator(name="System_Administrator")
     event_loop = EventLoop(world)
     dataset = Dataset()
 
+    # Quản trị viên gửi một số lệnh can thiệp từ bên ngoài qua Interface
+    print("\n[2] Administrator tạo các lệnh can thiệp từ bên ngoài (Control Interface):")
+    admin.change_environment("weather", "mưa_bão")
+    print("    - Lệnh 1: change_environment('weather', 'mưa_bão')")
+    admin.create_event("Thiên thạch rơi gần vĩ độ (0,0)")
+    print("    - Lệnh 2: create_event('Thiên thạch rơi gần vĩ độ (0,0)')")
+
     print("\n------------------------------------------------------------")
-    print("[2] TIẾN HÀNH MÔ PHỎNG: Quản trị viên can thiệp ở MỖI bước")
+    print("[3] TIẾN HÀNH MÔ PHỎNG: Runtime thực thi bước và nhận tác động")
     print("------------------------------------------------------------")
 
-    # Chạy mô phỏng vô hạn (so_buoc=None) - sẽ tự kết thúc khi Quản trị viên gửi yeu_cau_dung()
-    trajectory = event_loop.chay(
-        so_buoc=None,
-        quan_tri_vien=quan_tri_vien,
+    # Chạy mô phỏng 7 bước với Administrator và External Agent
+    trajectory = event_loop.run(
+        steps=7,
+        administrator=admin,
         agent_callback=external_agent_brain,
-        trajectory_id="traj_demo_pr3"
+        trajectory_id="traj_demo_refactored"
     )
 
     for step in trajectory.steps:
@@ -125,7 +96,6 @@ def run_simulation():
 
     print("\n============================================================")
     print("                   MÔ PHỎNG HOÀN THÀNH")
-    print(f"  - Quản trị viên đã được gọi tổng cộng: {quan_tri_vien.so_lan_goi} lần.")
     print(f"  - Tổng số bước mô phỏng thực hiện: {len(trajectory.steps)} bước.")
     print(f"  - Đã xuất Dataset thành công tại: {dataset_path}")
     print("============================================================\n")

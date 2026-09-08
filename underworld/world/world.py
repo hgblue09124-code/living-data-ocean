@@ -52,6 +52,37 @@ class World:
             "processed": False
         })
 
+    def apply_command(self, command: Any) -> None:
+        """
+        Áp dụng một AdministratorCommand trung gian từ bên ngoài vào thế giới.
+        """
+        if hasattr(command, "command_type"):
+            cmd_type = command.command_type
+            payload = getattr(command, "payload", {})
+            target_id = getattr(command, "target_id", None)
+        elif isinstance(command, dict):
+            cmd_type = command.get("command_type", command.get("loai_lenh"))
+            payload = command.get("payload", command)
+            target_id = command.get("target_id")
+        else:
+            return
+
+        if cmd_type in ("CHANGE_ENVIRONMENT", "THAY_DOI_MOI_TRUONG"):
+            key = payload.get("key")
+            val = payload.get("val")
+            if key is not None:
+                self.environment[key] = val
+        elif cmd_type in ("CREATE_EVENT", "TAO_SU_KIEN"):
+            detail = payload.get("detail", payload.get("chi_tiet", "Sự kiện từ Administrator"))
+            self.tao_su_kien(detail, loai_su_kien="SU_KIEN_QUAN_TRI")
+        elif cmd_type in ("AFFECT_HUMAN", "TAC_DONG_CON_NGUOI"):
+            if target_id:
+                human = self.get_human(target_id)
+                if human:
+                    action_type = payload.get("action_type", "REST")
+                    action_payload = payload.get("payload", {})
+                    human.apply_external_action(action_type, action_payload)
+
     def get_state(self) -> WorldState:
         """Trả về snapshot WorldState độc lập (deep copy) tại thời điểm t hiện tại."""
         human_states = {hid: h.get_state() for hid, h in self.humans.items()}
@@ -66,14 +97,14 @@ class World:
         """
         Thực hiện một bước tiến thời gian (tick): WorldState(t) -> WorldState(t+1).
 
-        1. Bảo tồn các sự kiện do Quản trị viên/Ngoại cảnh tạo ra trước tick cho lượt này.
+        1. Bảo tồn các sự kiện do Administrator/Ngoại cảnh tạo ra trước tick cho lượt này.
         2. Cập nhật thời gian t = t + 1.
         3. Xử lý các tác động/hành động bên ngoài (nếu có).
         4. Cho tất cả Human tự do hành động nếu không có can thiệp ngoại cảnh.
         5. Phát hiện tương tác ngẫu nhiên giữa các Human (ví dụ: gặp gỡ khi ở gần).
         6. Cập nhật WorldState mới.
         """
-        # Thu thập các sự kiện chưa được xử lý (ví dụ do Quản trị viên tạo ra trước tick)
+        # Thu thập các sự kiện chưa được xử lý (ví dụ do Administrator tạo ra trước tick)
         su_kien_truoc_tick = [e for e in self.events if not e.get("processed", False)]
 
         self.time_step += 1

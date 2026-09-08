@@ -1,6 +1,6 @@
 # Underworld v0 — Python Simulation Skeleton
 
-**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành và hỗ trợ quyền quản trị ở từng bước thời gian.
+**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập và hỗ trợ giao diện điều khiển quản trị từ bên ngoài (External Human Control Interface).
 
 ---
 
@@ -12,9 +12,9 @@ Underworld được thiết kế cực kỳ nhẹ, không phụ thuộc vào b�
 
 ---
 
-## 2. Ba Khái niệm Phân biệt: Con người, Agent bên ngoài và Quản trị viên
+## 2. Ba Khái niệm Phân biệt: Con người, Agent bên ngoài và Administrator
 
-Trong Underworld v0 (PR #3), 3 vị trí được thiết kế tách biệt và có vai trò rõ ràng:
+Trong Underworld v0, 3 vị trí được thiết kế tách biệt và có ranh giới kiến trúc rõ ràng:
 
 1. **Con người (Human):**
    - Là thực thể sinh học/nhân vật được mô phỏng bên trong thế giới.
@@ -25,42 +25,47 @@ Trong Underworld v0 (PR #3), 3 vị trí được thiết kế tách biệt và 
    - Là tác nhân bên ngoài tương tác với thế giới qua ranh giới nghiêm ngặt: nhận **`Observation`** và trả về **`Action`**.
    - Không được phép can thiệp trực tiếp vào biến nội tại của thế giới.
 
-3. **Quản trị viên (QuanTriVien / Administrator):**
-   - Là quyền điều khiển thế giới từ bên ngoài.
-   - **KHÔNG phải là Con người** và không nằm trong danh sách thực thể mô phỏng.
-   - Được gọi ở **MỖI bước thời gian** (`tai_moi_buoc`) để quan sát và có cơ hội can thiệp:
-     - Thay đổi trạng thái môi trường.
-     - Tạo sự kiện quản trị.
-     - Tác động trực tiếp đến thực thể Con người.
-     - Yêu cầu tạm dừng hoặc dừng mô phỏng (`yeu_cau_dung`).
+3. **Giao diện Quản trị viên (Administrator):**
+   - Là giao diện điều khiển của con người từ bên ngoài (External Human Control Interface).
+   - **KHÔNG phải là Agent hay actor bên trong World**.
+   - **World KHÔNG phụ thuộc vào Administrator để tự vận hành**.
+   - Administrator tạo ra các **`AdministratorCommand`** trung gian gửi tới Runtime/World để thực hiện các tác động:
+     - Thay đổi trạng thái môi trường (`CHANGE_ENVIRONMENT`).
+     - Tạo sự kiện quản trị ngoài thế giới (`CREATE_EVENT`).
+     - Tác động trực tiếp đến thực thể Con người (`AFFECT_HUMAN`).
+     - Yêu cầu tạm dừng hoặc dừng mô phỏng (`REQUEST_STOP`).
 
 ---
 
-## 3. Kiến trúc Ranh giới Giao tiếp
+## 3. Kiến trúc Ranh giới Giao tiếp (Boundary Architecture)
 
 ```
-                  QUẢN TRỊ VIÊN (QuanTriVien)
-                        │
-                  tại_mỗi_bước()
-                        ▼
-              ┌─────────────────┐
-              │     THẾ GIỚI    │
-              │   (Underworld)  │
-              │                 │
-              │  WorldState     │
-              │  Con người      │
-              │  Môi trường     │
-              │  Sự kiện        │
-              └────────┬────────┘
-                       │
-                  Observation
-                       │
-                       ▼
-                 EXTERNAL AGENT
-                       │
-                     Action
-                       │
-                       └──────► Thế giới
+       ADMINISTRATOR (External Human Control Interface / UI)
+                               │
+                      AdministratorCommand
+                               │
+                               ▼
+                            RUNTIME (EventLoop)
+                               │
+                               ▼
+                     ┌──────────────────┐
+                     │     THẾ GIỚI     │
+                     │    (Underworld)  │
+                     │                  │
+                     │   WorldState     │
+                     │   Con người      │
+                     │   Môi trường     │
+                     │   Sự kiện        │
+                     └────────┬─────────┘
+                              │
+                         Observation
+                              │
+                              ▼
+                        EXTERNAL AGENT
+                              │
+                            Action
+                              │
+                              └──────► Thế giới
 ```
 
 ---
@@ -69,34 +74,18 @@ Trong Underworld v0 (PR #3), 3 vị trí được thiết kế tách biệt và 
 
 `EventLoop` hỗ trợ hai chế độ chạy linh hoạt:
 
-1. **Chạy liên tục vô hạn (`chay()` / `chay(so_buoc=None)`):**
-   - Thế giới tự động vận hành liên tục qua các bước $t_0 \rightarrow t_1 \rightarrow t_2 \dots$
-   - Chỉ dừng lại khi Quản trị viên gửi lệnh `yeu_cau_dung()`.
+1. **Chạy liên tục vô hạn (`run()` / `run(steps=None)`):**
+   - Thế giới tự động vận hành liên tục qua các bước $t_0 \rightarrow t_1 \rightarrow t_2 \dots$ mà không cần bất kỳ can thiệp nào.
+   - Chỉ dừng lại khi nhận được lệnh `REQUEST_STOP` từ Administrator hoặc tín hiệu dừng từ hệ thống.
 
-2. **Chạy giới hạn số bước (`chay(so_buoc=N)`):**
+2. **Chạy giới hạn số bước (`run(steps=N)`):**
    - Thế giới thực hiện đúng $N$ bước mô phỏng rồi kết thúc sạch sẽ.
 
 ---
 
-## 5. Quy trình ở MỖI bước thời gian (Step Sequence)
+## 5. Hướng dẫn Khởi chạy Python
 
-Thứ tự thực thi ở từng bước thời gian được quy định xác định:
-
-1. Xác định trạng thái hiện tại (`state_before`).
-2. Quản trị viên quan sát qua `quan_tri_vien.tai_moi_buoc(state_before)`.
-3. Áp dụng các tác động quản trị (nếu có).
-4. Kiểm tra xem Quản trị viên có yêu cầu dừng không.
-5. Thế giới thực hiện bước mô phỏng (`world.tick()`).
-6. Tạo `Observation` cho External Agent và tiếp nhận `Action`.
-7. Áp dụng `Action` từ External Agent.
-8. Ghi nhận bước mô phỏng vào `Trajectory`.
-9. Kiểm tra điều kiện kết thúc (Quản trị viên yêu cầu hoặc đạt `so_buoc`).
-
----
-
-## 6. Hướng dẫn Khởi chạy Python
-
-Dự án yêu cầu **Python 3.8+** tiêu chuẩn.
+Dự án yêu cầu **Python 3.8+** tiêu chuẩn, không cần cài đặt thêm bất kỳ thư viện bên ngoài nào.
 
 ### Lệnh chạy mô phỏng Demo:
 
@@ -118,7 +107,7 @@ PYTHONPATH=. pytest
 
 ---
 
-## 7. Tệp dữ liệu đầu ra (Dataset)
+## 6. Tệp dữ liệu đầu ra (Dataset)
 
 Khi chạy demo `python main.py`, tập dữ liệu quỹ đạo mô phỏng được xuất tại:
 

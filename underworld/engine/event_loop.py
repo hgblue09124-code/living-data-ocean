@@ -6,7 +6,8 @@ from typing import Optional, Callable, List, Dict, Any
 from underworld.world.world import World
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
-from underworld.interface.quan_tri_vien import QuanTriVien
+from underworld.interface.command import AdministratorCommand
+from underworld.interface.administrator import Administrator
 from underworld.data.trajectory import Trajectory
 
 
@@ -14,29 +15,30 @@ class EventLoop:
     """
     Event Loop đóng vai trò là động cơ chính làm Underworld tự vận hành.
 
-    Thứ tự xác định ở MỖI bước thời gian:
-    1. Lấy trạng thái hiện tại state_t.
-    2. Cho Quản trị viên quan sát state_t qua `quan_tri_vien.tai_moi_buoc(state_t)`.
-    3. Áp dụng các lệnh tác động từ Quản trị viên vào thế giới.
-    4. Cập nhật WorldState(t+1) bằng `world.tick()`.
-    5. Tạo Observation(t+1) cho Agent bên ngoài và tiếp nhận Action.
-    6. Áp dụng Action từ Agent bên ngoài (nếu có).
-    7. Ghi nhận bước chuyển đổi vào Trajectory.
-    8. Kiểm tra điều kiện dừng (Quản trị viên yêu cầu dừng hoặc đạt giới hạn so_buoc).
+    Kiến trúc ranh giới:
+    - World và EventLoop tự vận hành hoàn toàn độc lập, KHÔNG phụ thuộc vào Administrator.
+    - Administrator đứng ngoài thế giới và gửi lệnh `AdministratorCommand` qua Runtime/EventLoop.
+    - External Agent tương tác qua ranh giới Observation -> Action.
 
-    Đặc biệt:
-    - Hỗ trợ chạy liên tục vô hạn khi `so_buoc=None`.
-    - Hỗ trợ chạy giới hạn đúng N bước khi `so_buoc=N`.
+    Thứ tự xác định ở MỖI bước thời gian:
+    1. Lấy trạng thái hiện tại state_before.
+    2. Tiếp nhận và áp dụng các AdministratorCommand từ bên ngoài (nếu có).
+    3. Kiểm tra xem có lệnh REQUEST_STOP từ Administrator hay không.
+    4. Tạo Observation từ state_before cho External Agent.
+    5. Tiếp nhận Action từ External Agent và tiến hành `world.tick(actions)`.
+    6. Ghi nhận bước mô phỏng vào Trajectory.
+    7. Kiểm tra điều kiện dừng (đạt số bước hoặc có lệnh dừng).
     """
 
     def __init__(self, world: World):
         """Khởi tạo Event Loop với một thế giới World."""
         self.world = world
 
-    def chay(
+    def run(
         self,
-        so_buoc: Optional[int] = None,
-        quan_tri_vien: Optional[QuanTriVien] = None,
+        steps: Optional[int] = None,
+        administrator: Optional[Administrator] = None,
+        commands: Optional[List[AdministratorCommand]] = None,
         agent_callback: Optional[Callable[[Observation], Optional[List[Action]]]] = None,
         trajectory_id: str = "traj_001"
     ) -> Trajectory:
@@ -44,9 +46,10 @@ class EventLoop:
         Chạy vòng lặp mô phỏng.
 
         Args:
-            so_buoc (Optional[int]): Số bước mô phỏng tối đa. Nếu là None, thế giới
-                sẽ chạy liên tục cho đến khi Quản trị viên yêu cầu dừng.
-            quan_tri_vien (Optional[QuanTriVien]): Đối tượng Quản trị viên can thiệp ở mọi bước.
+            steps (Optional[int]): Số bước mô phỏng tối đa. Nếu là None, thế giới
+                sẽ chạy liên tục cho đến khi nhận được lệnh REQUEST_STOP từ bên ngoài.
+            administrator (Optional[Administrator]): Giao diện điều khiển từ bên ngoài (nếu có).
+            commands (Optional[List[AdministratorCommand]]): Danh sách lệnh trực tiếp từ bên ngoài.
             agent_callback (Optional[Callable]): Callback đại diện cho External Agent.
             trajectory_id (str): Mã định danh cho Trajectory.
 
@@ -54,31 +57,41 @@ class EventLoop:
             Trajectory: Chuỗi lịch sử mô phỏng đã ghi nhận.
         """
         trajectory = Trajectory(trajectory_id=trajectory_id)
-        buoc_hien_tai = 0
+        current_step_count = 0
 
         while True:
-            # Kiểm tra xem đã đạt giới hạn so_buoc hay chưa
-            if so_buoc is not None and buoc_hien_tai >= so_buoc:
+            # Kiểm tra giới hạn số bước
+            if steps is not None and current_step_count >= steps:
                 break
 
             # 1. Lấy trạng thái hiện tại trước tick
             state_before = self.world.get_state()
 
-            # 2. Cho Quản trị viên quan sát và đưa ra lệnh điều khiển ở MỖI bước thời gian
-            lenh_quan_tri: List[Dict[str, Any]] = []
-            if quan_tri_vien is not None:
-                lenh_quan_tri = quan_tri_vien.tai_moi_buoc(state_before)
-                # Áp dụng tác động quản trị trực tiếp lên thế giới
-                quan_tri_vien.ap_dung_tac_dong_quan_tri(self.world, lenh_quan_tri)
+            # 2. Thu thập lệnh từ Administrator hoặc danh sách commands truyền vào
+            active_commands: List[AdministratorCommand] = []
+            if commands:
+                active_commands.extend(commands)
+                commands = None  # Xóa danh sách lệnh truyền vào sau khi đã nhận cho lượt đầu
 
-                # Kiểm tra ngay nếu Quản trị viên yêu cầu dừng trước tick
-                if quan_tri_vien.dang_yeu_cau_dung():
-                    break
+            if administrator is not None:
+                active_commands.extend(administrator.get_pending_commands())
 
-            # 3. Tạo Observation từ state_before cho External Agent
+            # 3. Áp dụng các lệnh từ bên ngoài và kiểm tra lệnh REQUEST_STOP
+            stop_requested = False
+            for cmd in active_commands:
+                cmd_type = getattr(cmd, "command_type", None) or (cmd.get("command_type") if isinstance(cmd, dict) else None)
+                if cmd_type == "REQUEST_STOP":
+                    stop_requested = True
+                else:
+                    self.world.apply_command(cmd)
+
+            if stop_requested:
+                break
+
+            # 4. Tạo Observation từ state_before cho External Agent
             observation = Observation.from_world_state(state_before)
 
-            # 4. Cho External Agent cơ hội gửi Action tác động (nếu có)
+            # 5. Tiếp nhận Action từ External Agent (nếu có)
             external_actions: Optional[List[Action]] = None
             if agent_callback is not None:
                 external_actions = agent_callback(observation)
@@ -88,11 +101,11 @@ class EventLoop:
                 if external_actions else None
             )
 
-            # 5. Tiến hành tick chuyển trạng thái sang state_after
+            # 6. Tiến hành tick chuyển trạng thái sang state_after
             state_after = self.world.tick(actions_payload)
 
-            # 6. Ghi bước vừa diễn ra vào Trajectory
-            buoc_hien_tai += 1
+            # 7. Ghi bước vừa diễn ra vào Trajectory
+            current_step_count += 1
             trajectory.add_step(
                 step=self.world.time_step,
                 state_before=state_before,
@@ -101,23 +114,19 @@ class EventLoop:
                 state_after=state_after
             )
 
-            # 7. Kiểm tra nếu Quản trị viên vừa yêu cầu dừng trong quá trình tick
-            if quan_tri_vien is not None and quan_tri_vien.dang_yeu_cau_dung():
-                break
-
         return trajectory
 
-    def run(
+    def chay(
         self,
-        steps: Optional[int] = None,
-        trajectory_id: str = "traj_001",
+        so_buoc: Optional[int] = None,
+        quan_tri_vien: Optional[Any] = None,
         agent_callback: Optional[Callable[[Observation], Optional[List[Action]]]] = None,
-        quan_tri_vien: Optional[QuanTriVien] = None
+        trajectory_id: str = "traj_001"
     ) -> Trajectory:
-        """Phương thức bí danh (alias) tương thích ngược với phiên bản trước."""
-        return self.chay(
-            so_buoc=steps,
-            quan_tri_vien=quan_tri_vien,
+        """Phương thức bí danh (alias) tiếng Việt tương thích với cấu hình cũ."""
+        return self.run(
+            steps=so_buoc,
+            administrator=quan_tri_vien,
             agent_callback=agent_callback,
             trajectory_id=trajectory_id
         )
