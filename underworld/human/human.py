@@ -2,6 +2,7 @@
 Định nghĩa thực thể Human tồn tại và tự vận hành trong Underworld.
 """
 
+import copy
 import random
 from typing import Dict, Any, Optional, Tuple
 from underworld.human.state import HumanState
@@ -43,8 +44,8 @@ class Human:
         )
 
     def get_state(self) -> HumanState:
-        """Trả về trạng thái hiện tại của Human."""
-        return self.state
+        """Trả về snapshot trạng thái độc lập (deep copy) hiện tại của Human."""
+        return copy.deepcopy(self.state)
 
     def step(self, context: Optional[Dict[str, Any]] = None) -> str:
         """
@@ -53,6 +54,9 @@ class Human:
         Cập nhật nhu cầu cơ bản, tự quyết định hành động tự nhiên dựa trên trạng thái
         và môi trường xung quanh. Trả về tên hành động đã thực hiện.
         """
+        # Sử dụng bộ sinh số ngẫu nhiên từ context nếu có (phục vụ tính tái lập)
+        rng = (context and context.get("random")) or random
+
         # Cập nhật chỉ số sinh học cơ bản qua thời gian
         self.state.needs["năng_lượng"] = max(0.0, self.state.needs["năng_lượng"] - 2.0)
         self.state.needs["đói"] = min(100.0, self.state.needs["đói"] + 3.0)
@@ -74,8 +78,8 @@ class Human:
         else:
             # Di chuyển ngẫu nhiên khám phá thế giới
             self.state.status = "di_chuyển"
-            dx = random.choice([-1, 0, 1])
-            dy = random.choice([-1, 0, 1])
+            dx = rng.choice([-1, 0, 1])
+            dy = rng.choice([-1, 0, 1])
             new_x = self.state.position[0] + dx
             new_y = self.state.position[1] + dy
             self.state.position = (new_x, new_y)

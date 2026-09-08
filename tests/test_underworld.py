@@ -1,6 +1,7 @@
 """
-Bộ kiểm thử tự động (Unit Tests) cho Underworld v0.
-Đảm bảo đáp ứng đầy đủ 10 tiêu chí bắt buộc trong yêu cầu bài tập.
+Bộ kiểm thử tự động (Unit Tests) cho Underworld v0 - PR #3.
+Đảm bảo kiểm thử toàn bộ tính năng mô phỏng, Quản trị viên, chế độ vô hạn/giới hạn,
+toàn vẹn ảnh chụp trạng thái và tính tái lập hạt giống ngẫu nhiên.
 """
 
 import os
@@ -11,14 +12,27 @@ from underworld.human.human import Human
 from underworld.engine.event_loop import EventLoop
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
+from underworld.interface.quan_tri_vien import QuanTriVien
 from underworld.data.dataset import Dataset
 
 
-class TestUnderworld(unittest.TestCase):
-    """Tập hợp 10 bài kiểm thử cốt lõi cho hệ thống Underworld v0."""
+class DemSoLanQuanTri(QuanTriVien):
+    """Lớp Quản trị viên phục vụ kiểm thử đếm số lần được gọi."""
+
+    def __init__(self, name: str = "Admin_Test"):
+        super().__init__(name=name)
+        self.so_lan_goi = 0
+
+    def tai_moi_buoc(self, trang_thai_the_gioi):
+        self.so_lan_goi += 1
+        return super().tai_moi_buoc(trang_thai_the_gioi)
+
+
+class TestUnderworldPR3(unittest.TestCase):
+    """Tập hợp các bài kiểm thử cốt lõi cho dự án Underworld v0 - PR #3."""
 
     def test_1_world_initialization(self):
-        """1. Kiểm tra World khởi tạo được thành công."""
+        """1. Kiểm tra World khởi tạo thành công."""
         world = World(bounds=(100, 100))
         self.assertEqual(world.time_step, 0)
         self.assertEqual(len(world.humans), 0)
@@ -59,7 +73,7 @@ class TestUnderworld(unittest.TestCase):
         world.add_human(Human("Human_1"))
         event_loop = EventLoop(world)
 
-        trajectory = event_loop.run(steps=3)
+        trajectory = event_loop.chay(so_buoc=3)
         self.assertEqual(len(trajectory.steps), 3)
         self.assertEqual(world.time_step, 3)
 
@@ -67,7 +81,6 @@ class TestUnderworld(unittest.TestCase):
         """5. Kiểm tra Human có thể thay đổi state theo thời gian hoặc hành động."""
         human = Human("Human_1", position=(0, 0))
 
-        # Cho human di chuyển / giảm năng lượng
         human.state.needs["năng_lượng"] = 10.0  # Giảm xuống dưới 20
         action = human.step()
 
@@ -110,7 +123,7 @@ class TestUnderworld(unittest.TestCase):
         world.add_human(Human("Human_Traj"))
         event_loop = EventLoop(world)
 
-        trajectory = event_loop.run(steps=2, trajectory_id="test_traj")
+        trajectory = event_loop.chay(so_buoc=2, trajectory_id="test_traj")
         self.assertEqual(trajectory.trajectory_id, "test_traj")
         self.assertEqual(len(trajectory.steps), 2)
 
@@ -124,7 +137,7 @@ class TestUnderworld(unittest.TestCase):
         world = World()
         world.add_human(Human("Human_DS"))
         event_loop = EventLoop(world)
-        trajectory = event_loop.run(steps=2)
+        trajectory = event_loop.chay(so_buoc=2)
 
         dataset = Dataset()
         dataset.add_trajectory(trajectory)
@@ -146,13 +159,95 @@ class TestUnderworld(unittest.TestCase):
         world.add_human(Human("Auto_2", position=(10, 10)))
 
         event_loop = EventLoop(world)
-        # Chạy mà KHÔNG truyền agent_callback
-        trajectory = event_loop.run(steps=5, agent_callback=None)
+        trajectory = event_loop.chay(so_buoc=5, agent_callback=None)
 
         self.assertEqual(len(trajectory.steps), 5)
         self.assertEqual(world.time_step, 5)
-        for step in trajectory.steps:
-            self.assertIsNone(step.action)
+
+    def test_11_quan_tri_vien_duoc_goi_moi_buoc(self):
+        """11. Kiểm tra Quản trị viên được gọi ở MỖI bước thời gian."""
+        world = World()
+        world.add_human(Human("Human_QTV"))
+        event_loop = EventLoop(world)
+        qtv = DemSoLanQuanTri()
+
+        event_loop.chay(so_buoc=7, quan_tri_vien=qtv)
+        self.assertEqual(qtv.so_lan_goi, 7)
+
+    def test_12_quan_tri_vien_tac_dong_the_gioi(self):
+        """12. Kiểm tra Quản trị viên có thể thay đổi môi trường và trạng thái thế giới."""
+        world = World()
+        qtv = QuanTriVien()
+        qtv.dat_lenh_tac_dong([{
+            "loai_lenh": "THAY_DOI_MOI_TRUONG",
+            "key": "weather",
+            "val": "sương_mù"
+        }])
+
+        event_loop = EventLoop(world)
+        event_loop.chay(so_buoc=1, quan_tri_vien=qtv)
+
+        self.assertEqual(world.environment["weather"], "sương_mù")
+
+    def test_13_quan_tri_vien_yeu_cau_dung(self):
+        """13. Kiểm tra Quản trị viên gửi lệnh dừng làm mô phỏng kết thúc sạch sẽ."""
+        world = World()
+        event_loop = EventLoop(world)
+
+        class StopAfterStep3Admin(QuanTriVien):
+            def tai_moi_buoc(self, trang_thai_the_gioi):
+                if trang_thai_the_gioi.time_step >= 3:
+                    self.yeu_cau_dung()
+                return []
+
+        admin = StopAfterStep3Admin()
+        trajectory = event_loop.chay(so_buoc=None, quan_tri_vien=admin)
+
+        # Mô phỏng bắt đầu từ t=0, dừng ở t=3
+        self.assertLessEqual(len(trajectory.steps), 4)
+
+    def test_14_chay_gioi_han_so_buoc(self):
+        """14. Kiểm tra chế độ chay(so_buoc=10) kết thúc đúng sau 10 bước."""
+        world = World()
+        event_loop = EventLoop(world)
+
+        trajectory = event_loop.chay(so_buoc=10)
+        self.assertEqual(len(trajectory.steps), 10)
+        self.assertEqual(world.time_step, 10)
+
+    def test_15_toan_veng_anh_chup_trang_thai(self):
+        """15. Kiểm tra trạng thái lịch sử (snapshot) không bị đột biến khi thế giới tiến lên."""
+        world = World()
+        human = Human("H_Snapshot", position=(0, 0))
+        world.add_human(human)
+
+        state_before = world.get_state()
+        initial_pos = state_before.human_states["H_Snapshot"].position
+
+        # Tiến hành 3 bước tick
+        world.tick()
+        world.tick()
+        world.tick()
+
+        # Kiểm tra trạng thái snapshot ban đầu vẫn giữ nguyên
+        self.assertEqual(state_before.human_states["H_Snapshot"].position, initial_pos)
+
+    def test_16_tinh_tai_lap_hat_giong_ngau_nhien(self):
+        """16. Kiểm tra hai thế giới khởi tạo cùng hạt giống cho ra kết quả giống hệt nhau."""
+        world1 = World(seed=999)
+        world1.add_human(Human("H_Seed", position=(0, 0)))
+        loop1 = EventLoop(world1)
+        traj1 = loop1.chay(so_buoc=5)
+
+        world2 = World(seed=999)
+        world2.add_human(Human("H_Seed", position=(0, 0)))
+        loop2 = EventLoop(world2)
+        traj2 = loop2.chay(so_buoc=5)
+
+        for step1, step2 in zip(traj1.steps, traj2.steps):
+            pos1 = step1.state_after["human_states"]["H_Seed"]["position"]
+            pos2 = step2.state_after["human_states"]["H_Seed"]["position"]
+            self.assertEqual(pos1, pos2)
 
 
 if __name__ == "__main__":

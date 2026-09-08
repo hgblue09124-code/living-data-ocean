@@ -2,6 +2,8 @@
 Định nghĩa đối tượng World sở hữu và quản lý vòng đời thế giới Underworld.
 """
 
+import copy
+import random
 from typing import Dict, List, Any, Optional
 from underworld.human.human import Human
 from underworld.human.state import HumanState
@@ -17,8 +19,8 @@ class World:
     WorldState(t) -> events -> WorldState(t+1) thông qua hàm `tick()`.
     """
 
-    def __init__(self, bounds: tuple = (100, 100)):
-        """Khởi tạo thế giới Underworld."""
+    def __init__(self, bounds: tuple = (100, 100), seed: Optional[int] = None):
+        """Khởi tạo thế giới Underworld với tùy chọn hạt giống ngẫu nhiên."""
         self.time_step: int = 0
         self.humans: Dict[str, Human] = {}
         self.environment: Dict[str, Any] = {
@@ -27,6 +29,12 @@ class World:
             "resources": {"thức_ăn": 50, "nước": 50}
         }
         self.events: List[Dict[str, Any]] = []
+        self.rng = random.Random(seed) if seed is not None else random.Random()
+
+    def dat_hat_giong(self, seed: int) -> None:
+        """Thiết lập hạt giống ngẫu nhiên phục vụ tính tái lập."""
+        self.rng = random.Random(seed)
+        random.seed(seed)
 
     def add_human(self, human: Human) -> None:
         """Thêm một Human vào thế giới."""
@@ -37,13 +45,13 @@ class World:
         return self.humans.get(human_id)
 
     def get_state(self) -> WorldState:
-        """Trả về snapshot WorldState tại thời điểm t hiện tại."""
+        """Trả về snapshot WorldState độc lập (deep copy) tại thời điểm t hiện tại."""
         human_states = {hid: h.get_state() for hid, h in self.humans.items()}
         return WorldState(
             time_step=self.time_step,
             human_states=human_states,
-            environment=dict(self.environment),
-            events=list(self.events)
+            environment=copy.deepcopy(self.environment),
+            events=copy.deepcopy(self.events)
         )
 
     def tick(self, external_actions: Optional[List[Dict[str, Any]]] = None) -> WorldState:
@@ -83,7 +91,10 @@ class World:
                 })
             else:
                 # Human tự vận hành theo logic nội tại
-                action_taken = human.step({"environment": self.environment})
+                action_taken = human.step({
+                    "environment": self.environment,
+                    "random": self.rng
+                })
                 self.events.append({
                     "time_step": self.time_step,
                     "type": "HANH_DONG_TU_CHU",

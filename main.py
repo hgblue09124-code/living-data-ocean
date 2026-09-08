@@ -1,5 +1,5 @@
 """
-Tệp thực thi chính của dự án Underworld v0.
+Tệp thực thi chính của dự án Underworld v0 - PR #3.
 Khởi chạy mô phỏng bằng cách gọi hàm `run_simulation` từ mô-đun `underworld.main`.
 """
 
