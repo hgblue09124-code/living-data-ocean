@@ -47,7 +47,6 @@ class QuanTriVien:
         và trả về danh sách các lệnh tác động quản trị (ví dụ: thay đổi môi trường,
         tạo sự kiện, tác động con người, hoặc dừng mô phỏng).
         """
-        # Trả về các lệnh chờ trước nếu có
         lenh_thuc_thi = list(self._lenh_cho_truoc)
         self._lenh_cho_truoc.clear()
         return lenh_thuc_thi
@@ -65,18 +64,13 @@ class QuanTriVien:
                     world.environment[key] = val
             elif loai_lenh == "TAO_SU_KIEN":
                 chi_tiet = lenh.get("chi_tiet", "Sự kiện từ Quản trị viên")
-                world.events.append({
-                    "time_step": world.time_step,
-                    "type": "SU_KIEN_QUAN_TRI",
-                    "chi_tiết": chi_tiet
-                })
+                world.tao_su_kien(chi_tiet, loai_su_kien="SU_KIEN_QUAN_TRI")
             elif loai_lenh == "TAC_DONG_CON_NGUOI":
                 target_id = lenh.get("target_id")
                 human = world.get_human(target_id)
                 if human:
-                    human.apply_external_action(
-                        lenh.get("action_type", "REST"),
-                        lenh.get("payload", {})
-                    )
+                    action_type = lenh.get("action_type", "REST")
+                    payload = lenh.get("payload", {})
+                    human.apply_external_action(action_type, payload)
             elif loai_lenh == "YEU_CAU_DUNG":
                 self.yeu_cau_dung()

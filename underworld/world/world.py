@@ -44,6 +44,14 @@ class World:
         """Lấy thực thể Human theo ID."""
         return self.humans.get(human_id)
 
+    def tao_su_kien(self, chi_tiet: str, loai_su_kien: str = "SU_KIEN_QUAN_TRI") -> None:
+        """Thêm một sự kiện ngoài/quản trị vào danh sách chờ xử lý cho bước tiếp theo."""
+        self.events.append({
+            "type": loai_su_kien,
+            "chi_tiết": chi_tiet,
+            "processed": False
+        })
+
     def get_state(self) -> WorldState:
         """Trả về snapshot WorldState độc lập (deep copy) tại thời điểm t hiện tại."""
         human_states = {hid: h.get_state() for hid, h in self.humans.items()}
@@ -58,14 +66,24 @@ class World:
         """
         Thực hiện một bước tiến thời gian (tick): WorldState(t) -> WorldState(t+1).
 
-        1. Cập nhật thời gian t = t + 1.
-        2. Xử lý các tác động/hành động bên ngoài (nếu có).
-        3. Cho tất cả Human tự do hành động nếu không có can thiệp ngoại cảnh.
-        4. Phát hiện tương tác ngẫu nhiên giữa các Human (ví dụ: gặp gỡ khi ở gần).
-        5. Cập nhật WorldState mới.
+        1. Bảo tồn các sự kiện do Quản trị viên/Ngoại cảnh tạo ra trước tick cho lượt này.
+        2. Cập nhật thời gian t = t + 1.
+        3. Xử lý các tác động/hành động bên ngoài (nếu có).
+        4. Cho tất cả Human tự do hành động nếu không có can thiệp ngoại cảnh.
+        5. Phát hiện tương tác ngẫu nhiên giữa các Human (ví dụ: gặp gỡ khi ở gần).
+        6. Cập nhật WorldState mới.
         """
+        # Thu thập các sự kiện chưa được xử lý (ví dụ do Quản trị viên tạo ra trước tick)
+        su_kien_truoc_tick = [e for e in self.events if not e.get("processed", False)]
+
         self.time_step += 1
         self.events = []
+
+        # Đưa các sự kiện trước tick vào danh sách sự kiện bước hiện tại
+        for sk in su_kien_truoc_tick:
+            sk["time_step"] = self.time_step
+            sk["processed"] = True
+            self.events.append(sk)
 
         # Tạo ánh xạ các action bên ngoài theo target human_id
         action_map: Dict[str, Dict[str, Any]] = {}
@@ -87,7 +105,8 @@ class World:
                     "time_step": self.time_step,
                     "type": "TAC_DONG_NGOAI",
                     "human_id": human_id,
-                    "chi_tiết": f"Tác động ngoại cảnh '{action_type}': {action_taken}"
+                    "chi_tiết": f"Tác động ngoại cảnh '{action_type}': {action_taken}",
+                    "processed": True
                 })
             else:
                 # Human tự vận hành theo logic nội tại
@@ -99,7 +118,8 @@ class World:
                     "time_step": self.time_step,
                     "type": "HANH_DONG_TU_CHU",
                     "human_id": human_id,
-                    "chi_tiết": f"Human {human_id} tự thực hiện: {action_taken}"
+                    "chi_tiết": f"Human {human_id} tự thực hiện: {action_taken}",
+                    "processed": True
                 })
 
         # Phát hiện sự kiện tương tác giữa các Human ở gần vị trí nhau
@@ -115,7 +135,8 @@ class World:
                         "type": "TUONG_TAC_HUMAN",
                         "human_1": h1.state.id,
                         "human_2": h2.state.id,
-                        "chi_tiết": f"Human {h1.state.id} và Human {h2.state.id} gặp gỡ tại {h1.state.position}"
+                        "chi_tiết": f"Human {h1.state.id} và Human {h2.state.id} gặp gỡ tại {h1.state.position}",
+                        "processed": True
                     }
                     self.events.append(interaction_event)
                     # Cập nhật chỉ số xã hội cho cả hai Human
