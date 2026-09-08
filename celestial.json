@@ -1,0 +1,9 @@
+{
+  "id": "celestial",
+  "authority": {
+    "share": 0.5,
+    "scope": "world",
+    "mode": "negative"
+  },
+  "status": "dormant"
+}
