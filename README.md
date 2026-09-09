@@ -1,6 +1,6 @@
 # Underworld v0 — Python Simulation Skeleton
 
-**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập theo kiến trúc chuẩn **Atomic Semantic Modules → Composition → World → Runtime**.
+**Underworld v0** là một thế giới tính toán (computational world) tối giản, thuần Python, nhẹ nhàng, tự vận hành độc lập theo kiến trúc chuẩn **Atomic Semantic Modules → Composition → Meso Module → World Composition**.
 
 ---
 
@@ -17,22 +17,30 @@ underworld/
 │   ├── randomness.py       # Randomness: Quản lý RNG và hạt giống seed
 │   └── identity.py         # EntityIdentity: Quản lý mã định danh
 │
-├── modules/                # [Atomic Modules] Các mô-đun chức năng độc lập
+├── modules/                # [Modules] Các mô-đun chức năng độc lập (Atomic & Meso)
 │   ├── spatial.py          # SpatialSpace: Tọa độ không gian (x, y) & khoảng cách
 │   ├── environment.py      # EnvironmentState: Thuộc tính thời tiết & tài nguyên
 │   ├── entity.py           # EntityNeeds: Chỉ số nhu cầu sinh học & ký ức
 │   ├── event.py            # EventLog: Vòng đời sự kiện mô phỏng
 │   ├── behavior.py         # EntityBehavior: Thuật toán ra quyết định tự chủ
 │   ├── interaction.py      # InteractionRule: Quy tắc tương tác không gian
-│   └── command_dispatcher.py # CommandDispatcher: Tiếp nhận & phân phối lệnh quản trị
+│   ├── command_dispatcher.py # CommandDispatcher: Tiếp nhận & phân phối lệnh quản trị
+│   ├── command_intake.py   # CommandIntakeModule: Thu thập lệnh điều khiển
+│   ├── observation_builder.py # ObservationBuilderModule: Dựng observation
+│   ├── action_resolver.py  # ActionResolverModule: Xử lý agent actions
+│   ├── stop_policy.py      # StopPolicyModule: Đánh giá dừng mô phỏng
+│   ├── trajectory_recorder.py # TrajectoryRecorderModule: Ghi trajectory
+│   └── meso/               # [Meso Modules ∈ Modules] Các Module tầm trung hợp thành từ Atomic Modules
+│       └── simulation_engine.py # SimulationEngineMeso: Động cơ mô phỏng Meso
 │
 ├── composition/            # [Composition] Tổng hợp cấu trúc mô phỏng
 │   ├── state.py            # HumanState & WorldState
 │   ├── human.py            # Human: Composition từ Identity, SpatialSpace, Needs, Behavior
-│   └── world.py            # World: Composition root điều phối các Atomic Modules qua delegation
+│   ├── world.py            # World: Composition root điều phối các Atomic Modules qua delegation
+│   └── simulation_loop.py  # SimulationLoopComposition: Composition hợp thành từ 5 Atomic Modules
 │
 ├── runtime/                # [Runtime] Động cơ điều phối vòng lặp mô phỏng
-│   └── event_loop.py       # EventLoop: Điều phối chu trình t -> t+1, commands & agent actions
+│   └── event_loop.py       # EventLoop: Động cơ điều phối ủy quyền qua Meso Module
 │
 ├── interface/              # [Interface] Ranh giới giao tiếp bên ngoài
 │   ├── administrator.py    # Administrator: Giao diện điều khiển từ bên ngoài (External UI)
@@ -47,12 +55,21 @@ underworld/
 
 ---
 
-## 2. Các Vai trò và Khái niệm trong Thế giới
+## 2. Tiến hóa Kiến trúc: Atomic → Composition → Meso → World Composition
+
+1. **Atomic Module:** Các khối khả năng nhỏ nhất có ranh giới rõ ràng (`CommandIntakeModule`, `ObservationBuilderModule`, `ActionResolverModule`, `StopPolicyModule`, `TrajectoryRecorderModule`).
+2. **Composition:** Kết hợp các Atomic Modules để thử nghiệm tái lập hành vi điều phối vòng lặp mô phỏng (`SimulationLoopComposition`).
+3. **Meso Module ($\text{Meso} \in \text{Modules}$):** Chuẩn hóa Composition ổn định thành Meso Module tầm trung (`SimulationEngineMeso` nằm trong `underworld/modules/meso/`).
+4. **World Composition Root:** `World` và `EventLoop` sử dụng Meso Module `SimulationEngineMeso` để thực thi simulation lifecycle mà không biến World thành God Object.
+
+---
+
+## 3. Các Vai trò và Khái niệm trong Thế giới
 
 1. **World (Thế giới):**
    - Là điểm gốc Composition của simulation.
    - Sở hữu trạng thái toàn cảnh (`WorldState`).
-   - Tự vận hành độc lập qua cơ chế ủy quyền (delegation) đến các Atomic Modules mà không ôm toàn bộ logic (không God Object).
+   - Tự vận hành độc lập qua cơ chế ủy quyền (delegation) đến các Atomic/Meso Modules mà không ôm toàn bộ logic.
 
 2. **Agent (Tác nhân bên ngoài):**
    - Đại diện cho đối tượng tham gia tương tác bên trong thế giới (participant / decision-maker).
@@ -67,39 +84,6 @@ underworld/
      - `CREATE_EVENT`: Phát sinh sự kiện ngoài thế giới.
      - `AFFECT_HUMAN`: Can thiệp trực tiếp lên một Human.
      - `REQUEST_STOP`: Yêu cầu dừng mô phỏng.
-
----
-
-## 3. Quy trình Mô phỏng & Control Loop Session
-
-Toàn bộ luồng mô phỏng tuân theo chuẩn:
-
-$$\text{World} \rightarrow \text{WorldState} \rightarrow \text{Observation} \rightarrow \text{Agent} \rightarrow \text{Action} \rightarrow \text{Runtime} \rightarrow \text{World Transition} \rightarrow \text{Trajectory} \rightarrow \text{Dataset}$$
-
-Sơ đồ vòng lặp điều khiển phiên làm việc (Control Loop Session):
-
-```
-       World Initialized
-               │
-               ▼
-           World Runs
-               │
-               ▼
-          Observation
-               │
-               ▼
-     Administrator Control Session
-   ┌────────────────────────────────┐
-   │ [1] Continue                   │
-   │ [2] Run N ticks                │
-   │ [3] Send AdministratorCommand  │
-   │ [4] Observe                    │
-   │ [5] Stop                       │
-   └───────────────┬────────────────┘
-                   │
-                   ▼
-    World Continues / Terminates
-```
 
 ---
 
@@ -136,7 +120,7 @@ Dự án yêu cầu **Python 3.8+** tiêu chuẩn.
 python main.py
 ```
 
-### Lệnh chạy bộ kiểm thử tự động:
+### Lệnh chạy bộ kiểm thử tự động & benchmark:
 
 ```bash
 python -m unittest discover tests

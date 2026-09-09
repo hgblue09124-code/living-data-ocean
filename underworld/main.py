@@ -1,120 +1,182 @@
-"""
-Điểm khởi chạy chương trình mô phỏng Underworld v0 - Control Loop Session Demo.
+"""Điểm khởi chạy chương trình mô phỏng Underworld v0 với World Graphics Graphical UI.
+
+Kiến trúc luồng xử lý:
+  Modules -> World -> World Program -> World Graphics -> UI Program -> Graphical Interface
 """
 
+import sys
 import os
-from typing import List, Optional, Dict, Any
-from underworld.composition import World, Human
-from underworld.runtime import EventLoop
-from underworld.interface import Observation, Action, Administrator, AdministratorCommand
-from underworld.data import Dataset
+import argparse
+from typing import List, Any, Dict, Optional
+
+# Nạp các Modules mô phỏng
+from underworld.modules.spatial import SpatialSpace
+from underworld.modules.environment import EnvironmentState
+from underworld.modules.entity import EntityNeeds
+from underworld.modules.event import EventLog
+from underworld.modules.behavior import EntityBehavior
+from underworld.modules.interaction import InteractionRule
+from underworld.modules.command_dispatcher import CommandDispatcher
+from underworld.modules.command_intake import CommandIntakeModule
+from underworld.modules.observation_builder import ObservationBuilderModule
+from underworld.modules.action_resolver import ActionResolverModule
+from underworld.modules.stop_policy import StopPolicyModule
+from underworld.modules.trajectory_recorder import TrajectoryRecorderModule
+from underworld.modules.meso.simulation_engine import SimulationEngineMeso
+
+# Nạp các UI Modules & World Graphics
+from underworld.modules.ui import (
+    WorldStateViewModule,
+    EntityViewModule,
+    EventViewModule,
+    TimelineViewModule,
+    SimulationControlViewModule,
+)
+from underworld.composition.world_program import WorldProgram
+from underworld.graphics.world_graphics import WorldGraphics
+from underworld.interface.administrator import Administrator, AdministratorCommand
 
 
-def external_agent_brain(observation: Observation) -> Optional[List[Action]]:
-    """
-    External Agent minh họa ranh giới giao tiếp (Observation -> Action).
-
-    Ở bước time_step == 4, Agent gửi một Action ép Human_001 nghỉ ngơi.
-    """
-    if observation.time_step == 4:
-        print(f"  [EXTERNAL AGENT] Quan sát thấy time_step={observation.time_step}. Gửi lệnh Action 'REST' cho Human_001!")
-        return [
-            Action(
-                action_type="REST",
-                target_id="Human_001",
-                payload={"reason": "Tác động từ External Agent"}
-            )
-        ]
-    return None
-
-
-def run_simulation():
-    """
-    Chạy minh họa toàn bộ pipeline mô phỏng Underworld v0 với Control Loop Session:
-    World -> Runtime Start -> World Advances -> Administrator Control Session (Run N ticks, Command, Observe, Stop)
-    """
-    print("=" * 80)
-    print("   KHỞI ĐỘNG UNDERWORLD v0 - CONTROL LOOP SESSION DEMO (PR #3)")
-    print("=" * 80)
-
-    # 1. Khởi tạo World với hạt giống ngẫu nhiên để tái lập
-    world = World(bounds=(50, 50), seed=42)
-
-    # 2. Khởi tạo 3 Human
-    human_1 = Human(human_id="Human_001", position=(0, 0), status="sẵn_sàng")
-    human_2 = Human(human_id="Human_002", position=(1, 0), status="sẵn_sàng")
-    human_3 = Human(human_id="Human_003", position=(10, 10), status="sẵn_sàng")
-
-    world.add_human(human_1)
-    world.add_human(human_2)
-    world.add_human(human_3)
-
-    print(f"\n[1] Đã khởi tạo World (Seed=42) với {len(world.humans)} Human:")
-    for hid, h in world.humans.items():
-        st = h.get_state()
-        print(f"    - {hid}: vị trí={st.position}, trạng thái={st.status}")
-
-    # 3. Khởi tạo Administrator (Đứng ngoài thế giới) và Event Loop (Runtime)
-    admin = Administrator(name="System_Administrator")
-    event_loop = EventLoop(world)
-    dataset = Dataset()
-
-    # Kịch bản các giai đoạn điều khiển của Administrator trong phiên làm việc
-    session_phases = [
-        {"giai_đoạn": "1. Khởi động", "action": "RUN_N_TICKS", "ticks": 2},
-        {
-            "giai_đoạn": "2. Tác động quản trị",
-            "action": "COMMAND",
-            "commands": [
-                AdministratorCommand("CHANGE_ENVIRONMENT", {"key": "weather", "val": "mưa_bão"}),
-                AdministratorCommand("CREATE_EVENT", {"detail": "Thiên thạch rơi gần vĩ độ (0,0)"})
-            ]
-        },
-        {"giai_đoạn": "3. Tiếp tục mô phỏng", "action": "RUN_N_TICKS", "ticks": 3},
-        {"giai_đoạn": "4. Dừng mô phỏng", "action": "STOP"}
+def build_ecosystem_modules() -> List[Any]:
+    """Khởi tạo toàn bộ Hệ sinh thái Modules (Atomic, Meso & UI Modules)."""
+    return [
+        # Domain Modules / Classes
+        SpatialSpace(),
+        EnvironmentState(),
+        EntityNeeds(),
+        EventLog(),
+        EntityBehavior(),
+        InteractionRule(),
+        CommandDispatcher(),
+        CommandIntakeModule(),
+        ObservationBuilderModule(),
+        ActionResolverModule(),
+        StopPolicyModule(),
+        TrajectoryRecorderModule(),
+        SimulationEngineMeso(),
+        # UI Modules
+        WorldStateViewModule(),
+        EntityViewModule(),
+        EventViewModule(),
+        TimelineViewModule(),
+        SimulationControlViewModule(),
     ]
-    phase_index = 0
 
-    def administrator_session_controller(world_state) -> Dict[str, Any]:
-        nonlocal phase_index
-        if phase_index < len(session_phases):
-            p = session_phases[phase_index]
-            phase_index += 1
-            print(f"\n  [ADMINISTRATOR CONTROL SESSION] {p['giai_đoạn']}: Lựa chọn hành động '{p['action']}'")
-            return p
-        return {"action": "STOP"}
 
+def run_simulation(headless: bool = False, ticks: int = 5):
+    """Khởi chạy mô phỏng Underworld v0 qua World Program và World Graphics.
+
+    Args:
+        headless: Nếu True, chạy ở chế độ console không hiển thị cửa sổ Tkinter.
+        ticks: Số bước tick cần chạy trong chế độ headless.
+    """
+    print("=" * 80)
+    print("   UNDERWORLD v0 — GRAPHICAL UI PROGRAM VIA WORLD GRAPHICS")
+    print("=" * 80)
+
+    # 1. Thu thập Modules Ecosystem
+    available_modules = build_ecosystem_modules()
+    print(f"\n[1] Hệ sinh thái Modules: Tổng số {len(available_modules)} Modules đã nạp.")
+
+    # 2. Tổng hợp World Program (Executable Program) từ Modules
+    world_program = WorldProgram.assemble(
+        available_modules=available_modules,
+        world_seed=42,
+        num_humans=3
+    )
+    print("[2] Đã tổng hợp World Program (Substrate: World | Runtime: EventLoop)")
+
+    # 3. Khởi tạo World Graphics
+    world_graphics = WorldGraphics(available_modules=available_modules)
+
+    # Lựa chọn trật tự layout giao diện động thông qua World Graphics
+    desired_layout = [
+        "ui_world_state_view",
+        "ui_simulation_control_view",
+        "ui_entity_view",
+        "ui_event_view",
+        "ui_timeline_view"
+    ]
+
+    # 4. World Graphics thực hiện: Filter -> Order -> Compose -> UIProgram
+    ui_program = world_graphics.compose_ui_program(
+        layout_order=desired_layout,
+        title="Underworld v0 — World Graphics Prototype"
+    )
+    print(f"[3] World Graphics đã tổng hợp UI Program với {len(ui_program.ui_modules)} UI Modules.")
+
+    # Kiểm tra cờ Headless hoặc môi trường không có màn hình hiển thị GUI
+    is_headless_env = headless or os.environ.get("HEADLESS") == "1"
+
+    if is_headless_env:
+        print("\n------------------------------------------------------------")
+        print("[4] BẮT ĐẦU MÔ PHỎNG Ở CHẾ ĐỘ HEADLESS / CONSOLE FALLBACK")
+        print("------------------------------------------------------------")
+        for i in range(ticks):
+            state = world_program.run_step()
+            tick = state.get("time_step", 0)
+            env = state.get("environment", {})
+            humans_cnt = len(state.get("human_states", state.get("humans", {})))
+            print(f"  --> [Tick {tick}] Thời tiết: {env.get('weather')} | Số con người: {humans_cnt}")
+        print("\n============================================================")
+        print("                   MÔ PHỎNG HEADLESS HOÀN THÀNH")
+        print("============================================================\n")
+        return
+
+    # Khởi chạy Graphical UI tương tác
     print("\n------------------------------------------------------------")
-    print("[2] BẮT ĐẦU PHIÊN ĐIỀU KHIỂN CONTROL LOOP SỐNG CỦA ADMINISTRATOR")
+    print("[4] BẮT ĐẦU HIỂN THỊ CỬA SỔ GRAPHICAL UI PROGRAM")
     print("------------------------------------------------------------")
 
-    # Chạy phiên mô phỏng với Control Loop tương tác đa giai đoạn
-    trajectory = event_loop.run_session(
-        session_controller=administrator_session_controller,
-        administrator=admin,
-        agent_callback=external_agent_brain,
-        trajectory_id="traj_control_loop_demo"
-    )
+    admin = Administrator(name="Graphical_Operator")
 
-    for step in trajectory.steps:
-        print(f"\n---> Bước thời gian: {step.step}")
-        for event in step.state_after["events"]:
-            print(f"     Sự kiện: {event.get('chi_tiết')}")
+    def on_step_callback():
+        world_program.run_step()
+        st = world_program.get_state()
+        ui_program.refresh_widgets(st, callbacks=build_callbacks())
 
-    dataset.add_trajectory(trajectory)
+    def on_run_n_callback(n: int):
+        for _ in range(n):
+            world_program.run_step()
+        st = world_program.get_state()
+        ui_program.refresh_widgets(st, callbacks=build_callbacks())
 
-    # 4. Xuất Dataset ra tệp JSONL
-    output_dir = "data_output"
-    os.makedirs(output_dir, exist_ok=True)
-    dataset_path = os.path.join(output_dir, "dataset.jsonl")
-    dataset.export_jsonl(dataset_path)
+    def on_admin_weather_callback(weather: str):
+        cmd = admin.change_environment("weather", weather)
+        world_program.world.apply_command(cmd)
+        world_program.run_step()
+        st = world_program.get_state()
+        ui_program.refresh_widgets(st, callbacks=build_callbacks())
 
-    print("\n============================================================")
-    print("                   MÔ PHỎNG HOÀN THÀNH")
-    print(f"  - Tổng số bước mô phỏng thực hiện trong phiên: {len(trajectory.steps)} bước.")
-    print(f"  - Đã xuất Dataset thành công tại: {dataset_path}")
-    print("============================================================\n")
+    def on_stop_callback():
+        if ui_program.root:
+            ui_program.root.destroy()
+
+    def build_callbacks() -> Dict[str, Any]:
+        return {
+            "on_step": on_step_callback,
+            "on_run_n": on_run_n_callback,
+            "on_admin_weather": on_admin_weather_callback,
+            "on_stop": on_stop_callback
+        }
+
+    try:
+        initial_state = world_program.get_state()
+        root = ui_program.build_gui(initial_state, callbacks=build_callbacks())
+        root.mainloop()
+    except Exception as err:
+        print(f"\n[CẢNH BÁO] Không thể chạy Graphical GUI loop ({err}). Tự động chuyển sang Headless fallback.")
+        run_simulation(headless=True, ticks=ticks)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Underworld v0 Simulation Engine & Graphical UI Program")
+    parser.add_argument("--headless", action="store_true", help="Chạy ở chế độ không mở giao diện Tkinter")
+    parser.add_argument("--ticks", type=int, default=5, help="Số ticks chạy trong chế độ headless")
+    args = parser.parse_args()
+
+    run_simulation(headless=args.headless, ticks=args.ticks)
 
 
 if __name__ == "__main__":
-    run_simulation()
+    main()
