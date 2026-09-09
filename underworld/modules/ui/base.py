@@ -23,20 +23,22 @@ class UIModule:
         self.category = category
         self.is_ui_module = True
 
+    def render_web_dict(self, world_state: Dict[str, Any]) -> Dict[str, Any]:
+        """Cung cấp dữ liệu đã cấu trúc hóa dành cho Web UI Presentation Layer.
+
+        Args:
+            world_state: Snapshot trạng thái thế giới hiện tại.
+
+        Returns:
+            Dict dữ liệu giao diện của module.
+        """
+        raise NotImplementedError("Các UI Module con phải cài đặt phương thức render_web_dict()")
+
     def render_tk(
         self,
         parent_widget: Any,
         world_state: Dict[str, Any],
         callbacks: Optional[Dict[str, Callable]] = None
     ) -> Any:
-        """Dựng giao diện Tkinter cho module này.
-
-        Args:
-            parent_widget: Widget Tkinter cha chứa phần tử UI này.
-            world_state: Snapshot trạng thái thế giới hiện tại.
-            callbacks: Các hàm callback điều khiển từ bên ngoài (ví dụ: on_step, on_command).
-
-        Returns:
-            Widget Tkinter đại diện cho giao diện của module.
-        """
-        raise NotImplementedError("Các UI Module con phải cài đặt phương thức render_tk()")
+        """Dựng giao diện Tkinter cho module này (nếu có hỗ trợ)."""
+        pass

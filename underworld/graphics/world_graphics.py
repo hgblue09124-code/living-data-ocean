@@ -1,10 +1,10 @@
-"""WorldGraphics — Bộ tổng hợp Giao diện Đồ họa từ Hệ sinh thái Modules.
+"""WorldGraphics — Bộ tổng hợp Giao diện Web UI từ Hệ sinh thái Modules.
 
 WorldGraphics nhận danh sách Modules, lọc ra các UI Modules thích hợp, sắp xếp
-layout theo cấu hình và tổng hợp thành một `UIProgram` sẵn sàng hiển thị.
+layout theo cấu hình và tổng hợp thành một `UIProgram` phục vụ Web UI.
 """
 
-from typing import List, Any, Optional, Dict, Callable
+from typing import List, Any, Optional
 from underworld.modules.ui.base import UIModule
 from underworld.graphics.ui_program import UIProgram
 
@@ -41,16 +41,13 @@ class WorldGraphics:
         if not layout_order:
             return ui_modules
 
-        # Tạo map module_id -> module
         mod_map = {mod.module_id: mod for mod in ui_modules}
         ordered = []
 
-        # Đưa các module theo đúng thứ tự ưu tiên trong layout_order
         for mod_id in layout_order:
             if mod_id in mod_map:
                 ordered.append(mod_map[mod_id])
 
-        # Đưa nốt các module chưa được kê khai ở cuối
         for mod in ui_modules:
             if mod not in ordered:
                 ordered.append(mod)
@@ -60,7 +57,7 @@ class WorldGraphics:
     def compose_ui_program(
         self,
         layout_order: Optional[List[str]] = None,
-        title: str = "Underworld v0 — World Graphics UI Program"
+        title: str = "Underworld v0 — World Graphics Web UI Program"
     ) -> UIProgram:
         """Bước 3 & 4: Tổng hợp (Compose) thành UIProgram hoàn chỉnh.
 
@@ -72,7 +69,7 @@ class WorldGraphics:
             title: Tiêu đề giao diện.
 
         Returns:
-            Thể hiện `UIProgram` đại diện cho chương trình giao diện đồ họa.
+            Thể hiện `UIProgram` đại diện cho chương trình giao diện.
         """
         filtered = self.filter_ui_modules(self.available_modules)
         ordered = self.order_ui_modules(filtered, layout_order=layout_order)

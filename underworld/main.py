@@ -1,7 +1,7 @@
-"""Điểm khởi chạy chương trình mô phỏng Underworld v0 với World Graphics Graphical UI.
+"""Điểm khởi chạy chương trình mô phỏng Underworld v0 với World Graphics Web UI.
 
 Kiến trúc luồng xử lý:
-  Modules -> World -> World Program -> World Graphics -> UI Program -> Graphical Interface
+  Modules -> World -> World Program -> World Graphics -> UI Program -> Web UI Program
 """
 
 import sys
@@ -24,7 +24,7 @@ from underworld.modules.stop_policy import StopPolicyModule
 from underworld.modules.trajectory_recorder import TrajectoryRecorderModule
 from underworld.modules.meso.simulation_engine import SimulationEngineMeso
 
-# Nạp các UI Modules & World Graphics
+# Nạp các UI Modules, World Graphics & Web Server
 from underworld.modules.ui import (
     WorldStateViewModule,
     EntityViewModule,
@@ -34,6 +34,7 @@ from underworld.modules.ui import (
 )
 from underworld.composition.world_program import WorldProgram
 from underworld.graphics.world_graphics import WorldGraphics
+from underworld.graphics.web_server import start_web_server
 from underworld.interface.administrator import Administrator, AdministratorCommand
 
 
@@ -63,15 +64,17 @@ def build_ecosystem_modules() -> List[Any]:
     ]
 
 
-def run_simulation(headless: bool = False, ticks: int = 5):
+def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, ticks: int = 5):
     """Khởi chạy mô phỏng Underworld v0 qua World Program và World Graphics.
 
     Args:
-        headless: Nếu True, chạy ở chế độ console không hiển thị cửa sổ Tkinter.
+        headless: Nếu True, chạy ở chế độ console không hiển thị Web Server.
+        web: Nếu True, khởi chạy Web UI Server cho trình duyệt/di động.
+        port: Cổng lắng nghe của Web UI Server.
         ticks: Số bước tick cần chạy trong chế độ headless.
     """
     print("=" * 80)
-    print("   UNDERWORLD v0 — GRAPHICAL UI PROGRAM VIA WORLD GRAPHICS")
+    print("   UNDERWORLD v0 — WEB UI PROGRAM VIA WORLD GRAPHICS")
     print("=" * 80)
 
     # 1. Thu thập Modules Ecosystem
@@ -101,16 +104,16 @@ def run_simulation(headless: bool = False, ticks: int = 5):
     # 4. World Graphics thực hiện: Filter -> Order -> Compose -> UIProgram
     ui_program = world_graphics.compose_ui_program(
         layout_order=desired_layout,
-        title="Underworld v0 — World Graphics Prototype"
+        title="Underworld v0 — World Graphics Web UI"
     )
     print(f"[3] World Graphics đã tổng hợp UI Program với {len(ui_program.ui_modules)} UI Modules.")
 
-    # Kiểm tra cờ Headless hoặc môi trường không có màn hình hiển thị GUI
-    is_headless_env = headless or os.environ.get("HEADLESS") == "1"
+    # Kiểm tra cờ Headless hoặc mặc định nếu không yêu cầu --web
+    is_headless_mode = headless or not web or os.environ.get("HEADLESS") == "1"
 
-    if is_headless_env:
+    if is_headless_mode:
         print("\n------------------------------------------------------------")
-        print("[4] BẮT ĐẦU MÔ PHỎNG Ở CHẾ ĐỘ HEADLESS / CONSOLE FALLBACK")
+        print("[4] BẮT ĐẦU MÔ PHỎNG Ở CHẾ ĐỘ HEADLESS / CONSOLE RUNTIME")
         print("------------------------------------------------------------")
         for i in range(ticks):
             state = world_program.run_step()
@@ -123,59 +126,38 @@ def run_simulation(headless: bool = False, ticks: int = 5):
         print("============================================================\n")
         return
 
-    # Khởi chạy Graphical UI tương tác
+    # Khởi chạy Web UI Server cho trình duyệt di động / desktop
     print("\n------------------------------------------------------------")
-    print("[4] BẮT ĐẦU HIỂN THỊ CỬA SỔ GRAPHICAL UI PROGRAM")
+    print(f"[4] BẮT ĐẦU WEB UI SERVER TẠI HOẠT ĐỘNG TẠI: http://0.0.0.0:{port}")
+    print(f"    Có thể mở từ trình duyệt iPhone/Safari/Chrome trên cùng mạng local!")
     print("------------------------------------------------------------")
 
-    admin = Administrator(name="Graphical_Operator")
-
-    def on_step_callback():
-        world_program.run_step()
-        st = world_program.get_state()
-        ui_program.refresh_widgets(st, callbacks=build_callbacks())
-
-    def on_run_n_callback(n: int):
-        for _ in range(n):
-            world_program.run_step()
-        st = world_program.get_state()
-        ui_program.refresh_widgets(st, callbacks=build_callbacks())
-
-    def on_admin_weather_callback(weather: str):
-        cmd = admin.change_environment("weather", weather)
-        world_program.world.apply_command(cmd)
-        world_program.run_step()
-        st = world_program.get_state()
-        ui_program.refresh_widgets(st, callbacks=build_callbacks())
-
-    def on_stop_callback():
-        if ui_program.root:
-            ui_program.root.destroy()
-
-    def build_callbacks() -> Dict[str, Any]:
-        return {
-            "on_step": on_step_callback,
-            "on_run_n": on_run_n_callback,
-            "on_admin_weather": on_admin_weather_callback,
-            "on_stop": on_stop_callback
-        }
+    admin = Administrator(name="Web_Operator")
+    server = start_web_server(
+        world_program=world_program,
+        ui_program=ui_program,
+        admin=admin,
+        host="0.0.0.0",
+        port=port
+    )
 
     try:
-        initial_state = world_program.get_state()
-        root = ui_program.build_gui(initial_state, callbacks=build_callbacks())
-        root.mainloop()
-    except Exception as err:
-        print(f"\n[CẢNH BÁO] Không thể chạy Graphical GUI loop ({err}). Tự động chuyển sang Headless fallback.")
-        run_simulation(headless=True, ticks=ticks)
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nĐã dừng Web UI Server.")
+    finally:
+        server.server_close()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Underworld v0 Simulation Engine & Graphical UI Program")
-    parser.add_argument("--headless", action="store_true", help="Chạy ở chế độ không mở giao diện Tkinter")
+    parser = argparse.ArgumentParser(description="Underworld v0 Simulation Engine & Web UI Program")
+    parser.add_argument("--web", action="store_true", help="Khởi chạy Web UI Server truy cập từ trình duyệt/di động")
+    parser.add_argument("--headless", action="store_true", help="Chạy ở chế độ không mở Web Server")
+    parser.add_argument("--port", type=int, default=8000, help="Cổng chạy Web UI Server")
     parser.add_argument("--ticks", type=int, default=5, help="Số ticks chạy trong chế độ headless")
     args = parser.parse_args()
 
-    run_simulation(headless=args.headless, ticks=args.ticks)
+    run_simulation(headless=args.headless, web=args.web, port=args.port, ticks=args.ticks)
 
 
 if __name__ == "__main__":

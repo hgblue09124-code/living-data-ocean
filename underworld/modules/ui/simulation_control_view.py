@@ -1,13 +1,11 @@
 """UI Module chứa Bảng Điều khiển Mô phỏng (Simulation Control View)."""
 
-import tkinter as tk
-from tkinter import ttk
 from typing import Dict, Any, Optional, Callable
 from underworld.modules.ui.base import UIModule
 
 
 class SimulationControlViewModule(UIModule):
-    """UI Module chuyên trách cung cấp các nút bấm điều khiển simulation (Play, Pause, Step, Admin Command)."""
+    """UI Module chuyên trách cung cấp các nút bấm điều khiển simulation."""
 
     def __init__(self):
         super().__init__(
@@ -16,48 +14,18 @@ class SimulationControlViewModule(UIModule):
             category="control"
         )
 
-    def render_tk(
-        self,
-        parent_widget: Any,
-        world_state: Dict[str, Any],
-        callbacks: Optional[Dict[str, Callable]] = None
-    ) -> Any:
-        frame = ttk.LabelFrame(parent_widget, text=self.title, padding=10)
-        cbs = callbacks or {}
-
-        btn_step = ttk.Button(
-            frame,
-            text="⏭️ Bước Tiếp (1 Tick)",
-            command=cbs.get("on_step")
-        )
-        btn_step.grid(row=0, column=0, padx=5, pady=5)
-
-        btn_run_10 = ttk.Button(
-            frame,
-            text="⏩ Chạy 10 Ticks",
-            command=lambda: cbs.get("on_run_n", lambda n: None)(10)
-        )
-        btn_run_10.grid(row=0, column=1, padx=5, pady=5)
-
-        btn_rain = ttk.Button(
-            frame,
-            text="🌧️ Quản Trị Viên: Gửi Mưa",
-            command=lambda: cbs.get("on_admin_weather", lambda w: None)("Mưa lớn")
-        )
-        btn_rain.grid(row=0, column=2, padx=5, pady=5)
-
-        btn_clear = ttk.Button(
-            frame,
-            text="☀️ Quản Trị Viên: Nắng Đẹp",
-            command=lambda: cbs.get("on_admin_weather", lambda w: None)("Nắng nhẹ")
-        )
-        btn_clear.grid(row=0, column=3, padx=5, pady=5)
-
-        btn_quit = ttk.Button(
-            frame,
-            text="🛑 Dừng Mô Phỏng",
-            command=cbs.get("on_stop")
-        )
-        btn_quit.grid(row=0, column=4, padx=5, pady=5)
-
-        return frame
+    def render_web_dict(self, world_state: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            "module_id": self.module_id,
+            "title": self.title,
+            "category": self.category,
+            "type": "control_panel",
+            "data": {
+                "actions": [
+                    {"id": "step_1", "label": "⏭️ Bước Tiếp (1 Tick)", "endpoint": "/api/step?n=1"},
+                    {"id": "step_10", "label": "⏩ Chạy 10 Ticks", "endpoint": "/api/step?n=10"},
+                    {"id": "weather_rain", "label": "🌧️ Mưa lớn", "endpoint": "/api/command?type=weather&val=Mưa lớn"},
+                    {"id": "weather_clear", "label": "☀️ Nắng đẹp", "endpoint": "/api/command?type=weather&val=Nắng đẹp"}
+                ]
+            }
+        }

@@ -1,7 +1,5 @@
 """UI Module hiển thị Sự kiện Thế giới (Event View)."""
 
-import tkinter as tk
-from tkinter import ttk
 from typing import Dict, Any, Optional, Callable
 from underworld.modules.ui.base import UIModule
 
@@ -16,32 +14,25 @@ class EventViewModule(UIModule):
             category="view"
         )
 
-    def render_tk(
-        self,
-        parent_widget: Any,
-        world_state: Dict[str, Any],
-        callbacks: Optional[Dict[str, Callable]] = None
-    ) -> Any:
-        frame = ttk.LabelFrame(parent_widget, text=self.title, padding=10)
-
+    def render_web_dict(self, world_state: Dict[str, Any]) -> Dict[str, Any]:
         events = world_state.get("events", [])
-        if not events:
-            lbl_empty = ttk.Label(frame, text="Hiện không có sự kiện đặc biệt nào đang diễn ra.", font=("Helvetica", 10, "italic"))
-            lbl_empty.pack(anchor="w", padx=5, pady=5)
-        else:
-            columns = ("type", "detail")
-            tree = ttk.Treeview(frame, columns=columns, show="headings", height=3)
-            tree.heading("type", text="Loại Sự Kiện")
-            tree.heading("detail", text="Nội dung / Tác động")
+        event_list = []
+        for evt in events:
+            evt_type = evt.get("type", evt.get("name", "N/A"))
+            detail = evt.get("chi_tiết", str(evt.get("payload", {})))
+            time_step = evt.get("time_step", world_state.get("time_step", 0))
+            event_list.append({
+                "type": evt_type,
+                "detail": detail,
+                "time_step": time_step
+            })
 
-            tree.column("type", width=180, anchor="w")
-            tree.column("detail", width=400, anchor="w")
-
-            for evt in events:
-                evt_type = evt.get("type", evt.get("name", "N/A"))
-                detail = evt.get("chi_tiết", str(evt.get("payload", {})))
-                tree.insert("", "end", values=(evt_type, detail))
-
-            tree.pack(fill="both", expand=True)
-
-        return frame
+        return {
+            "module_id": self.module_id,
+            "title": self.title,
+            "category": self.category,
+            "type": "event_list",
+            "data": {
+                "events": event_list
+            }
+        }

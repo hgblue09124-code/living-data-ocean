@@ -1,7 +1,5 @@
 """UI Module hiển thị Dòng thời gian / Lịch sử Simulation (Timeline View)."""
 
-import tkinter as tk
-from tkinter import ttk
 from typing import Dict, Any, Optional, Callable
 from underworld.modules.ui.base import UIModule
 
@@ -16,21 +14,7 @@ class TimelineViewModule(UIModule):
             category="timeline"
         )
 
-    def render_tk(
-        self,
-        parent_widget: Any,
-        world_state: Dict[str, Any],
-        callbacks: Optional[Dict[str, Callable]] = None
-    ) -> Any:
-        frame = ttk.LabelFrame(parent_widget, text=self.title, padding=10)
-
-        txt_log = tk.Text(frame, height=5, wrap="word", font=("Courier", 9))
-        txt_log.pack(side="left", fill="both", expand=True)
-
-        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=txt_log.yview)
-        txt_log.configure(yscrollcommand=scrollbar.set)
-        scrollbar.pack(side="right", fill="y")
-
+    def render_web_dict(self, world_state: Dict[str, Any]) -> Dict[str, Any]:
         tick = world_state.get("time_step", 0)
         humans_raw = world_state.get("human_states", world_state.get("humans", {}))
         if isinstance(humans_raw, dict):
@@ -41,9 +25,9 @@ class TimelineViewModule(UIModule):
         events = world_state.get("events", [])
 
         log_lines = [
-            f"[Tick {tick}] Mô phỏng đang chạy...",
+            f"[Tick {tick}] Mô phỏng đang diễn ra tự chủ.",
             f" - Con người active: {len(humans)} cá thể.",
-            f" - Event tích cực: {len(events)} sự kiện.",
+            f" - Ghi nhận: {len(events)} sự kiện bước này.",
         ]
         for h in humans:
             if hasattr(h, "to_dict"):
@@ -54,7 +38,13 @@ class TimelineViewModule(UIModule):
             h_energy = h_needs.get("năng_lượng", h_needs.get("energy", 0.0))
             log_lines.append(f" - [{h_id}] vị trí {h_pos} | Năng lượng: {h_energy:.1f}")
 
-        txt_log.insert("1.0", "\n".join(log_lines))
-        txt_log.config(state="disabled")
-
-        return frame
+        return {
+            "module_id": self.module_id,
+            "title": self.title,
+            "category": self.category,
+            "type": "timeline_log",
+            "data": {
+                "tick": tick,
+                "log_lines": log_lines
+            }
+        }
