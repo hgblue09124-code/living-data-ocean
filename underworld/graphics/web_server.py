@@ -145,7 +145,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             self._send_json({"error": "Endpoint không tồn tại"}, status=404)
 
     def _render_mobile_web_page(self) -> str:
-        return r"""<!DOCTYPE html>
+        return """<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
