@@ -321,6 +321,56 @@ class TestUnderworldArchitecture(unittest.TestCase):
         self.assertTrue(hasattr(underworld.composition, "World"))
         self.assertTrue(hasattr(underworld.runtime, "EventLoop"))
 
+    def test_23_control_loop_session_run_n_ticks_and_continue(self):
+        """23. Kiểm tra phiên điều khiển tương tác run_session chạy N ticks và continue."""
+        world = World(seed=42)
+        world.add_human(Human("H_Session"))
+        loop = EventLoop(world)
+
+        phases = [
+            {"action": "RUN_N_TICKS", "ticks": 2},
+            {"action": "RUN_N_TICKS", "ticks": 3},
+            {"action": "STOP"}
+        ]
+        phase_idx = 0
+
+        def session_ctrl(state):
+            nonlocal phase_idx
+            if phase_idx < len(phases):
+                res = phases[phase_idx]
+                phase_idx += 1
+                return res
+            return {"action": "STOP"}
+
+        traj = loop.run_session(session_controller=session_ctrl)
+        self.assertEqual(len(traj.steps), 5)
+        self.assertEqual(world.time_step, 5)
+
+    def test_24_control_loop_session_command_and_stop(self):
+        """24. Kiểm tra phiên điều khiển run_session nạp AdministratorCommand và STOP."""
+        world = World()
+        loop = EventLoop(world)
+
+        phases = [
+            {
+                "action": "COMMAND",
+                "commands": [AdministratorCommand("CHANGE_ENVIRONMENT", {"key": "weather", "val": "mưa_bão"})]
+            },
+            {"action": "STOP"}
+        ]
+        phase_idx = 0
+
+        def session_ctrl(state):
+            nonlocal phase_idx
+            if phase_idx < len(phases):
+                res = phases[phase_idx]
+                phase_idx += 1
+                return res
+            return {"action": "STOP"}
+
+        traj = loop.run_session(session_controller=session_ctrl)
+        self.assertEqual(world.environment["weather"], "mưa_bão")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -70,15 +70,40 @@ underworld/
 
 ---
 
-## 3. Quy trình Mô phỏng (Simulation Flow)
+## 3. Quy trình Mô phỏng & Control Loop Session
 
 Toàn bộ luồng mô phỏng tuân theo chuẩn:
 
 $$\text{World} \rightarrow \text{WorldState} \rightarrow \text{Observation} \rightarrow \text{Agent} \rightarrow \text{Action} \rightarrow \text{Runtime} \rightarrow \text{World Transition} \rightarrow \text{Trajectory} \rightarrow \text{Dataset}$$
 
+Sơ đồ vòng lặp điều khiển phiên làm việc (Control Loop Session):
+
+```
+       World Initialized
+               │
+               ▼
+           World Runs
+               │
+               ▼
+          Observation
+               │
+               ▼
+     Administrator Control Session
+   ┌────────────────────────────────┐
+   │ [1] Continue                   │
+   │ [2] Run N ticks                │
+   │ [3] Send AdministratorCommand  │
+   │ [4] Observe                    │
+   │ [5] Stop                       │
+   └───────────────┬────────────────┘
+                   │
+                   ▼
+    World Continues / Terminates
+```
+
 ---
 
-## 4. Cách Chạy Mô phỏng: Bị chặn (Finite) & Liên tục (Continuous)
+## 4. Cách Chạy Mô phỏng: Bị chặn (Finite), Liên tục (Continuous) & Control Session
 
 ### A. Chạy bị chặn số bước (`run(steps=N)`):
 ```python
@@ -90,13 +115,13 @@ trajectory = event_loop.run(steps=10)
 trajectory = event_loop.run(steps=None, administrator=admin)
 ```
 
-### C. Cách gửi lệnh can thiệp (Intervention Command):
+### C. Chạy phiên tương tác Control Session (`run_session()`):
 ```python
-admin = Administrator()
-admin.change_environment("weather", "bão_tuyết")
-admin.create_event("Thiên thạch rơi")
-admin.affect_human("Human_001", "REST")
-admin.request_stop()
+def session_controller(world_state):
+    # Lựa chọn: CONTINUE, RUN_N_TICKS, COMMAND, OBSERVE, STOP
+    return {"action": "RUN_N_TICKS", "ticks": 5}
+
+trajectory = event_loop.run_session(session_controller=session_controller, administrator=admin)
 ```
 
 ---
