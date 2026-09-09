@@ -63,10 +63,10 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
         humans_cnt = len(state.get("human_states", state.get("humans", {})))
         events = state.get("events", [])
 
-        print(f" [WEB UI LOG] {action_desc} -> [Tick {tick}] Thời tiết: {weather} | Con người: {humans_cnt} cá thể | Sự kiện bước này: {len(events)}")
+        print(f" [LOG ĐIỀU KHIỂN QUẢN TRỊ] {action_desc} -> [Tick {tick}] Thời tiết: {weather} | Con người: {humans_cnt} cá thể | Sự kiện bước này: {len(events)}")
         if events:
             for evt in events:
-                print(f"               ⚡ Event: {evt.get('type')} - {evt.get('chi_tiết')}")
+                print(f"                           ⚡ Event: {evt.get('type')} - {evt.get('chi_tiết')}")
 
     def _send_json(self, data: Dict[str, Any], status: int = 200):
         self.send_response(status)
@@ -100,7 +100,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
                 self.__class__.auto_run_active = not self.__class__.auto_run_active
                 st = self.world_program.get_state()
             status_str = "BẬT" if self.__class__.auto_run_active else "TẮT"
-            self._log_console_activity(f"Quản trị viên {status_str} chế độ Tự vận hành 1s", st)
+            self._log_console_activity(f"Lệnh chuyển đổi chế độ Tự vận hành 1s: {status_str}", st)
             payload = self.ui_program.generate_web_presentation(st)
             payload["auto_run"] = self.__class__.auto_run_active
             self._send_json(payload)
@@ -110,7 +110,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
                 for _ in range(n):
                     self.world_program.run_step(administrator=self.admin)
                 st = self.world_program.get_state()
-            self._log_console_activity(f"Thực hiện chạy {n} tick(s)", st)
+            self._log_console_activity(f"Lệnh chạy thủ công {n} tick(s)", st)
             payload = self.ui_program.generate_web_presentation(st)
             payload["auto_run"] = self.__class__.auto_run_active
             self._send_json(payload)
@@ -122,18 +122,18 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
                 if cmd_type == "weather" and cmd_val:
                     self.admin.change_environment("weather", cmd_val)
                     self.world_program.run_step(administrator=self.admin)
-                    action_msg = f"Quản trị viên đổi thời tiết thành '{cmd_val}'"
+                    action_msg = f"Lệnh đổi thời tiết thành '{cmd_val}'"
                 elif cmd_type == "create_human":
                     self.admin.create_human()
                     self.world_program.run_step(administrator=self.admin)
-                    action_msg = "Quản trị viên tạo con người mới"
+                    action_msg = "Lệnh tạo thêm con người mới vào thế giới"
                 elif cmd_type == "disaster" and cmd_val:
                     self.admin.trigger_disaster(cmd_val)
                     self.world_program.run_step(administrator=self.admin)
-                    action_msg = f"Quản trị viên kích hoạt thiên tai '{cmd_val}'"
+                    action_msg = f"Lệnh giáng họa thiên tai '{cmd_val}'"
                 else:
                     self.world_program.run_step(administrator=self.admin)
-                    action_msg = "Chạy 1 tick mô phỏng"
+                    action_msg = "Lệnh chạy 1 tick mô phỏng"
 
                 st = self.world_program.get_state()
 
@@ -145,7 +145,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             self._send_json({"error": "Endpoint không tồn tại"}, status=404)
 
     def _render_mobile_web_page(self) -> str:
-        return """<!DOCTYPE html>
+        return r"""<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
