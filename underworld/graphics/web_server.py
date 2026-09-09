@@ -145,7 +145,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             self._send_json({"error": "Endpoint không tồn tại"}, status=404)
 
     def _render_mobile_web_page(self) -> str:
-        return r"""<!DOCTYPE html>
+        return """<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -275,7 +275,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             <div class="subtitle">Thế Giới Tự Vận Hành Nhịp 1s | iOS & Mobile Responsive</div>
             <div id="status-badge" class="live-badge off">
                 <span class="badge-pulse"></span>
-                <span id="badge-text">Auto 1s: TẮT</span>
+                <span id="badge-text">Auto 1s: TẠM DỪNG</span>
             </div>
         </header>
 
@@ -338,9 +338,9 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
                     const d = mod.data;
                     card.innerHTML += `
                         <div class="stat-grid">
-                            <div class="stat-box"><div class="stat-val">\${d.tick}</div><div class="stat-lbl">⏱️ Tick</div></div>
-                            <div class="stat-box"><div class="stat-val">\${d.weather}</div><div class="stat-lbl">🌤️ Thời tiết</div></div>
-                            <div class="stat-box"><div class="stat-val">\${d.humans_count}</div><div class="stat-lbl">👥 Con người</div></div>
+                            <div class="stat-box"><div class="stat-val">${d.tick}</div><div class="stat-lbl">⏱️ Tick</div></div>
+                            <div class="stat-box"><div class="stat-val">${d.weather}</div><div class="stat-lbl">🌤️ Thời tiết</div></div>
+                            <div class="stat-box"><div class="stat-val">${d.humans_count}</div><div class="stat-lbl">👥 Con người</div></div>
                         </div>
                     `;
                 } else if (mod.type === 'control_panel') {
@@ -363,14 +363,14 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
                         eCard.className = 'entity-card';
                         eCard.innerHTML = `
                             <div class="entity-header">
-                                <span>👤 \${e.id}</span>
-                                <span>📍 Vị trí: (\${e.position.join(', ')})</span>
+                                <span>👤 ${e.id}</span>
+                                <span>📍 Vị trí: (${e.position.join(', ')})</span>
                             </div>
-                            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:2px;">Năng lượng: \${e.energy}%</div>
-                            <div class="progress-bar"><div class="progress-fill fill-energy" style="width: \${Math.min(100, Math.max(0, e.energy))}%;"></div></div>
-                            <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px; margin-bottom:2px;">Mức đói: \${e.hunger}%</div>
-                            <div class="progress-bar"><div class="progress-fill fill-hunger" style="width: \${Math.min(100, Math.max(0, e.hunger))}%;"></div></div>
-                            <div class="entity-status">💬 Hành động: <b>\${e.last_action}</b></div>
+                            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:2px;">Năng lượng: ${e.energy}%</div>
+                            <div class="progress-bar"><div class="progress-fill fill-energy" style="width: ${Math.min(100, Math.max(0, e.energy))}%;"></div></div>
+                            <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px; margin-bottom:2px;">Mức đói: ${e.hunger}%</div>
+                            <div class="progress-bar"><div class="progress-fill fill-hunger" style="width: ${Math.min(100, Math.max(0, e.hunger))}%;"></div></div>
+                            <div class="entity-status">💬 Hành động: <b>${e.last_action}</b></div>
                         `;
                         card.appendChild(eCard);
                     });
@@ -385,7 +385,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
 
                             const item = document.createElement('div');
                             item.className = 'event-item';
-                            item.innerHTML = `<span class="event-type-tag \${tagClass}">\${evt.type}</span>\${evt.detail}`;
+                            item.innerHTML = `<span class="event-type-tag ${tagClass}">${evt.type}</span>${evt.detail}`;
                             card.appendChild(item);
                         });
                     }

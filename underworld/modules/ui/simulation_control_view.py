@@ -23,7 +23,7 @@ class SimulationControlViewModule(UIModule):
             "data": {
                 "actions": [
                     {"id": "step_1", "label": "⏭️ Step 1 Tick", "endpoint": "/api/step?n=1"},
-                    {"id": "auto_2s", "label": "▶️ Bật/Tắt Auto 2s", "endpoint": "/api/auto_toggle"},
+                    {"id": "auto_2s", "label": "▶️ Bật/Tắt Auto 1s", "endpoint": "/api/auto_toggle"},
                     {"id": "add_human", "label": "➕ Thêm Con Người", "endpoint": "/api/command?type=create_human"},
                     {"id": "trigger_storm", "label": "⚡ Thiên Tai Bão", "endpoint": "/api/command?type=disaster&val=Bão Sét"},
                     {"id": "weather_rain", "label": "🌧️ Mưa lớn", "endpoint": "/api/command?type=weather&val=Mưa lớn"},
