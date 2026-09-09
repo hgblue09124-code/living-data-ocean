@@ -7,6 +7,7 @@ Kiến trúc luồng xử lý:
 import sys
 import os
 import argparse
+import socket
 from typing import List, Any, Dict, Optional
 
 # Nạp các Modules mô phỏng
@@ -36,6 +37,18 @@ from underworld.composition.world_program import WorldProgram
 from underworld.graphics.world_graphics import WorldGraphics
 from underworld.graphics.web_server import start_web_server
 from underworld.interface.administrator import Administrator, AdministratorCommand
+
+
+def get_local_ip() -> str:
+    """Tự động phát hiện IP mạng nội bộ LAN của máy tính."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
 
 
 def build_ecosystem_modules() -> List[Any]:
@@ -69,7 +82,7 @@ def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, 
 
     Args:
         headless: Nếu True, chạy ở chế độ console không hiển thị Web Server.
-        web: Nếu True, khởi chạy Web UI Server cho trình duyệt/di động.
+        web: Nếu True hoặc mặc định, khởi chạy Web UI Server cho trình duyệt/di động.
         port: Cổng lắng nghe của Web UI Server.
         ticks: Số bước tick cần chạy trong chế độ headless.
     """
@@ -108,10 +121,8 @@ def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, 
     )
     print(f"[3] World Graphics đã tổng hợp UI Program với {len(ui_program.ui_modules)} UI Modules.")
 
-    # Kiểm tra cờ Headless hoặc mặc định nếu không yêu cầu --web
-    is_headless_mode = headless or not web or os.environ.get("HEADLESS") == "1"
-
-    if is_headless_mode:
+    # Nếu chạy ở chế độ Headless
+    if headless or os.environ.get("HEADLESS") == "1":
         print("\n------------------------------------------------------------")
         print("[4] BẮT ĐẦU MÔ PHỎNG Ở CHẾ ĐỘ HEADLESS / CONSOLE RUNTIME")
         print("------------------------------------------------------------")
@@ -126,10 +137,12 @@ def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, 
         print("============================================================\n")
         return
 
-    # Khởi chạy Web UI Server cho trình duyệt di động / desktop
+    # Khởi chạy Web UI Server mặc định cho trình duyệt di động (iPhone / Safari) / desktop
+    local_ip = get_local_ip()
     print("\n------------------------------------------------------------")
-    print(f"[4] BẮT ĐẦU WEB UI SERVER TẠI HOẠT ĐỘNG TẠI: http://0.0.0.0:{port}")
-    print(f"    Có thể mở từ trình duyệt iPhone/Safari/Chrome trên cùng mạng local!")
+    print(f"[4] BẮT ĐẦU WEB UI SERVER TẠI HOẠT ĐỘNG TẠI:")
+    print(f"    👉 Máy tính nội bộ: http://localhost:{port}")
+    print(f"    📱 Trình duyệt iPhone / Mobile: http://{local_ip}:{port}")
     print("------------------------------------------------------------")
 
     admin = Administrator(name="Web_Operator")
@@ -151,7 +164,7 @@ def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, 
 
 def main():
     parser = argparse.ArgumentParser(description="Underworld v0 Simulation Engine & Web UI Program")
-    parser.add_argument("--web", action="store_true", help="Khởi chạy Web UI Server truy cập từ trình duyệt/di động")
+    parser.add_argument("--web", action="store_true", help="Khởi chạy Web UI Server (mặc định)")
     parser.add_argument("--headless", action="store_true", help="Chạy ở chế độ không mở Web Server")
     parser.add_argument("--port", type=int, default=8000, help="Cổng chạy Web UI Server")
     parser.add_argument("--ticks", type=int, default=5, help="Số ticks chạy trong chế độ headless")

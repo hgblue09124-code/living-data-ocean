@@ -7,8 +7,8 @@ chương trình mô phỏng hoàn chỉnh có thể vận hành trên nền tả
 from typing import List, Any, Optional, Dict
 from underworld.composition.world import World
 from underworld.composition.human import Human
-from underworld.composition.state import WorldState
 from underworld.runtime.event_loop import EventLoop
+from underworld.interface.administrator import Administrator
 
 
 class WorldProgram:
@@ -41,6 +41,11 @@ class WorldProgram:
     ) -> "WorldProgram":
         """Tổng hợp một World Program từ hệ sinh thái Modules sẵn có.
 
+        Quy trình tiêu thụ modules:
+        1. Lọc ra các modules thỏa mãn module_selector.
+        2. Tác động của Modules lên cấu hình khởi tạo (seed, bounds, thực thể).
+        3. Khởi tạo World substrate và gán EventLoop runtime.
+
         Args:
             available_modules: Tập hợp toàn bộ Modules có sẵn.
             module_selector: Danh sách ID các modules cần lọc sử dụng (nếu None, dùng tất cả).
@@ -51,13 +56,27 @@ class WorldProgram:
             Một thể hiện WorldProgram sẵn sàng thực thi.
         """
         selected_modules = []
+        bounds = (100, 100)
+        custom_seed = world_seed
+        custom_humans = num_humans
+
         for mod in available_modules:
-            mod_id = getattr(mod, "module_id", getattr(mod, "id", str(mod)))
+            mod_id = getattr(mod, "module_id", getattr(mod, "id", str(type(mod).__name__)))
             if module_selector is None or mod_id in module_selector:
                 selected_modules.append(mod)
 
-        world = World(seed=world_seed)
-        for i in range(1, num_humans + 1):
+                # Các modules cấu hình nếu có thuộc tính bổ trợ sẽ tác động lên chương trình
+                if hasattr(mod, "bounds") and isinstance(mod.bounds, tuple):
+                    bounds = mod.bounds
+                if hasattr(mod, "seed") and isinstance(mod.seed, int):
+                    custom_seed = mod.seed
+                if hasattr(mod, "initial_humans_count") and isinstance(mod.initial_humans_count, int):
+                    custom_humans = mod.initial_humans_count
+
+        world = World(bounds=bounds, seed=custom_seed)
+
+        # Tạo số lượng Human theo cấu hình được tổng hợp từ Modules
+        for i in range(1, custom_humans + 1):
             h_id = f"Human_{i:03d}"
             h = Human(human_id=h_id, position=(i * 2, i * 2))
             world.add_human(h)
@@ -66,17 +85,29 @@ class WorldProgram:
 
         return cls(world=world, event_loop=event_loop, active_modules=selected_modules)
 
-    def run_step(self) -> Dict[str, Any]:
-        """Thực thi một bước (tick) mô phỏng trong chương trình.
+    def run_step(
+        self,
+        administrator: Optional[Administrator] = None,
+        agent_callback: Optional[Any] = None
+    ) -> Dict[str, Any]:
+        """Thực thi đúng 1 bước (tick) mô phỏng thông qua EventLoop tiêu thụ lệnh Exactly-Once.
+
+        Args:
+            administrator: Quản trị viên đưa lệnh từ bên ngoài.
+            agent_callback: Hàm callback phản hồi của Agent.
 
         Returns:
             Snapshot trạng thái thế giới (dict) sau khi tick.
         """
-        self.event_loop.run(steps=1)
+        self.event_loop.run(
+            steps=1,
+            administrator=administrator,
+            agent_callback=agent_callback
+        )
         st = self.world.get_state()
         return st.to_dict() if hasattr(st, "to_dict") else st
 
     def get_state(self) -> Dict[str, Any]:
-        """Lấy snapshot trạng thái thế giới hiện tại dạng dict."""
+        """Lấy snapshot trạng thái thế giới hiện tại dạng dict độc lập."""
         st = self.world.get_state()
         return st.to_dict() if hasattr(st, "to_dict") else st

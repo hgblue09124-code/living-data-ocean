@@ -51,7 +51,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
         elif path == "/api/step":
             n = int(query.get("n", [1])[0])
             for _ in range(n):
-                self.world_program.run_step()
+                self.world_program.run_step(administrator=self.admin)
             st = self.world_program.get_state()
             payload = self.ui_program.generate_web_presentation(st)
             self._send_json(payload)
@@ -60,9 +60,11 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             cmd_val = query.get("val", [""])[0]
 
             if cmd_type == "weather" and cmd_val:
-                cmd = self.admin.change_environment("weather", cmd_val)
-                self.world_program.world.apply_command(cmd)
-                self.world_program.run_step()
+                # Đưa lệnh vào hàng chờ của Administrator và tiêu thụ duy nhất 1 lần trong run_step
+                self.admin.change_environment("weather", cmd_val)
+                self.world_program.run_step(administrator=self.admin)
+            else:
+                self.world_program.run_step(administrator=self.admin)
 
             st = self.world_program.get_state()
             payload = self.ui_program.generate_web_presentation(st)
