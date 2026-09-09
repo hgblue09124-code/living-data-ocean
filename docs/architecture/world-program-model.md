@@ -32,7 +32,7 @@ Tài liệu này thiết lập mô hình khái niệm thống nhất giữa các
        Executable Program     UI Program
                                   │
                                   ↓
-                                User
+                                User (Web UI / Mobile Browser)
 ```
 
 ---
@@ -77,7 +77,7 @@ World **KHÔNG** trở thành:
 Cần phân biệt rõ ràng giữa **World** (Substrate) và **World Program** (Chương trình thực thi cụ thể):
 
 - **World:** Nền tảng mô phỏng chứa các thực thể và môi trường.
-- **World Program:** Là kết quả của việc **lựa chọn + sắp xếp + tổng hợp** các Modules cụ thể thành một chương trình mô phỏng hoàn chỉnh có thể khởi chạy.
+- **World Program:** Là kết quả của việc **lựa chọn + sắp xếp + tổng hợp** các Modules cụ thể thành một chương trình mô phỏng hoàn chỉnh có thể khởi chạy (`underworld/composition/world_program.py`).
 
 Trách nhiệm lựa chọn và lắp ghép các Modules nằm ở bước dựng chương trình (Program-building responsibility), không được hard-code các quy tắc này thành một khối khổng lồ bên trong World.
 
@@ -86,14 +86,14 @@ Trách nhiệm lựa chọn và lắp ghép các Modules nằm ở bước dựn
 ## 6. Mô hình World Graphics (World Graphics Model)
 
 ### 6.1 Khái niệm World Graphics
-**World Graphics** chịu trách nhiệm xây dựng chương trình giao diện người dùng (UI Program) cho người vận hành từ các Modules có sẵn.
+**World Graphics** (`underworld/graphics/world_graphics.py`) chịu trách nhiệm xây dựng chương trình giao diện người dùng (UI Program) cho người vận hành từ các UI Modules có sẵn.
 
 World Graphics **KHÔNG** chỉ đơn thuần là một bộ render hình ảnh (visual renderer).
 
 ### 6.2 Trách nhiệm khái niệm
-$$\text{All Available Modules} \xrightarrow{\text{World Graphics: Select + Order + Compose}} \text{UI Program} \xrightarrow{} \text{Giao diện cho User}$$
+$$\text{All Available Modules} \xrightarrow{\text{World Graphics: Filter + Order + Compose}} \text{UI Program} \xrightarrow{} \text{Web UI / Presentation}$$
 
-World Graphics lọc, chọn lựa và sắp xếp các Modules UI để xây dựng một chương trình giao diện phù hợp nhất với góc nhìn và nhu cầu của từng đối tượng người dùng cụ thể. Giao diện người dùng do đó không phải là một cấu trúc màn hình cố định hard-code vĩnh viễn.
+World Graphics lọc, chọn lựa và sắp xếp các UI Modules để xây dựng một chương trình giao diện phù hợp nhất với góc nhìn và nhu cầu của từng đối tượng người dùng cụ thể. Giao diện người dùng do đó không phải là một cấu trúc màn hình cố định hard-code vĩnh viễn.
 
 ### 6.3 Một World — Nhiều UI Programs
 Cùng một thế giới mô phỏng (World) và cùng một hệ sinh thái Modules có thể tạo ra các UI Programs hoàn toàn khác nhau cho các người dùng khác nhau:
@@ -135,7 +135,7 @@ Cơ chế `get_state()` hiện tại của World là hạ tầng chụp trạng 
 Kiến trúc dành không gian cho ranh giới phân tích độc lập bên ngoài:
 $$\text{World Snapshot}(t) \rightarrow \text{Comparison} \rightarrow \text{Transition} \rightarrow \text{Trajectory} \rightarrow \text{Analysis}$$
 
-- Các snapshot lịch sử $S(t), S(t+1), S(t+N)$ hoàn toàn độc lập và không bị biến đổi khi thế giới chạy tiếp.
+- Các snapshot lịch sử $S(t), S(t+1), S(t+N)$ hoàn toàn độc lập và không bị biến đổi khi thế giới chạy tiếp (`copy.deepcopy`).
 - Logic phân tích quỹ đạo/sự kiện nằm hoàn toàn ở các mô-đun phân tích bên ngoài, không đưa logic phân tích vào bên trong World.
 
 ---
@@ -158,12 +158,13 @@ Bảng dưới đây đánh giá trung thực trạng thái hiện tại của m
 | **`underworld/kernel/`** | Khả năng hạ tầng (Time, Randomness, Identity) | Primitives Infrastructure | **Đã tuân thủ** (`Implemented`) |
 | **`underworld/modules/`** | Atomic Capabilities (Spatial, Needs, Event, Behavior, Interaction, CommandDispatcher...) | Atomic Semantic Modules | **Đã tuân thủ** (`Implemented`) |
 | **`underworld/modules/meso/`** | `SimulationEngineMeso` tổng hợp từ 5 Atomic Modules | Meso Module ($\text{Meso} \in \text{Modules}$) | **Đã tuân thủ** (`Implemented`) |
-| **`underworld/composition/world.py`** | Composition Root tạo World, ủy quyền cho Atomic/Meso Modules | Substrate / Program-level Container | **Thực nghiệm** (`Experimental` - Đã tách God Object, đang tiến tới nạp động Modules) |
+| **`underworld/composition/world.py`** | Composition Root tạo World, ủy quyền cho Atomic/Meso Modules | Substrate / Program-level Container | **Thực nghiệm** (`Experimental` - Đã tách God Object, nhận nạp Modules) |
 | **`underworld/runtime/event_loop.py`** | Điều phối vòng lặp mô phỏng & Control Loop Session | Runtime Orchestrator / Meso Candidate | **Đã tuân thủ** (`Implemented`) |
 | **`underworld/interface/administrator.py`** | External Human Control Interface gửi `AdministratorCommand` | External Operator Interface | **Đã tuân thủ** (`Implemented`) |
-| **World Program Builder** | Khởi tạo thủ công trong `main.py` | Program Assembly / Module Selector | **Đã lên kế hoạch** (`Planned`) |
-| **World Graphics** | Chưa có (chỉ in log terminal) | Module Selector + UI Program Composer | **Đã lên kế hoạch** (`Planned` - Không thuộc phạm vi v0) |
-| **Snapshot Analysis Engine** | Đã có `get_state()` deep-copy snapshot bất biến | State-transition & Trajectory Analytics | **Đã lên kế hoạch** (`Planned` - Dành cho phiên bản sau) |
+| **`underworld/composition/world_program.py`** | Tổng hợp WorldProgram từ danh sách Modules | Program Assembly / Module Selector | **Đã tuân thủ** (`Implemented`) |
+| **`underworld/graphics/world_graphics.py`** | Lọc, sắp xếp và tổng hợp UI Modules thành UIProgram | Module Selector + UI Program Composer | **Đã tuân thủ** (`Implemented`) |
+| **`underworld/graphics/web_server.py`** | Server phục vụ giao diện Web responsive (Mobile Safari) | Web Presentation Server | **Đã tuân thủ** (`Implemented`) |
+| **Snapshot Analytics Engine** | Đã có `get_state()` deep-copy snapshot bất biến | State-transition & Trajectory Analytics | **Đã lên kế hoạch** (`Planned` - Dành cho phiên bản sau) |
 
 ---
 
@@ -171,7 +172,6 @@ Bảng dưới đây đánh giá trung thực trạng thái hiện tại của m
 
 Trong nhiệm vụ lập tài liệu kiến trúc này, dự án **TUYỆT ĐỐI KHÔNG**:
 1. Tự ý viết lại lớp `World` hoặc `EventLoop`.
-2. Xây dựng GUI thật, Web UI, hay UI Framework.
-3. Thêm các thư viện bên ngoài như Mesa, SimPy, PyTorch, LLM hay Database.
-4. Xây dựng hệ thống Plugin Framework hay mã nạp động phức tạp quá mức.
-5. Thay đổi bất kỳ hành vi mô phỏng hay bài kiểm thử nào đang hoạt động.
+2. Thêm các thư viện bên ngoài như Mesa, SimPy, PyTorch, LLM hay Database.
+3. Xây dựng hệ thống Plugin Framework hay mã nạp động phức tạp quá mức.
+4. Thay đổi bất kỳ hành vi mô phỏng hay bài kiểm thử nào đang hoạt động.
