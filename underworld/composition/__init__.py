@@ -1,9 +1,16 @@
 """
-Gói Composition của Underworld v0: Hợp thành các đối tượng chính Human và World từ các Atomic Modules.
+Thư viện xuất lớp Composition của Underworld.
 """
 
-from underworld.composition.state import HumanState, WorldState
 from underworld.composition.human import Human
+from underworld.composition.state import HumanState, WorldState
 from underworld.composition.world import World
+from underworld.composition.world_program import WorldProgram
 
-__all__ = ["HumanState", "WorldState", "Human", "World"]
+__all__ = [
+    "Human",
+    "HumanState",
+    "WorldState",
+    "World",
+    "WorldProgram",
+]

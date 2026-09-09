@@ -144,6 +144,7 @@ def run_simulation(headless: bool = False, web: bool = False, port: int = 8000, 
     print(f"    👉 Máy tính nội bộ: http://localhost:{port}")
     print(f"    📱 Trình duyệt iPhone / Mobile: http://{local_ip}:{port}")
     print("------------------------------------------------------------")
+    print(" [LOG THỜI GIAN THỰC] Lắng nghe tương tác từ Web UI...")
 
     admin = Administrator(name="Web_Operator")
     server = start_web_server(

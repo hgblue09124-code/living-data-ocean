@@ -1,6 +1,11 @@
 """Web Server siêu nhẹ phục vụ Web UI cho Underworld v0 qua Python Standard Library.
 
 Hỗ trợ truy cập từ trình duyệt di động (iOS / iPhone / Safari / Chrome) và máy tính.
+Cài đặt tuân thủ tuyệt đối ranh giới Presentation Layer:
+  - KHÔNG biến đổi (mutate) World trực tiếp.
+  - Mọi tương tác điều khiển đều gửi lệnh `AdministratorCommand` tới Administrator.
+  - Lệnh chỉ được tiêu thụ Exactly-Once khi `world_program.run_step(administrator=admin)` thực thi.
+  - In log hoạt động thế giới thời gian thực ra Console/Terminal song song với Web UI.
 """
 
 import json
@@ -22,6 +27,19 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         """Tắt log mặc định của HTTP server để giữ terminal sạch sẽ."""
         pass
+
+    def _log_console_activity(self, action_desc: str, state: Dict[str, Any]):
+        """In log hoạt động thời gian thực của thế giới ra Terminal/Console."""
+        tick = state.get("time_step", 0)
+        env = state.get("environment", {})
+        weather = env.get("weather", "N/A")
+        humans_cnt = len(state.get("human_states", state.get("humans", {})))
+        events = state.get("events", [])
+
+        print(f" [WEB UI LOG] {action_desc} -> [Tick {tick}] Thời tiết: {weather} | Con người: {humans_cnt} cá thể | Sự kiện bước này: {len(events)}")
+        if events:
+            for evt in events:
+                print(f"               ⚡ Event: {evt.get('type')} - {evt.get('chi_tiết')}")
 
     def _send_json(self, data: Dict[str, Any], status: int = 200):
         self.send_response(status)
@@ -53,6 +71,7 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             for _ in range(n):
                 self.world_program.run_step(administrator=self.admin)
             st = self.world_program.get_state()
+            self._log_console_activity(f"Thực hiện chạy {n} tick(s)", st)
             payload = self.ui_program.generate_web_presentation(st)
             self._send_json(payload)
         elif path == "/api/command":
@@ -60,13 +79,16 @@ class UnderworldWebHandler(BaseHTTPRequestHandler):
             cmd_val = query.get("val", [""])[0]
 
             if cmd_type == "weather" and cmd_val:
-                # Đưa lệnh vào hàng chờ của Administrator và tiêu thụ duy nhất 1 lần trong run_step
+                # Tạo lệnh AdministratorCommand đưa vào hàng chờ, KHÔNG gọi world.apply_command trực tiếp!
                 self.admin.change_environment("weather", cmd_val)
                 self.world_program.run_step(administrator=self.admin)
+                action_msg = f"Quản trị viên gửi lệnh thời tiết '{cmd_val}'"
             else:
                 self.world_program.run_step(administrator=self.admin)
+                action_msg = "Chạy 1 tick mô phỏng"
 
             st = self.world_program.get_state()
+            self._log_console_activity(action_msg, st)
             payload = self.ui_program.generate_web_presentation(st)
             self._send_json(payload)
         else:

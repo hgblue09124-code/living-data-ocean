@@ -2,8 +2,7 @@
 Mô-đun Atomic xây dựng Observation cho External Agent (ObservationBuilderModule).
 """
 
-from typing import Optional
-from underworld.composition.state import WorldState
+from typing import Optional, Any
 from underworld.interface.observation import Observation
 
 
@@ -14,7 +13,7 @@ class ObservationBuilderModule:
 
     def build_observation(
         self,
-        world_state: WorldState,
+        world_state: Any,
         target_human_id: Optional[str] = None
     ) -> Observation:
         """

@@ -4,7 +4,6 @@
 
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
-from underworld.composition.state import WorldState
 
 
 @dataclass
@@ -20,28 +19,43 @@ class Observation:
     @classmethod
     def from_world_state(
         cls,
-        world_state: WorldState,
+        world_state: Any,
         target_human_id: Optional[str] = None
     ) -> "Observation":
         """
         Tạo Observation từ một WorldState.
         """
         visible = []
-        for hid, hstate in world_state.human_states.items():
-            if target_human_id is None or target_human_id == hid:
-                visible.append({
-                    "id": hstate.id,
-                    "position": hstate.position,
-                    "status": hstate.status,
-                    "needs": dict(hstate.needs),
-                    "goals": list(hstate.goals)
-                })
+        human_states = getattr(world_state, "human_states", {})
+        if isinstance(human_states, dict):
+            for hid, hstate in human_states.items():
+                if target_human_id is None or target_human_id == hid:
+                    if hasattr(hstate, "id"):
+                        visible.append({
+                            "id": hstate.id,
+                            "position": hstate.position,
+                            "status": hstate.status,
+                            "needs": dict(hstate.needs),
+                            "goals": list(hstate.goals)
+                        })
+                    elif isinstance(hstate, dict):
+                        visible.append({
+                            "id": hstate.get("id"),
+                            "position": hstate.get("position"),
+                            "status": hstate.get("status"),
+                            "needs": hstate.get("needs"),
+                            "goals": hstate.get("goals")
+                        })
+
+        env = getattr(world_state, "environment", {}) if hasattr(world_state, "environment") else {}
+        events = getattr(world_state, "events", []) if hasattr(world_state, "events") else []
+        time_step = getattr(world_state, "time_step", 0) if hasattr(world_state, "time_step") else 0
 
         return cls(
-            time_step=world_state.time_step,
+            time_step=time_step,
             visible_humans=visible,
-            environment_summary=dict(world_state.environment),
-            recent_events=list(world_state.events)
+            environment_summary=dict(env),
+            recent_events=list(events)
         )
 
     def to_dict(self) -> Dict[str, Any]:

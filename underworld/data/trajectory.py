@@ -4,7 +4,6 @@
 
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional
-from underworld.composition.state import WorldState
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
 
@@ -43,19 +42,24 @@ class Trajectory:
     def add_step(
         self,
         step: int,
-        state_before: WorldState,
+        state_before: Any,
         observation: Observation,
         action: Optional[List[Action]],
-        state_after: WorldState
+        state_after: Any
     ) -> None:
         """Thêm một bước simulation vào Trajectory."""
         actions_dict = [act.to_dict() for act in action] if action else None
+
+        sb_dict = state_before.to_dict() if hasattr(state_before, "to_dict") else state_before
+        sa_dict = state_after.to_dict() if hasattr(state_after, "to_dict") else state_after
+        obs_dict = observation.to_dict() if hasattr(observation, "to_dict") else observation
+
         traj_step = TrajectoryStep(
             step=step,
-            state_before=state_before.to_dict(),
-            observation=observation.to_dict(),
+            state_before=sb_dict,
+            observation=obs_dict,
             action=actions_dict,
-            state_after=state_after.to_dict()
+            state_after=sa_dict
         )
         self.steps.append(traj_step)
 

@@ -4,7 +4,6 @@ Meso Module được tổng hợp từ các Atomic Modules nhỏ hơn nhưng là
 """
 
 from typing import Optional, Callable, List, Dict, Any
-from underworld.composition.world import World
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
 from underworld.interface.command import AdministratorCommand
@@ -33,7 +32,7 @@ class SimulationEngineMeso:
     - Output: Trajectory
     """
 
-    def __init__(self, world: Optional[World] = None):
+    def __init__(self, world: Optional[Any] = None):
         """Khởi tạo Meso Module SimulationEngineMeso."""
         self.world = world
         self.command_intake = CommandIntakeModule()

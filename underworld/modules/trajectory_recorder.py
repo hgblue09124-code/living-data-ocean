@@ -3,7 +3,6 @@ Mô-đun Atomic ghi nhận lịch sử mô phỏng (TrajectoryRecorderModule).
 """
 
 from typing import Optional, List, Dict, Any
-from underworld.composition.state import WorldState
 from underworld.interface.observation import Observation
 from underworld.interface.action import Action
 from underworld.data.trajectory import Trajectory
@@ -18,10 +17,10 @@ class TrajectoryRecorderModule:
         self,
         trajectory: Trajectory,
         step: int,
-        state_before: WorldState,
+        state_before: Any,
         observation: Observation,
         action: Optional[List[Action]],
-        state_after: WorldState
+        state_after: Any
     ) -> None:
         """
         Thêm một bước chuyển đổi trạng thái vào Trajectory.
